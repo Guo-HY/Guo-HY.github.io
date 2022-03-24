@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="shell脚本编写速查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell脚本">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="shell脚本编写速查">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T14:32:09.582Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="tools">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/","path":"2022/03/24/2022-03-24-Shell脚本/","title":"Shell脚本"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Shell脚本 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bash"><span class="nav-number">1.</span> <span class="nav-text">bash</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%93%8D%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">常见操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash%E8%84%9A%E6%9C%AC%E7%9A%84%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">bash脚本的参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A5%E5%8F%98%E9%87%8F%E7%9A%84%E5%BD%A2%E5%BC%8F%E8%8E%B7%E5%8F%96%E4%B8%80%E4%B8%AA%E5%91%BD%E4%BB%A4%E7%9A%84%E8%BE%93%E5%87%BA%EF%BC%88command-substitution%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">以变量的形式获取一个命令的输出（command substitution）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6-globbing"><span class="nav-number">1.4.</span> <span class="nav-text">通配符(globbing)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shebang"><span class="nav-number">1.5.</span> <span class="nav-text">Shebang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%BD%E7%94%A8%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="nav-number">1.6.</span> <span class="nav-text">好用的工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell%E8%84%9A%E6%9C%AC"><span class="nav-number">2.</span> <span class="nav-text">shell脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell-debug"><span class="nav-number">2.1.</span> <span class="nav-text">shell debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">变量和常量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%99%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B8%B8%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">2.2.1.</span> <span class="nav-text">给变量与常量赋值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#here-documents"><span class="nav-number">2.3.</span> <span class="nav-text">here documents</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shell%E5%87%BD%E6%95%B0"><span class="nav-number">2.4.</span> <span class="nav-text">Shell函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.6.</span> <span class="nav-text">if语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">2.7.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%8E%B0%E4%BB%A3%E7%9A%84%E6%B5%8B%E8%AF%95%E7%89%88%E6%9C%AC"><span class="nav-number">2.7.1.</span> <span class="nav-text">更现代的测试版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E6%95%B4%E6%95%B0%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.7.2.</span> <span class="nav-text">(( )) - 为整数设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E5%90%88%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.8.</span> <span class="nav-text">结合表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.9.</span> <span class="nav-text">while循环</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Shell脚本
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-24 00:00:00 / 修改时间：22:32:09" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">shell脚本编写速查</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="bash"><a href="#bash" class="headerlink" title="bash"></a>bash</h2><h3 id="常见操作"><a href="#常见操作" class="headerlink" title="常见操作"></a>常见操作</h3><ul>
+<li>为变量赋值：<variable>&#x3D;<value></li>
+<li>访问变量中存储的值：$<variable> </li>
+<li>注意为变量赋值的时候等号左右不能有空格，否则bash会将第一个字符串作为程序调用，之后的字符串作为程序的参数传入程序。</li>
+<li>bash中的字符串通过<code>&#39;</code>和<code>&quot;</code>定义，以<code>&#39;</code>定义的字符串为原义字符串，其中的变量不会被转义，而 <code>&quot;</code>定义的字符串会将变量值进行替换。</li>
+</ul>
+<h3 id="bash脚本的参数"><a href="#bash脚本的参数" class="headerlink" title="bash脚本的参数"></a>bash脚本的参数</h3><ul>
+<li><p><code>$0</code> - 脚本名</p>
+</li>
+<li><p><code>$1</code> 到 <code>$9</code> - 脚本的参数。 <code>$1</code> 是第一个参数，依此类推。 </p>
+</li>
+<li><p><code>$@</code> - 所有参数</p>
+</li>
+<li><p><code>$#</code> - 参数个数</p>
+</li>
+<li><p><code>$?</code> - 前一个命令的返回值，返回值为0代表程序正常执行，其他所有非零值表示有错误发生</p>
+</li>
+<li><p><code>$$</code> - 当前脚本的进程识别码</p>
+</li>
+<li><p><code>!!</code> - 完整的上一条命令，包括参数。常见应用：当你因为权限不足执行命令失败时，可以使用 <code>sudo !!</code>再尝试一次。</p>
+</li>
+<li><p><code>$_</code> - 上一条命令的最后一个参数。如果你正在使用的是交互式shell，你可以通过按下 <code>Esc</code> 之后键入 . 来获取这个值。</p>
+</li>
+<li><p><code>$HOME</code>，当前用户目录，登录后默认进入的目录。比如我的是<code>/home/ghy</code></p>
+<p>退出码可以搭配操作符<code>&amp;&amp;</code>或操作符<code>||</code>使用。对于<code>&amp;&amp;</code>操作符，只有当该操作符左侧的程序返回值非0时，该操作符右侧的程序才会被执行。对于<code>||</code>操作符，如果该操作符左侧程序返回值非0，则其右侧的程序不会被执行。如果该操作符左侧的返回值为0，右侧的程序才会被执行。</p>
+</li>
+</ul>
+<h3 id="以变量的形式获取一个命令的输出（command-substitution）"><a href="#以变量的形式获取一个命令的输出（command-substitution）" class="headerlink" title="以变量的形式获取一个命令的输出（command substitution）"></a>以变量的形式获取一个命令的输出（<em>command substitution</em>）</h3><ul>
+<li>语法：<code>$(&lt;command&gt;)</code></li>
+</ul>
+<p>当以上面的这种形式执行命令时，命令的输出会替换掉<code>$(command)</code>并再次执行。比如对于如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ $(<span class="built_in">echo</span> <span class="built_in">ls</span>) </span><br></pre></td></tr></table></figure>
+
+<p>bash会先执行<code>echo ls</code>，然后将该命令的输出，即<code>ls</code>，作为bash的命令再次执行。所以<code>$(echo ls)</code>等价于<code>ls</code> .</p>
+<ul>
+<li>语法：<code>&lt;variable&gt;=$(&lt;command&gt;)</code></li>
+</ul>
+<p>也可以将命令的输出赋值给一个变量。<variable>拿到了<command>的输出。</p>
+<p>还有一个冷门的类似特性是 <em>进程替换</em>（<em>process substitution</em>）， <code>&lt;( CMD )</code> 会执行 <code>CMD</code> 并将结果输出到一个临时文件中，并将 <code>&lt;( CMD )</code> 替换成临时文件名。这在我们希望返回值通过文件而不是STDIN传递时很有用。例如， <code>diff &lt;(ls foo) &lt;(ls bar)</code> 会显示文件夹 <code>foo</code> 和 <code>bar</code> 中文件的区别。</p>
+<h3 id="通配符-globbing"><a href="#通配符-globbing" class="headerlink" title="通配符(globbing)"></a>通配符(<em><strong>globbing</strong></em>)</h3><p>类似与正则表达式</p>
+<ul>
+<li>使用<code>?</code>匹配一个任意的字符</li>
+<li>使用<code>*</code>匹配任意个任意字符</li>
+</ul>
+<p>例如，对于文件<code>foo</code>, <code>foo1</code>, <code>foo2</code>, <code>foo10</code> 和 <code>bar</code>, <code>rm foo?</code>这条命令会删除<code>foo1</code> 和 <code>foo2</code> ，而<code>rm foo*</code> 则会删除除了<code>bar</code>之外的所有文件。</p>
+<ul>
+<li>花括号<code>&#123;&#125;</code> - 执行时花括号中的值自动展开，可以搭配<code>..</code>使用。</li>
+</ul>
+<p>例如，命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> image&#123;a..g&#125;</span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> imagea imageb imagec imaged imagee imagef imageg</span><br></pre></td></tr></table></figure>
+
+<h3 id="Shebang"><a href="#Shebang" class="headerlink" title="Shebang"></a>Shebang</h3><p>Shebang是一段由<code>#!</code>构成的字符序列，位于脚本开头的前两个字符。</p>
+<p>在文件中存在Shebang的情况下，类Unix操作系统的程序加载器会分析Shebang后的内容，将这些内容作为解释器指令，并调用该指令，并将载有Shebang的文件路径作为该解释器的参数。</p>
+<p>Shebang的指令形式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!interpreter [optional-arg]</span></span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<ul>
+<li><code>#!/bin/sh</code>—使用<code>sh</code>，即<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Bourne_shell">Bourne shell</a>或其它兼容shell执行脚本</li>
+<li><code>#!/usr/bin/python -O</code>—使用具有代码优化的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Python">Python</a>执行</li>
+<li>使用<code>#!/usr/bin/env 脚本解释器名称</code>是一种常见的在不同平台上都能正确找到解释器的办法。</li>
+</ul>
+<h3 id="好用的工具"><a href="#好用的工具" class="headerlink" title="好用的工具"></a>好用的工具</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/koalaman/shellcheck">shellcheck</a>，给脚本挑错</li>
+<li>man <command> 调用命令的手册</li>
+<li><a target="_blank" rel="noopener" href="https://tldr.sh/">TLDR pages</a>查看命令的常见用法，语法： tldr <command></li>
+</ul>
+<h2 id="shell脚本"><a href="#shell脚本" class="headerlink" title="shell脚本"></a>shell脚本</h2><h3 id="shell-debug"><a href="#shell-debug" class="headerlink" title="shell debug"></a>shell debug</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bash -x a.sh <span class="comment">#把完整的执行过程输出</span></span><br><span class="line"><span class="built_in">set</span> -x <span class="comment">#开始debug，写在脚本内</span></span><br><span class="line"><span class="built_in">set</span> +x <span class="comment">#结束debug，写在脚本内</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h3><ul>
+<li><p>shell无法辨别变量与常量，常量的值不可变，因此shell中创建的任何”变量”实际都是字符串常量</p>
+</li>
+<li><p>当shell碰到一个变量的时候，它会自动的创建这个变量。</p>
+</li>
+<li><p>变量名规则：</p>
+<ul>
+<li>变量名可由字母数字字符（字母和数字）和下划线字符组成。</li>
+<li>变量名的第一个字符必须是一个字母或一个下划线。</li>
+<li>变量名中不允许出现空格和标点符号。</li>
+</ul>
+</li>
+</ul>
+<h4 id="给变量与常量赋值"><a href="#给变量与常量赋值" class="headerlink" title="给变量与常量赋值"></a>给变量与常量赋值</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">variable=value	<span class="comment"># variable是变量的名字，value是一个字符串。shell把变量值都视作字符串，在赋值过程中，				# 等号两侧不能由空格</span></span><br></pre></td></tr></table></figure>
+
+<p>值的类型：可以展开成字符串的任意值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a=z					<span class="comment"># Assign the string &quot;z&quot; to variable a.</span></span><br><span class="line">b=<span class="string">&quot;a string&quot;</span>		<span class="comment"># Embedded spaces must be within quotes.</span></span><br><span class="line">c=<span class="string">&quot;a string and <span class="variable">$b</span>&quot;</span> <span class="comment"># Other expansions such as variables can be</span></span><br><span class="line">                    <span class="comment"># expanded into the assignment.</span></span><br><span class="line">d=$(<span class="built_in">ls</span> -l foo.txt)  <span class="comment"># Results of a command. </span></span><br><span class="line">e=$((<span class="number">5</span> * <span class="number">7</span>))        <span class="comment"># Arithmetic expansion.</span></span><br><span class="line">f=<span class="string">&quot;\t\ta string\n&quot;</span>  <span class="comment"># Escape sequences such as tabs and newlines.</span></span><br></pre></td></tr></table></figure>
+
+<p>可以在同一行中对多个变量赋值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a=5 		b=<span class="string">&quot;a string&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>当由于变量名周围的上下文使得变量引用变得不明确的情况下，可以使用花括号将变量名包围，像这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename=<span class="string">&quot;myfile&quot;</span></span><br><span class="line"><span class="built_in">touch</span> <span class="variable">$filename</span></span><br><span class="line"><span class="built_in">mv</span> <span class="variable">$filename</span> <span class="variable">$&#123;filename&#125;</span>1</span><br><span class="line"><span class="comment"># 将把myfile变为myfile1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="here-documents"><a href="#here-documents" class="headerlink" title="here documents"></a>here documents</h3><p>另一种输入重定向方式</p>
+<h3 id="Shell函数"><a href="#Shell函数" class="headerlink" title="Shell函数"></a>Shell函数</h3><blockquote>
+<p>shell 函数是位于其它脚本中的“微脚本”，作为自主程序。</p>
+</blockquote>
+<p>两种语法形式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> name &#123;</span><br><span class="line">    commands</span><br><span class="line">    <span class="built_in">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">name</span></span> () &#123;</span><br><span class="line">    commands</span><br><span class="line">    <span class="built_in">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>脚本中函数定义必须在函数调用之前，使用函数名调用函数。</p>
+<p>调用函数时的参数传递方式与shell脚本相同。</p>
+<p>通过在return后加上一个整型，shell函数可以返回退出状态。</p>
+<h3 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h3><p>局部变量只能在定义它们的 shell 函数中使用，并且一旦 shell 函数执行完毕，它们就不存在了。</p>
+<p>使用在变量名前加上local声明局部变量</p>
+<h3 id="if语句"><a href="#if语句" class="headerlink" title="if语句"></a>if语句</h3><p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> commands; <span class="keyword">then</span>	<span class="comment"># 如果commands命令的退出状态码为0（成功执行），就进if</span></span><br><span class="line">     commands</span><br><span class="line">[<span class="keyword">elif</span> commands; <span class="keyword">then</span></span><br><span class="line">     commands...]</span><br><span class="line">[<span class="keyword">else</span></span><br><span class="line">     commands]</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>test命令经常与if搭配使用，有两种等价模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test expression</span><br><span class="line">[ expression ]</span><br></pre></td></tr></table></figure>
+
+<p>expression是一个表达式，执行结果是 true 或者是 false。当表达式为真时test返回True，否则为False。</p>
+<p><strong>测试字符串表达式</strong></p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>何时为真</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>string 不为 null。</td>
+</tr>
+<tr>
+<td>-n string</td>
+<td>字符串 string 的长度大于零。</td>
+</tr>
+<tr>
+<td>-z string</td>
+<td>字符串 string 的长度为零。</td>
+</tr>
+<tr>
+<td>string1 &#x3D; string2或string1 &#x3D;&#x3D; string2</td>
+<td>string1 和 string2 相同. 单或双等号都可以</td>
+</tr>
+<tr>
+<td>string1 !&#x3D; string2</td>
+<td>string1 和 string2 不相同。</td>
+</tr>
+<tr>
+<td>string1 &gt; string2</td>
+<td>sting1 排列在 string2 之后。注意&gt;要用双引号引起来或是用反斜杠转义</td>
+</tr>
+<tr>
+<td>string1 &lt; string2</td>
+<td>string1 排列在 string2 之前。注意&lt;要用双引号引起来或是用反斜杠转义</td>
+</tr>
+</tbody></table>
+<p><strong>测试整数表达式</strong></p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>何时为真</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>integer1 -eq integer2</td>
+<td>integer1 等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -ne integer2</td>
+<td>integer1 不等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -le integer2</td>
+<td>integer1 小于或等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -lt integer2</td>
+<td>integer1 小于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -ge integer2</td>
+<td>integer1 大于或等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -gt integer2</td>
+<td>integer1 大于 integer2.</td>
+</tr>
+</tbody></table>
+<h4 id="更现代的测试版本"><a href="#更现代的测试版本" class="headerlink" title="更现代的测试版本"></a>更现代的测试版本</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[ expression ]]</span><br></pre></td></tr></table></figure>
+
+<p>相比于test，这样写增加了两个新功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[ string1 =~ regex ]]	   # 如果string1匹配扩展的正则表达式 regex，则返回值为真</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE=foo.bar</span><br><span class="line">if [[ $FILE == foo.* ]]; then	# ==操作符支持类型匹配</span><br></pre></td></tr></table></figure>
+
+<h4 id="为整数设计"><a href="#为整数设计" class="headerlink" title="(( )) - 为整数设计"></a>(( )) - 为整数设计</h4><p><code>(( ))</code>被用来执行算术真测试。如果算术计算的结果是非零值，则一个算术真测试值为真。</p>
+<h3 id="结合表达式"><a href="#结合表达式" class="headerlink" title="结合表达式"></a>结合表达式</h3><p><strong>逻辑操作符</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">测试</th>
+<th align="left">[[ ]] and (( ))</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AND</td>
+<td align="left">-a</td>
+<td align="left">&amp;&amp;</td>
+</tr>
+<tr>
+<td align="left">OR</td>
+<td align="left">-o</td>
+<td align="left">||</td>
+</tr>
+<tr>
+<td align="left">NOT</td>
+<td align="left">!</td>
+<td align="left">!</td>
+</tr>
+</tbody></table>
+<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> commands; <span class="keyword">do</span> </span><br><span class="line">	commands</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>和 if 一样， while 计算一系列命令的退出状态。只要退出状态为零，它就执行循环内的命令。</p>
+<p>具有break与continue</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tools/" rel="tag"># tools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="C语言：存储类别 链接 内存管理">
+                  <i class="fa fa-chevron-left"></i> C语言：存储类别 链接 内存管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80-%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%8E%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" rel="next" title="C语言 预处理器与高级特性">
+                  C语言 预处理器与高级特性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

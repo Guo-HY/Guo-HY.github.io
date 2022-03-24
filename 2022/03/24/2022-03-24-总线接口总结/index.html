@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="总结了SRAM接口，类SRAM接口，AXI接口的规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="总线接口总结">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="总结了SRAM接口，类SRAM接口，AXI接口的规范">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/Hongy/Desktop/LOONGSON/CPU_v0.1/%E5%8D%95%E5%91%A8%E6%9C%9FSRAM%E6%97%B6%E5%BA%8F%E5%9B%BE.drawio.svg">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184338176.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184432152.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223906259.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223954744.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094830188.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094904221.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113135018.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113147368.png">
+<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T14:41:11.524Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="digital design">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/Hongy/Desktop/LOONGSON/CPU_v0.1/%E5%8D%95%E5%91%A8%E6%9C%9FSRAM%E6%97%B6%E5%BA%8F%E5%9B%BE.drawio.svg">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/","path":"2022/03/24/2022-03-24-总线接口总结/","title":"总线接口总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>总线接口总结 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%84%E7%B1%BB%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">各类总线接口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%95%E5%91%A8%E6%9C%9FSRAM%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">单周期SRAM接口说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AB%AF%E5%8F%A3%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">1.端口描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%97%B6%E5%BA%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.时序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">2.2.1.</span> <span class="nav-text">读写数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BBSRAM%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.</span> <span class="nav-text">类SRAM接口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">1.接口定义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AXI%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.</span> <span class="nav-text">AXI接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E9%80%9A%E9%81%93"><span class="nav-number">4.0.0.2.</span> <span class="nav-text">读通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E9%80%9A%E9%81%93"><span class="nav-number">4.0.0.3.</span> <span class="nav-text">写通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E9%81%93%E5%AE%9A%E4%B9%89"><span class="nav-number">4.0.0.4.</span> <span class="nav-text">通道定义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E6%8F%8F%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">端口描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E4%BF%A1%E5%8F%B7"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">全局信号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E8%AF%B7%E6%B1%82%E9%80%9A%E9%81%93"><span class="nav-number">4.1.0.2.</span> <span class="nav-text">读请求通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93"><span class="nav-number">4.1.0.3.</span> <span class="nav-text">读数据通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E8%AF%B7%E6%B1%82%E9%80%9A%E9%81%93"><span class="nav-number">4.1.0.4.</span> <span class="nav-text">写请求通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93"><span class="nav-number">4.1.0.5.</span> <span class="nav-text">写数据通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%8F%8D%E9%A6%88%E9%80%9A%E9%81%93"><span class="nav-number">4.1.0.6.</span> <span class="nav-text">写反馈通道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E9%81%93%E6%8F%A1%E6%89%8B"><span class="nav-number">4.2.</span> <span class="nav-text">通道握手</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%B0%E5%9D%80%E9%80%9A%E9%81%93"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">写地址通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93-1"><span class="nav-number">4.2.0.2.</span> <span class="nav-text">写数据通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%8F%8D%E9%A6%88%E9%80%9A%E9%81%93-1"><span class="nav-number">4.2.0.3.</span> <span class="nav-text">写反馈通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E5%9C%B0%E5%9D%80%E9%80%9A%E9%81%93"><span class="nav-number">4.2.0.4.</span> <span class="nav-text">读地址通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%95%B0%E6%8D%AE%E9%80%9A%E9%81%93-1"><span class="nav-number">4.2.0.5.</span> <span class="nav-text">读数据通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E9%81%93%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">4.2.0.6.</span> <span class="nav-text">通道间的关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%A1%E6%89%8B%E4%BF%A1%E5%8F%B7%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="nav-number">4.2.0.7.</span> <span class="nav-text">握手信号依赖关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AC%E6%8E%A5%E6%A1%A5%E8%AE%BE%E8%AE%A1%E8%A6%81%E6%B1%82"><span class="nav-number">4.2.0.8.</span> <span class="nav-text">转接桥设计要求</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Burst%E4%BC%A0%E8%BE%93"><span class="nav-number">4.3.</span> <span class="nav-text">Burst传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#burst%E9%95%BF%E5%BA%A6"><span class="nav-number">4.3.0.1.</span> <span class="nav-text">burst长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#burst%E5%A4%A7%E5%B0%8F%EF%BC%88%E5%8D%95%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%9D%97%E7%9A%84%E5%A4%A7%E5%B0%8F%EF%BC%89"><span class="nav-number">4.3.0.2.</span> <span class="nav-text">burst大小（单个数据块的大小）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#burst%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.3.0.3.</span> <span class="nav-text">burst类型</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          总线接口总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-24 00:00:00 / 修改时间：22:41:11" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">总结了SRAM接口，类SRAM接口，AXI接口的规范</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="各类总线接口"><a href="#各类总线接口" class="headerlink" title="各类总线接口"></a>各类总线接口</h1><h1 id="单周期SRAM接口说明"><a href="#单周期SRAM接口说明" class="headerlink" title="单周期SRAM接口说明"></a>单周期SRAM接口说明</h1><h2 id="1-端口描述"><a href="#1-端口描述" class="headerlink" title="1.端口描述"></a>1.端口描述</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>宽度</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clk</td>
+<td>1</td>
+<td>-&gt;master&#x2F;slave</td>
+<td>时钟</td>
+</tr>
+<tr>
+<td>en</td>
+<td>1</td>
+<td>-&gt;slave</td>
+<td>使能信号，片选，读写均需要高电平有效</td>
+</tr>
+<tr>
+<td>addr</td>
+<td>32</td>
+<td>-&gt;slave</td>
+<td>地址，读写均使用同一地址线</td>
+</tr>
+<tr>
+<td>wen</td>
+<td>4</td>
+<td>-&gt;slave</td>
+<td>字节写使能，指示写字节的位置</td>
+</tr>
+<tr>
+<td>din</td>
+<td>32</td>
+<td>-&gt;slave</td>
+<td>写数据</td>
+</tr>
+<tr>
+<td>dout</td>
+<td>32</td>
+<td>slave-&gt;</td>
+<td>读数据</td>
+</tr>
+</tbody></table>
+<ul>
+<li>指令SRAM大小为1MB，数据SRAM大小为256KB</li>
+<li>SRAM按字寻址，在<code>soc_lit_top.v</code>中进行字节寻址到字寻址的转换</li>
+</ul>
+<h2 id="2-时序"><a href="#2-时序" class="headerlink" title="2.时序"></a>2.时序</h2><h3 id="读写数据"><a href="#读写数据" class="headerlink" title="读写数据"></a>读写数据</h3><ul>
+<li>读：当拍传地址，下拍回数据</li>
+<li>避免同时读写</li>
+<li>大赛中提供的sram具有读保持功能，即当RAM的片选信号无效时，即使读地址在不断变化，RAM的输出数据仍保持最后一次片选信号有效时的地址对应的输出值。</li>
+</ul>
+<p><img src="C:/Users/Hongy/Desktop/LOONGSON/CPU_v0.1/%E5%8D%95%E5%91%A8%E6%9C%9FSRAM%E6%97%B6%E5%BA%8F%E5%9B%BE.drawio.svg" alt="单周期SRAM时序图.drawio"></p>
+<h1 id="类SRAM接口"><a href="#类SRAM接口" class="headerlink" title="类SRAM接口"></a>类SRAM接口</h1><ul>
+<li>addr_ok信号用于和req信号一起完成读写请求的握手。只有在clk上升沿同时看到req和addr_ok为1的时候才是一次成功的请求握手。</li>
+<li>默认master端可以随时接收数据。因此data_ok为1代表一次成功的数据响应握手。</li>
+<li>在req为1且addr_ok为0时，允许主方更改请求类型和地址。</li>
+</ul>
+<h2 id="1-接口定义"><a href="#1-接口定义" class="headerlink" title="1.接口定义"></a>1.接口定义</h2><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>方向</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clk</td>
+<td>1</td>
+<td>input</td>
+<td>时钟</td>
+</tr>
+<tr>
+<td>req</td>
+<td>1</td>
+<td>m-&gt;s</td>
+<td>请求信号，为1时有读写请求</td>
+</tr>
+<tr>
+<td>wr</td>
+<td>1</td>
+<td>m-&gt;s</td>
+<td>该次请求是写</td>
+</tr>
+<tr>
+<td>size</td>
+<td>[1:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求传输的字节数，0：byte，1:half word，2:word</td>
+</tr>
+<tr>
+<td>addr</td>
+<td>[31:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求的地址</td>
+</tr>
+<tr>
+<td>wdata</td>
+<td>[31:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求的写数据</td>
+</tr>
+<tr>
+<td>addr_ok</td>
+<td>1</td>
+<td>s-&gt;m</td>
+<td>地址握手信号，读：地址被接收，写：地址和数据被接收</td>
+</tr>
+<tr>
+<td>data_ok</td>
+<td>1</td>
+<td>s-&gt;m</td>
+<td>数据握手信号，读：数据返回，写：数据写入完成</td>
+</tr>
+<tr>
+<td>rdata</td>
+<td>[31:0]</td>
+<td>s-&gt;m</td>
+<td>该次请求返回的读数据</td>
+</tr>
+</tbody></table>
+<ul>
+<li>类SRAM的地址信号是字节寻址，且只支持地址对齐访问</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184338176.png" alt="image-20220124184338176"></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184432152.png" alt="image-20220124184432152"></p>
+<p>读一个半字的时序逻辑：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223906259.png" alt="image-20220124223906259" style="zoom: 50%;" />
+
+<p>写一个字节的时序逻辑：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223954744.png" alt="image-20220124223954744" style="zoom: 50%;" />
+
+<h1 id="AXI接口"><a href="#AXI接口" class="headerlink" title="AXI接口"></a>AXI接口</h1><h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ul>
+<li>增加乱序的特性，如乱序访问，乱序返回</li>
+<li>读操作,分为地址传输和数据传输</li>
+<li>写操作，分为地址传输，数据传输和响应传输</li>
+<li>有5个通道，读写操作完全分开，读操作占用两个通道，写操作占用三个通道，每个通道有自己的握手信号</li>
+<li>支持burst传输</li>
+<li>AXI4与AXI3相比无写数据ID，写数据必须in order，且增加了burst长度</li>
+</ul>
+<h4 id="读通道"><a href="#读通道" class="headerlink" title="读通道"></a>读通道</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094830188.png" alt="image-20220125094830188"></p>
+<h4 id="写通道"><a href="#写通道" class="headerlink" title="写通道"></a>写通道</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094904221.png" alt="image-20220125094904221"></p>
+<h4 id="通道定义"><a href="#通道定义" class="headerlink" title="通道定义"></a>通道定义</h4><ul>
+<li><p>五个独立的通道分别包含一组信号，并且使用双向的VALID READY握手机制</p>
+</li>
+<li><p>数据源使用VALID信号表示数据和控制信号在通道中是可以采样的，数据接收者使用READY信号表示可以接收通道中的信号了。读数据通道和写数据通道还分别包含LAST信号，用以表示此时在通道中的是否为本次传输的最后一个数据。</p>
+</li>
+<li><p>数据传输发生在VALID和READY同时有效的时候</p>
+</li>
+<li><p>使用相同的ID保证数据按照期望的顺序传输</p>
+</li>
+</ul>
+<h2 id="端口描述"><a href="#端口描述" class="headerlink" title="端口描述"></a>端口描述</h2><ul>
+<li>写地址以<code>aw</code>开头，写数据以<code>w</code>开头，写响应以<code>b</code>开头，读地址以<code>ar</code>开头，读数据以<code>r</code>开头</li>
+</ul>
+<h4 id="全局信号"><a href="#全局信号" class="headerlink" title="全局信号"></a>全局信号</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ACLK</strong></td>
+<td><strong>1</strong></td>
+<td><strong>时钟源</strong></td>
+<td><strong>全局时钟</strong></td>
+</tr>
+<tr>
+<td><strong>ARESETn</strong></td>
+<td><strong>1</strong></td>
+<td><strong>复位源</strong></td>
+<td><strong>低电平有效</strong></td>
+</tr>
+</tbody></table>
+<h4 id="读请求通道"><a href="#读请求通道" class="headerlink" title="读请求通道"></a>读请求通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ARID</strong></td>
+<td></td>
+<td><strong>master</strong></td>
+<td><strong>读请求ID号，取指置为0,取数置为1</strong></td>
+</tr>
+<tr>
+<td><strong>ARADDR</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>读地址</strong></td>
+</tr>
+<tr>
+<td>ARLEN</td>
+<td></td>
+<td>master</td>
+<td>Burst长度，固定为0，即每次传输1个数据</td>
+</tr>
+<tr>
+<td><strong>ARSIZE</strong></td>
+<td><strong>[2:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>数据传输每拍字节数</strong></td>
+</tr>
+<tr>
+<td>ARBURST</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>burst类型，固定为2’b01，INCR Type</td>
+</tr>
+<tr>
+<td>ARLOCK</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Lock类型,固定为0</td>
+</tr>
+<tr>
+<td>ARCACHE</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Cache类型，固定为0</td>
+</tr>
+<tr>
+<td>ARPORT</td>
+<td>[2:0]</td>
+<td>master</td>
+<td>保护类型，固定为0</td>
+</tr>
+<tr>
+<td><strong>ARVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>读地址与控制信号在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>ARREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>准备好接受通道中信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="读数据通道"><a href="#读数据通道" class="headerlink" title="读数据通道"></a>读数据通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RID</td>
+<td>[3:0]</td>
+<td>slave</td>
+<td>ID号,0为取指，1为数据</td>
+</tr>
+<tr>
+<td><strong>RDATA</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>读数据</strong></td>
+</tr>
+<tr>
+<td>RRESP</td>
+<td>[1:0]</td>
+<td>slave</td>
+<td>读请求控制信号，本次读请求是否成功完成</td>
+</tr>
+<tr>
+<td>RLAST</td>
+<td>1</td>
+<td>slave</td>
+<td>本次读请求的最后一拍数据的指示信号</td>
+</tr>
+<tr>
+<td><strong>RVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>读数据在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>RREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>准备好接受读通道中的信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写请求通道"><a href="#写请求通道" class="headerlink" title="写请求通道"></a>写请求通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AWID</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写地址ID，固定为1</td>
+</tr>
+<tr>
+<td><strong>AWADDR</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写地址</strong></td>
+</tr>
+<tr>
+<td>AWLEN</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Burst长度，固定为0</td>
+</tr>
+<tr>
+<td><strong>AWSIZE</strong></td>
+<td><strong>[2:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>数据传输每拍字节数</strong></td>
+</tr>
+<tr>
+<td>AWBURST</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Burst类型，固定为2’b01</td>
+</tr>
+<tr>
+<td>AWLOCK</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Lock类型,固定为0</td>
+</tr>
+<tr>
+<td>AWCACHE</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Cache类型，固定为0</td>
+</tr>
+<tr>
+<td>AWPROT</td>
+<td>[2:0]</td>
+<td>master</td>
+<td>保护的类型，固定为0</td>
+</tr>
+<tr>
+<td><strong>AWVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写地址有效，地址和控制信号保持稳定直到AWREADY置1</strong></td>
+</tr>
+<tr>
+<td><strong>AWREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>高电平表明已准备好接受写地址与控制信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写数据通道"><a href="#写数据通道" class="headerlink" title="写数据通道"></a>写数据通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WID</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写数据的ID，必须与AWID匹配，固定为1</td>
+</tr>
+<tr>
+<td><strong>WDATA</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写数据</strong></td>
+</tr>
+<tr>
+<td>WSTRB</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写字节使能</td>
+</tr>
+<tr>
+<td>WLAST</td>
+<td>1</td>
+<td>master</td>
+<td>write last,the last transfer in a write burst.，固定为1</td>
+</tr>
+<tr>
+<td><strong>WVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写数据与字节使能有效</strong></td>
+</tr>
+<tr>
+<td><strong>WREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>高电平表明已准备好接受写数据</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写反馈通道"><a href="#写反馈通道" class="headerlink" title="写反馈通道"></a>写反馈通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BID</td>
+<td>[3:0]</td>
+<td>slave</td>
+<td>返回的ID，必须匹配AWID，可忽略</td>
+</tr>
+<tr>
+<td>BRESP</td>
+<td>[1:0]</td>
+<td>slave</td>
+<td>写反馈，本次写是否成功完成，可忽略</td>
+</tr>
+<tr>
+<td><strong>BVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>写反馈在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>BREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>高电平表示已经准备好接受通道中信号</strong></td>
+</tr>
+</tbody></table>
+<h2 id="通道握手"><a href="#通道握手" class="headerlink" title="通道握手"></a>通道握手</h2><h4 id="写地址通道"><a href="#写地址通道" class="headerlink" title="写地址通道"></a>写地址通道</h4><ul>
+<li><p>主设备只有当它驱动的地址和控制信号有效的时候才可以将AWVALID置为有效。AWVALID信号必须保持有效直到从设备接受数据并发送对应的AWREADY信号。</p>
+</li>
+<li><p>AWREADY的默认值可以为HIGH或LOW。推荐的是HIGH。因为如果是LOW的话要至少两个周期才能完成握手。</p>
+</li>
+</ul>
+<h4 id="写数据通道-1"><a href="#写数据通道-1" class="headerlink" title="写数据通道"></a>写数据通道</h4><ul>
+<li>在burst传输中，主设备可以在只有数据有效的时候将WVALID置为有效。WVALID必须保持有效直到从设备接受数据并发送WREADY。</li>
+<li>主设备在burst传输中传输最后一个数据的时候必须将WLAST置为有效。</li>
+<li>当WVALID无效的时候，WSTRB可以是任意值。</li>
+</ul>
+<h4 id="写反馈通道-1"><a href="#写反馈通道-1" class="headerlink" title="写反馈通道"></a>写反馈通道</h4><ul>
+<li>BVALID置为有效后必须保持直到握手成功。</li>
+<li>这个通道的目的是化解写后读冲突。</li>
+</ul>
+<h4 id="读地址通道"><a href="#读地址通道" class="headerlink" title="读地址通道"></a>读地址通道</h4><ul>
+<li>ARREADY的默认值可以为HIGH或LOW，推荐的默认值是HIGH。</li>
+</ul>
+<h4 id="读数据通道-1"><a href="#读数据通道-1" class="headerlink" title="读数据通道"></a>读数据通道</h4><ul>
+<li>从设备只有当接收到请求后才能将RVALID置为有效。</li>
+<li>RREADY的默认值可以为HIGH，不过需要保证主设备在发送读请求后随时可以接收数据。</li>
+<li>从设备在burst传输最后一个数据时必须将RLAST信号置为有效。</li>
+</ul>
+<h4 id="通道间的关系"><a href="#通道间的关系" class="headerlink" title="通道间的关系"></a>通道间的关系</h4><ul>
+<li>读数据请求必须跟在读地址请求之后</li>
+<li>写反馈必须在最后一次写传输之后</li>
+</ul>
+<h4 id="握手信号依赖关系"><a href="#握手信号依赖关系" class="headerlink" title="握手信号依赖关系"></a>握手信号依赖关系</h4><ul>
+<li><p>VALID信号不能依赖READY信号</p>
+</li>
+<li><p>READY信号可以等待VALID信号置为有效</p>
+</li>
+<li><p>两个箭头表示依赖关系不能改变</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113135018.png" alt="image-20220125113135018"></p>
+<ul>
+<li>如果一个读事务的读请求还没有被从方接收，那么这个时候rvalid和当前的读事务没有任何关系。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113147368.png" alt="image-20220125113147368"></p>
+<ul>
+<li>只有等到写请求和写数据都发出之后，才有看bvalid的必要</li>
+</ul>
+<h4 id="转接桥设计要求"><a href="#转接桥设计要求" class="headerlink" title="转接桥设计要求"></a>转接桥设计要求</h4><ul>
+<li>aresetn有效期间，AXImaster端的所有valid类输出必须为0，所有ready类输出不能为x值。</li>
+<li>AXImaster端的所有valid输出信号的置1逻辑中，不允许组合逻辑来自同一通道的ready信号，ready也一样。</li>
+<li>无论读写请求，类SRAM接口上的事务要和AXI接口上的事务严格一一对应。</li>
+<li>一旦发出请求就不允许更改。</li>
+<li>AXImaster端在发起读请求的时候，要先确保该请求与”已发出请求但尚未接受到写响应的写请求“不存在地址相关。</li>
+</ul>
+<h2 id="Burst传输"><a href="#Burst传输" class="headerlink" title="Burst传输"></a>Burst传输</h2><h4 id="burst长度"><a href="#burst长度" class="headerlink" title="burst长度"></a>burst长度</h4><table>
+<thead>
+<tr>
+<th>ARLEN[3:0]   AWLEN[3:0]</th>
+<th>number of data transfers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b0000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>b0001</td>
+<td>2</td>
+</tr>
+<tr>
+<td>b0010</td>
+<td>3</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>b1101</td>
+<td>14</td>
+</tr>
+<tr>
+<td>b1110</td>
+<td>15</td>
+</tr>
+<tr>
+<td>b1111</td>
+<td>16</td>
+</tr>
+</tbody></table>
+<ul>
+<li>burst传输一旦开始，就没有信号可以提前终止它。设备如果不想接收剩下的数据，只能通过字节使能等方法内部消化。但是必须完整接收burst传输的所有数据，否则会出错。</li>
+</ul>
+<h4 id="burst大小（单个数据块的大小）"><a href="#burst大小（单个数据块的大小）" class="headerlink" title="burst大小（单个数据块的大小）"></a>burst大小（单个数据块的大小）</h4><table>
+<thead>
+<tr>
+<th>ARSIZE[2:0]   AWSIZE[2:0]</th>
+<th>Bytes in transfer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>b001</td>
+<td>2</td>
+</tr>
+<tr>
+<td>b010</td>
+<td>4</td>
+</tr>
+<tr>
+<td>b011</td>
+<td>8</td>
+</tr>
+<tr>
+<td>b100</td>
+<td>16</td>
+</tr>
+<tr>
+<td>b101</td>
+<td>32</td>
+</tr>
+<tr>
+<td>b110</td>
+<td>64</td>
+</tr>
+<tr>
+<td>b111</td>
+<td>128</td>
+</tr>
+</tbody></table>
+<h4 id="burst类型"><a href="#burst类型" class="headerlink" title="burst类型"></a>burst类型</h4><table>
+<thead>
+<tr>
+<th>ARBURST[1:0]</th>
+<th>Burst Type</th>
+<th>Description</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b00</td>
+<td>FIXED</td>
+<td>每次burst的地址都一样，用于重复的从某一个地址获取数据</td>
+<td>FIFO-Type</td>
+</tr>
+<tr>
+<td>b01</td>
+<td>INCR</td>
+<td>在burst传输中每次数据传输的地址相较于上一次传输时增加了，增量就是burst中每次传输的字节数。</td>
+<td>Normal sequential memory</td>
+</tr>
+<tr>
+<td>b10</td>
+<td>WRAP</td>
+<td>与INCR类似，只不过当传输结束时地址又绕回了低地址。限制：起始地址需要与单次传输大小对齐。burst长度只能是2,4,8,16</td>
+<td>Cache line</td>
+</tr>
+<tr>
+<td>b11</td>
+<td>reserved</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/digital-design/" rel="tag"># digital design</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/linux%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E4%B8%8E%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/" rel="prev" title="linux常用操作与工具速查">
+                  <i class="fa fa-chevron-left"></i> linux常用操作与工具速查
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="正则表达式">
+                  正则表达式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

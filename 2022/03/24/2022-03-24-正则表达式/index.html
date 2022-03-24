@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="正则表达式速查，java实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="正则表达式速查，java实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T14:36:19.237Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="regex">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/","path":"2022/03/24/2022-03-24-正则表达式/","title":"正则表达式"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>正则表达式 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%85%83%E5%AD%97%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">1.元字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%87%8D%E5%A4%8D%E9%99%90%E5%AE%9A%E7%AC%A6"><span class="nav-number">2.</span> <span class="nav-text">2.重复限定符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%88%86%E7%BB%84"><span class="nav-number">3.</span> <span class="nav-text">3.分组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%BB%84%EF%BC%8C%E6%8D%95%E8%8E%B7%E4%B8%8E%E5%8F%8D%E5%90%91%E5%BC%95%E7%94%A8"><span class="nav-number">3.0.1.</span> <span class="nav-text">分组，捕获与反向引用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%86%E7%BB%84"><span class="nav-number">3.0.1.1.</span> <span class="nav-text">1.分组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%8D%95%E8%8E%B7"><span class="nav-number">3.0.1.2.</span> <span class="nav-text">2.捕获</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%8F%8D%E5%90%91%E5%BC%95%E7%94%A8"><span class="nav-number">3.0.1.3.</span> <span class="nav-text">3.反向引用</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%BD%AC%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">4.转义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E6%9D%A1%E4%BB%B6%E6%88%96"><span class="nav-number">5.</span> <span class="nav-text">5.条件或</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%8C%BA%E9%97%B4"><span class="nav-number">6.</span> <span class="nav-text">6.区间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%96%AD%E8%A8%80"><span class="nav-number">7.</span> <span class="nav-text">7.断言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%8D%95%E8%8E%B7%E5%92%8C%E9%9D%9E%E6%8D%95%E8%8E%B7"><span class="nav-number">8.</span> <span class="nav-text">8.捕获和非捕获</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%BC%96%E5%8F%B7%E6%8D%95%E8%8E%B7%E7%BB%84%EF%BC%9A"><span class="nav-number">8.0.1.</span> <span class="nav-text">数字编号捕获组：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%BC%96%E5%8F%B7%E6%8D%95%E8%8E%B7%E7%BB%84%EF%BC%9A"><span class="nav-number">8.0.2.</span> <span class="nav-text">命名编号捕获组：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E6%8D%95%E8%8E%B7%E7%BB%84%EF%BC%9A"><span class="nav-number">8.0.3.</span> <span class="nav-text">非捕获组：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%8F%8D%E5%90%91%E5%BC%95%E7%94%A8"><span class="nav-number">9.</span> <span class="nav-text">9.反向引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E8%B4%AA%E5%A9%AA%E5%92%8C%E9%9D%9E%E8%B4%AA%E5%A9%AA%EF%BC%8C%E5%8F%8D%E4%B9%89"><span class="nav-number">10.</span> <span class="nav-text">10.贪婪和非贪婪，反义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E4%B9%89%EF%BC%9A"><span class="nav-number">10.0.1.</span> <span class="nav-text">反义：</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          正则表达式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-24 00:00:00 / 修改时间：22:36:19" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">正则表达式速查，java实现</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>正则语言是：在使用有限的内存下，遍历一次就能匹配的字符的集合。</p>
+<p>java.util.regex 包主要包括以下三个类：</p>
+<ul>
+<li><p>Pattern类：pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
+</li>
+<li><p>Matcher类：Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
+</li>
+<li><p>PatternSyntaxException：</p>
+<p>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
+</li>
+</ul>
+<h2 id="1-元字符"><a href="#1-元字符" class="headerlink" title="1.元字符"></a>1.元字符</h2><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>匹配除换行符外的任意字符</td>
+</tr>
+<tr>
+<td>\u####</td>
+<td>指定Unicode字符</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配一个字母或数字或下划线</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>匹配\w不能匹配的字符</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配一个空格字符或<code>tab  \t</code></td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配\s不能匹配的字符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配任意单个数字</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配一个非数字</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配字符串的边界，边界指的是子串间有空格，或者是目标字符串的结束位置。sp<strong>han</strong> nn<strong>han</strong></td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配字符串的非边界</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配字符串的开始</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串的结束</td>
+</tr>
+</tbody></table>
+<h2 id="2-重复限定符"><a href="#2-重复限定符" class="headerlink" title="2.重复限定符"></a>2.重复限定符</h2><ul>
+<li>在重复限定符后加上？表示非贪婪匹配</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>重复零次或多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>重复一次或多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>重复零次或一次</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>重复n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>重复n次或更多次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>重复n次到m次</td>
+</tr>
+<tr>
+<td>(?i)</td>
+<td>表示(?i)所在的捕获组中后的字符匹配不区分大小写</td>
+</tr>
+</tbody></table>
+<h2 id="3-分组"><a href="#3-分组" class="headerlink" title="3.分组"></a>3.分组</h2><p>正则表达式中用小括号()来做分组，也就是括号中的内容作为一个整体。第一个小括号代表第一组，第二个小括号代表第二组…</p>
+<p>在java中，调用Matcher类实例化的matcher对象的<code>find()</code>方法后，可以用matcher对象的<code>String group(int n)</code>方法获取本次匹配到的子字符串以及子字符串中的匹配组。参数n&#x3D;0代表匹配到的整个子字符串，n&#x3D;1代表子字符串中的第一个匹配组，以此类推。</p>
+<h4 id="分组，捕获与反向引用"><a href="#分组，捕获与反向引用" class="headerlink" title="分组，捕获与反向引用"></a>分组，捕获与反向引用</h4><h5 id="1-分组"><a href="#1-分组" class="headerlink" title="1.分组"></a>1.分组</h5><p>圆括号括起来的一个正则表达式是一个分组</p>
+<h5 id="2-捕获"><a href="#2-捕获" class="headerlink" title="2.捕获"></a>2.捕获</h5><p>把正则表达式中的分组匹配到的内容，保存到内存中。保存的可能是索引也可能是拷贝。java中捕获组的索引保存在Match实例化对象的groups数组中。捕获的作用是如果之后还要用到分组的内容，不用再从字符串的开始重新匹配一遍。从左到右，以分组的左括号为标志，第一个出现的分组组号为1，以此类推。组0代表的是整个表达式。</p>
+<h5 id="3-反向引用"><a href="#3-反向引用" class="headerlink" title="3.反向引用"></a>3.反向引用</h5><p>圆括号的内容被捕获后，可以在这个括号后被引用。这种引用可以在正则表达式内部也可以在外部。内部反向引用使用<code>\\分组号</code>，外部使用<code>$分组号</code></p>
+<h2 id="4-转义"><a href="#4-转义" class="headerlink" title="4.转义"></a>4.转义</h2><p>在java正则表达式中使用<code>\\</code>表示转义。</p>
+<p>要这样来理解为什么要使用两个反斜杠表示转义而不是一个：首先考虑正则表达式本身的语法，在java正则表达式中如果需要匹配特殊字符，比如符号<code>$</code>或者<code>(</code>,就要在这个符号前加上一个反斜杠表示转义。比如正则表达式<code>a\&amp;c</code>可以精确匹配字符串<code>a&amp;c</code>。</p>
+<p>由于正则表达式在java代码中也是一个字符串，因此需要考虑字符串本身的转义问题。所以对于正则表达式<code>a\&amp;c</code>而言，对应的java字符串是<code>a\\&amp;c</code>.字符串的第一个反斜杠是在字符串处理层面给第二个反斜杠转义的，而第二个反斜杠是在正则表达式处理层面给字符<code>&amp;</code>转义的。</p>
+<h2 id="5-条件或"><a href="#5-条件或" class="headerlink" title="5.条件或"></a>5.条件或</h2><p>正则用符号 | 来表示或，也叫做分支条件，当满足正则里的分支条件的任何一种条件时，都会当成是匹配成功。</p>
+<p>如 <code>AB|CD</code>可以匹配AB或CD</p>
+<h2 id="6-区间"><a href="#6-区间" class="headerlink" title="6.区间"></a>6.区间</h2><p>正则提供一个元字符中括号 [] 来表示区间条件。</p>
+<ol>
+<li>限定0到9 可以写成[0-9]</li>
+<li>限定A-Z 写成[A-Z]</li>
+<li>限定某些数字 [165]</li>
+</ol>
+<ul>
+<li><code>[^]</code>是不接受的字符列表，表示匹配该字符列表范围外的任意<strong>一个</strong>字符</li>
+</ul>
+<h2 id="7-断言"><a href="#7-断言" class="headerlink" title="7.断言"></a>7.断言</h2><h2 id="8-捕获和非捕获"><a href="#8-捕获和非捕获" class="headerlink" title="8.捕获和非捕获"></a>8.捕获和非捕获</h2><h4 id="数字编号捕获组："><a href="#数字编号捕获组：" class="headerlink" title="数字编号捕获组："></a>数字编号捕获组：</h4><p>语法：<code>(expression)</code></p>
+<p>解释：从表达式左侧开始，每出现一个左括号，则和它对应的右括号之间的内容为一个分组，在分组中，第0组为整个表达式，第一组开始为分组。</p>
+<h4 id="命名编号捕获组："><a href="#命名编号捕获组：" class="headerlink" title="命名编号捕获组："></a>命名编号捕获组：</h4><p>语法：<code>(?&lt;name&gt;expression)</code><br>解释：分组的命名由表达式中的name指定</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">比如对于时间字符串：<span class="number">2017</span>-<span class="number">04</span>-<span class="number">25</span>，表达式如下:</span><br><span class="line">(?&lt;year&gt;\\d&#123;<span class="number">4</span>&#125;)-(?&lt;md&gt;(?&lt;month&gt;\\d&#123;<span class="number">2</span>&#125;)-(?&lt;date&gt;\\d&#123;<span class="number">2</span>&#125;))</span><br><span class="line">可以这样获取md：</span><br><span class="line">    matcher.group(<span class="string">&#x27;md&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="非捕获组："><a href="#非捕获组：" class="headerlink" title="非捕获组："></a>非捕获组：</h4><p>非捕获匹配就是括号中的内容不会存储在捕获组中，用group()函数索引捕获组会返回异常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对于时间字符串：2017-04-25，表达式如下:</span><br><span class="line">	(?:\\d&#123;4&#125;)-((\\d&#123;2&#125;)-(\\d&#123;2&#125;))</span><br><span class="line">第一组 (?:\d&#123;4&#125;)，其实是被忽略的。当使用 matcher.group(4) 时，系统会报错。</span><br></pre></td></tr></table></figure>
+
+
+
+<table>
+<thead>
+<tr>
+<th>常用分组构造形式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(?:pattern)</td>
+<td>匹配pattern但不捕获。常用在一个要匹配的模式有一些变种，但是各个变种之间的差别很小的情况中。比如industr(?:y|ies)可以匹配industry和industries</td>
+</tr>
+<tr>
+<td>(?&#x3D;pattern)</td>
+<td>Windows(?&#x3D;95|98|NT|2000)匹配Windows 2000中的Windows，但不匹配Windows 3.1中的Windows</td>
+</tr>
+<tr>
+<td>(?!pattern)</td>
+<td>匹配模式与(?&#x3D;pattern)相反</td>
+</tr>
+</tbody></table>
+<h2 id="9-反向引用"><a href="#9-反向引用" class="headerlink" title="9.反向引用"></a>9.反向引用</h2><p><strong>捕获会返回一个捕获组，这个分组保存在内存中，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">匹配两个连续的相同数字：&quot;(\\d)\\1&quot;</span><br><span class="line">匹配个位与千位相同，十位与百位相同的数：&quot;(\\d)(\\d)\\2\\1&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内部反向引用使用<code>\\分组号</code>，外部使用<code>$分组号</code></li>
+<li>反向引用可以搭配<code>String</code>类的<code>replaceAll</code>方法把搜索到的字符串按照指定规则进行替换。</li>
+</ul>
+<h2 id="10-贪婪和非贪婪，反义"><a href="#10-贪婪和非贪婪，反义" class="headerlink" title="10.贪婪和非贪婪，反义"></a>10.贪婪和非贪婪，反义</h2><ul>
+<li><p>贪婪匹配：当正则表达式中包含能接受重复的限定符时，通常的行为是（在使整个表达式能得到匹配的前提下）匹配尽可能多的字符，这匹配方式叫做贪婪匹配。<br>特性：一次性读入整个字符串进行匹配，每当不匹配就舍弃最右边一个字符，继续匹配，依次匹配和舍弃（这种匹配-舍弃的方式也叫做回溯），直到匹配成功或者把整个字符串舍弃完为止，因此它是一种最大化的数据返回，能多不会少。</p>
+</li>
+<li><p>多个贪婪在一起时，如果字符串能满足他们各自最大程度的匹配时，就互不干扰，但如果不能满足时，会根据深度优先原则，也就是从左到右的每一个贪婪量词，优先最大数量的满足，剩余再分配下一个量词匹配。</p>
+</li>
+<li><p>懒惰匹配（非贪婪匹配）：当正则表达式中包含能接受重复的限定符时，通常的行为是（在使整个表达式能得到匹配的前提下）匹配尽可能少的字符，这匹配方式叫做懒惰匹配。<br>特性：从左到右，从字符串的最左边开始匹配，每次试图不读入字符匹配，匹配成功，则完成匹配，否则读入一个字符再匹配，依此循环（读入字符、匹配）直到匹配成功或者把字符串的字符匹配完为止。</p>
+</li>
+<li><p>java正则表达式默认为贪婪匹配，懒惰量词是在贪婪量词后面加个<code>?</code></p>
+</li>
+</ul>
+<h4 id="反义："><a href="#反义：" class="headerlink" title="反义："></a>反义：</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\W</td>
+<td>匹配任意非字母，数字，下划线，汉字的字符</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任意不是空白符的字符</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配任意非数字的字符</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配不是单词开头或结束的位置</td>
+</tr>
+<tr>
+<td>[^x]</td>
+<td>匹配除了x以外的任意字符</td>
+</tr>
+<tr>
+<td>[^aeiou]</td>
+<td>匹配除了aeiou以外的任意字符</td>
+</tr>
+</tbody></table>
+<p>总结自：</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/48219401/answer/742444326">https://www.zhihu.com/question/48219401/answer/742444326</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/java-capture-group.html">https://www.runoob.com/w3cnote/java-capture-group.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Eq4y1E79W?p=15">https://www.bilibili.com/video/BV1Eq4y1E79W?p=15</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/regex/" rel="tag"># regex</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/" rel="prev" title="总线接口总结">
+                  <i class="fa fa-chevron-left"></i> 总线接口总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/" rel="next" title="数字电路 FIFO设计">
+                  数字电路 FIFO设计 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="FIFO是First In First Out的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。 比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字电路 FIFO设计">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="FIFO是First In First Out的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。 比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg">
+<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T14:37:47.167Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="digital design">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/","path":"2022/03/24/2022-03-24-数字电路-FIFO设计/","title":"数字电路 FIFO设计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数字电路 FIFO设计 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81FIFO%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1、FIFO类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%90%8C%E6%AD%A5FIFO%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">2.同步FIFO结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%8C%E7%AB%AF%E5%8F%A3RAM"><span class="nav-number">2.1.</span> <span class="nav-text">1.双端口RAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AF%BB%E5%86%99%E6%8C%87%E9%92%88"><span class="nav-number">2.2.</span> <span class="nav-text">2.读写指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%A9%BA%E6%BB%A1%E7%8A%B6%E6%80%81%E5%88%A4%E6%96%AD%E6%A8%A1%E5%9D%97"><span class="nav-number">2.3.</span> <span class="nav-text">3.空满状态判断模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E9%80%9A%E8%BF%87%E8%AF%BB%E5%86%99%E6%8C%87%E9%92%88%E5%88%A4%E6%96%AD"><span class="nav-number">2.3.1.</span> <span class="nav-text">3.1 通过读写指针判断</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-1%E7%A9%BA%E6%A0%87%E5%BF%97"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">3.1.1空标志</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-2%E6%BB%A1%E6%A0%87%E5%BF%97"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">3.1.2满标志</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E9%80%9A%E8%BF%87%E8%AE%A1%E6%95%B0%E5%99%A8%E5%88%A4%E6%96%AD"><span class="nav-number">2.3.2.</span> <span class="nav-text">3.2 通过计数器判断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3%E6%89%A9%E5%B1%95%E8%AF%BB%E5%86%99%E6%8C%87%E9%92%88"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.3扩展读写指针</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数字电路 FIFO设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-24 00:00:00 / 修改时间：22:37:47" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>FIFO是<code>First In First Out</code>的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。</p>
+<p>比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，另一种是在发送方与接收方之间添加一个Buffer结构用来接收发送方发来的数据并缓存，接收方从Buffer中读走数据，此时在发送方与接收方眼中对方仅仅是一个Buffer结构。FIFO就是这样一种缓存数据的结构，并且常用在写快读慢的情况中。 </p>
+<h2 id="1、FIFO类型"><a href="#1、FIFO类型" class="headerlink" title="1、FIFO类型"></a>1、FIFO类型</h2><p>FIFO有同步FIFO与异步FIFO两种。</p>
+<ul>
+<li>同步FIFO：FIFO的读逻辑与写逻辑处于同一个时钟域中，FIFO的各个部分接收的时钟信号都是同一个信号。</li>
+<li>异步FIFO：FIFO的读写时钟不是同一个时钟，读写时钟彼此相互独立，并且频率可能不一样。</li>
+</ul>
+<h2 id="2-同步FIFO结构"><a href="#2-同步FIFO结构" class="headerlink" title="2.同步FIFO结构"></a>2.同步FIFO结构</h2><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg" alt="224278617_1_202106160112166"></p>
+<h3 id="1-双端口RAM"><a href="#1-双端口RAM" class="headerlink" title="1.双端口RAM"></a>1.双端口RAM</h3><p>同步FIFO的主体是一个存储器，用来存储需要缓存的数据。存储器可以用block_ram或者寄存器实现。当存储器需要比较大的时候block_ram相对于寄存器而言读写时序会好一些，并且空间占用比寄存器小。但是寄存器可以在<strong>给地址的当拍</strong>传出地址对应的数据，而block_ram最快也要在<strong>给出地址的下一拍</strong>传出数据。但不管采用什么结构实现，FIFO的存储器必须是一个双端口RAM，即有一个读地址与写地址端口和对应的数据即控制端口，使得读写可以在同一拍中进行。</p>
+<h3 id="2-读写指针"><a href="#2-读写指针" class="headerlink" title="2.读写指针"></a>2.读写指针</h3><p>同步FIFO还有两个指针，读指针与写指针。这两个指针本质上是两个寄存器，直接与FIFO存储器的读地址端口与写地址端口相连，存储着FIFO的读地址与写地址（因此这两个寄存器的宽度是<code>log2(存储器深度)</code>）。读指针中存储的地址是下一拍将要读取的位置，写指针中存储的是下一拍将要写入的位置。每次读操作使读指针加1，每次写操作使写指针加1.</p>
+<h3 id="3-空满状态判断模块"><a href="#3-空满状态判断模块" class="headerlink" title="3.空满状态判断模块"></a>3.空满状态判断模块</h3><p>FIFO必须有两个标志：空标志与满标志指示FIFO的当前状态。如果在空标志有效时对FIFO进行读取会产生<code>underflow</code>，读出了一个无效的数据。满标志有效时对FIFO进行写入会产生<code>overflow</code>，导致FIFO中还没有被读走的数据被新来的数据覆盖。并且如果FIFO的读写指针没有保护机制，在FIFO空满时读写很有可能会导致FIFO的读写指针在下一拍指向了错误的位置，从而导致整个FIFO彻底乱套。这里总结了三种判断空满状态的方法（这里没有考虑读写指针保护，保证FIFO被正确使用的任务由读写双方完成）：</p>
+<h4 id="3-1-通过读写指针判断"><a href="#3-1-通过读写指针判断" class="headerlink" title="3.1 通过读写指针判断"></a>3.1 通过读写指针判断</h4><h5 id="3-1-1空标志"><a href="#3-1-1空标志" class="headerlink" title="3.1.1空标志"></a>3.1.1空标志</h5><p>假设在复位后读写指针的值都为0，即指向存储器的最低位地址。此时读写指针相等，FIFO为空。FIFO的空标志应当为1.之后进行一个写操作，写操作完成后写指针加1而读指针不变，FIFO不为空，空标志置0.如果此时再来一个读操作，则读完成后读指针加1与写指针相等，FIFO为空。</p>
+<p>在FIFO的读写过程中，写指针的上溢一定在读指针上溢之前（否则之前一定有underflow或者overflow），当读指针没有发生上溢的时候写指针不可能再次发生上溢（理由同上），而写指针上溢并且读指针没有上溢的时候FIFO一定不为空。而当读指针也发生上溢后，情况就和最开始相同了。</p>
+<p>分析了这么多，代码很简单：</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span><span class="comment">//注意这里空标志是用寄存器实现的。</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作&amp;&amp;(写指针==读指针+<span class="number">1</span>))</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-1-2满标志"><a href="#3-1-2满标志" class="headerlink" title="3.1.2满标志"></a>3.1.2满标志</h5><p>FIFO满的判断与读类似，当FIFO发生读操作之后FIFO一定不是满的。如果当前是写操作并且读指针等于写指针加1时FIFO在写完成后一定是满的（设想没有读，一直在写，当全部写满后写指针会发生上溢变为0）</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作&amp;&amp;读指针==写指针+<span class="number">1</span>)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-通过计数器判断"><a href="#3-2-通过计数器判断" class="headerlink" title="3.2 通过计数器判断"></a>3.2 通过计数器判断</h4><p>在FIFO内部加一个计数器指示当前FIFO里有多少有效数据。这种方法最简单，但是个人感觉时序会不太好（？）</p>
+<h4 id="3-3扩展读写指针"><a href="#3-3扩展读写指针" class="headerlink" title="3.3扩展读写指针"></a>3.3扩展读写指针</h4><p>这种方法最为精妙，时序和资源占用都是最优的。分别将读写指针扩展一位，将扩展得到的最高位设置为状态位，其余位作为地址位。当读写指针的地址位与状态位全部相同的时候，读写指针经历了相同次数的循环移动，即此时FIFO是空状态（实际上写指针最多比读指针多走一圈）。如果读写指针的地址位相同而状态位相反，则写指针比读指针多循环一次，FIFO处于满状态。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/digital-design/" rel="tag"># digital design</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="正则表达式">
+                  <i class="fa fa-chevron-left"></i> 正则表达式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="next" title="C语言：存储类别 链接 内存管理">
+                  C语言：存储类别 链接 内存管理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

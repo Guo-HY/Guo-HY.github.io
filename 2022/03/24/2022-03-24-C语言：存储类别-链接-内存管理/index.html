@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="作用域与链接描述了内存中对象的可见范围，存储期描述了内存中对象的声明周期  作用域 作用域描述程序中可访问标识符的区域  块作用域块是一对花括号括起来的代码区域。定义在块中的变量具有块作用域。函数的形参虽然定义在函数体外，但也属于函数体这个块。 C99中for，while，do while，if语句中的控制代码也算作块的一部分。 函数作用域只应用于goto语句的标签，在整个函数中起作用。  函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言：存储类别 链接 内存管理">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="作用域与链接描述了内存中对象的可见范围，存储期描述了内存中对象的声明周期  作用域 作用域描述程序中可访问标识符的区域  块作用域块是一对花括号括起来的代码区域。定义在块中的变量具有块作用域。函数的形参虽然定义在函数体外，但也属于函数体这个块。 C99中for，while，do while，if语句中的控制代码也算作块的一部分。 函数作用域只应用于goto语句的标签，在整个函数中起作用。  函数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-24T14:34:18.024Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="C programming">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/","path":"2022/03/24/2022-03-24-C语言：存储类别-链接-内存管理/","title":"C语言：存储类别 链接 内存管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C语言：存储类别 链接 内存管理 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9D%97%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.0.1.</span> <span class="nav-text">块作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.0.2.</span> <span class="nav-text">函数作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8E%9F%E5%9E%8B%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.0.3.</span> <span class="nav-text">函数原型作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.0.4.</span> <span class="nav-text">文件作用域</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5"><span class="nav-number">2.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%9C%9F"><span class="nav-number">3.</span> <span class="nav-text">存储期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E5%8F%98%E9%87%8F"><span class="nav-number">4.</span> <span class="nav-text">寄存器变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB%E4%B8%8E%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">存储类别与函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#const%E4%B8%8Evolatile%E7%B1%BB%E5%9E%8B%E9%99%90%E5%AE%9A%E7%AC%A6"><span class="nav-number">6.</span> <span class="nav-text">const与volatile类型限定符</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C语言：存储类别 链接 内存管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-24 00:00:00 / 修改时间：22:34:18" itemprop="dateCreated datePublished" datetime="2022-03-24T00:00:00+08:00">2022-03-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>作用域与链接描述了内存中对象的可见范围，存储期描述了内存中对象的声明周期</p>
+</blockquote>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><blockquote>
+<p>作用域描述程序中可访问标识符的区域</p>
+</blockquote>
+<h4 id="块作用域"><a href="#块作用域" class="headerlink" title="块作用域"></a>块作用域</h4><p>块是一对花括号括起来的代码区域。定义在块中的变量具有块作用域。函数的形参虽然定义在函数体外，但也属于函数体这个块。</p>
+<p>C99中for，while，do while，if语句中的控制代码也算作块的一部分。</p>
+<h4 id="函数作用域"><a href="#函数作用域" class="headerlink" title="函数作用域"></a>函数作用域</h4><p>只应用于goto语句的标签，在整个函数中起作用。 </p>
+<h4 id="函数原型作用域"><a href="#函数原型作用域" class="headerlink" title="函数原型作用域"></a>函数原型作用域</h4><p>用于函数原型中的形参名，作用范围是从形参定义处到原型声明结束。</p>
+<h4 id="文件作用域"><a href="#文件作用域" class="headerlink" title="文件作用域"></a>文件作用域</h4><p>定义在函数外的变量具有文件作用域，也叫做<strong>全局变量</strong></p>
+<p><strong>什么是翻译单元</strong>：翻译单元包括一个源代码文件与它所include的文件，文件作用域实际是翻译单元作用域。</p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>C变量有三种链接属性：</p>
+<ul>
+<li>外部链接：该变量可以在多文件中使用， <strong>全局变量默认为外部链接</strong>。引用别的文件中的外部链接变量必须使用<code>extern</code>关键字引用式声明</li>
+<li>内部链接：只可以在声明变量的那个翻译单元中使用，<strong>全局变量前加上<code>static</code>关键字变为内部链接</strong></li>
+<li>无链接：除了全局变量，其它类型变量为无链接变量。</li>
+</ul>
+<h2 id="存储期"><a href="#存储期" class="headerlink" title="存储期"></a>存储期</h2><blockquote>
+<p>描述了通过这些标识符访问的对象的生存期</p>
+</blockquote>
+<ul>
+<li><p>静态存储期：在程序执行期间一直存在，文件作用域变量具有静态存储期</p>
+</li>
+<li><p>线程存储期：从被声明到线程结束</p>
+</li>
+<li><p>自动存储期：块作用域的变量通常是。进入块时分配，退出块时释放。变长数组的存储期是从声明到块的结尾。</p>
+<ul>
+<li><strong>把变量声明在块中，并加上<code>static</code>关键字，使得块变量具有静态存储期</strong>。注意给全局变量加上<code>static</code>关键字改变的是变量的可见性，而不是生命周期。</li>
+</ul>
+</li>
+<li><p>动态分配存储期：从<code>malloc</code>开始，到<code>free</code>结束</p>
+</li>
+</ul>
+<h2 id="寄存器变量"><a href="#寄存器变量" class="headerlink" title="寄存器变量"></a>寄存器变量</h2><p>在变量声明前加上<code>register</code>关键字可以<strong>请求</strong>编译器把变量只放置于cpu通用寄存器中。请求意味着编译器可能没有这样做，但无论如何都不能对这种类型的变量使用取地址运算符。</p>
+<p>只作用于块作用域的变量。</p>
+<h2 id="存储类别与函数"><a href="#存储类别与函数" class="headerlink" title="存储类别与函数"></a>存储类别与函数</h2><p>函数可以是外部函数或静态函数，默认为外部函数。外部函数可以在其它文件中访问，静态函数只能用于其定义所在的文件。使用static表明静态函数。</p>
+<h2 id="const与volatile类型限定符"><a href="#const与volatile类型限定符" class="headerlink" title="const与volatile类型限定符"></a>const与volatile类型限定符</h2><ul>
+<li>const：<ul>
+<li>声明普通变量和数组时加上const表示内容在声明后不可以更改。</li>
+<li>在指针声明中使用const：<ul>
+<li>const在<code>*</code>之前：指针指向的内存区域不可更改</li>
+<li>const在<code>*</code>之后：指针不可更改</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>volatile：C90开始支持，提醒编译器它后面所定义的变量随时都有可能改变，因此编译后的程序每次需要存储或读取这个变量的时候，都会直接从变量地址中读取数据。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-programming/" rel="tag"># C programming</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/" rel="prev" title="数字电路 FIFO设计">
+                  <i class="fa fa-chevron-left"></i> 数字电路 FIFO设计
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/" rel="next" title="Shell脚本">
+                  Shell脚本 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
