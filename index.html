@@ -195,7 +195,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-03-24 20:40:57 / 修改时间：21:46:00" itemprop="dateCreated datePublished" datetime="2022-03-24T20:40:57+08:00">2022-03-24</time>
+      <time title="创建时间：2022-03-24 20:40:57 / 修改时间：22:05:34" itemprop="dateCreated datePublished" datetime="2022-03-24T20:40:57+08:00">2022-03-24</time>
     </span>
 
   
@@ -208,85 +208,16 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="VSCode配置C语言编译调试环境"><a href="#VSCode配置C语言编译调试环境" class="headerlink" title="VSCode配置C语言编译调试环境"></a>VSCode配置C语言编译调试环境</h1><blockquote>
+          <hr>
 <p>使用vscode在windows环境下的windows C&#x2F;C++编程与编译方法</p>
-</blockquote>
-<h2 id="step0-一个vscode-C项目的结构"><a href="#step0-一个vscode-C项目的结构" class="headerlink" title="step0 一个vscode C项目的结构"></a>step0 一个vscode C项目的结构</h2><p>一个vscode项目会有一个.vscode文件夹在项目根目录下。这个文件夹中包含了对于该项目的vscode配置文件。具体到C&#x2F;C++项目，创建后该文件夹中需要有两个文件（tasks.json，launch.json）才可以正常编译调试程序：</p>
-<ul>
-<li><code>tasks.json</code>:包含构建（编译）指令</li>
-<li><code>launch.json</code>:包含调试设置</li>
-</ul>
-<p>如果想有更加个性化的设置，这个文件必不可少:</p>
-<ul>
-<li><code>c_cpp_properties.json</code>：包含一些编译器设置与IntelliSense（用于自动代码补全，实时错误检查，代码改进建议）设置</li>
-</ul>
-<h2 id="step1-配置tasks-json"><a href="#step1-配置tasks-json" class="headerlink" title="step1 配置tasks.json"></a>step1 配置tasks.json</h2><p><strong>自动生成tasks.json文件的方法</strong>：在编辑器上方的终端选项中选择（应该是）最后一个：配置默认生成任务，然后在下拉菜单中选择构建所使用的编译器就可以了。</p>
-<p>我的tasks.json:</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;file&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-o&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;options&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;problemMatcher&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$gcc&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;group&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;build&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;detail&quot;</span><span class="punctuation">:</span> <span class="string">&quot;compiler: C:/mingw64/bin/gcc.exe&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>type条目指定了该以何种方式解释下面的command。如果值是<code>shell</code>，则当作命令行指令解析（bash，cmd，powershell等）。一般设置为shell就可以了。（默认生成的值是<code>cppbuild</code>，不太明白什么意思。）</li>
-<li>command条目指定了编译器的绝对路径。</li>
-<li>args条目指定了传递给编译器的参数，该条目中参数的位置必须按照编译器希望的顺序摆放。这里引用的一些变量可以参看附录1.通过改变这些变量，可以编译多个文件，或者使用一些其它的编译方式。具体怎么编译就看你对gcc命令的了解程度了。</li>
-<li>label条目指定了你会在终端的tasks list中看到什么，可以随意设置。</li>
-<li>“isDefault”: 设置为true表示使用<code>Ctrl+Shift+B</code>可以执行构建任务。</li>
-</ul>
-<h4 id="执行构建工作"><a href="#执行构建工作" class="headerlink" title="执行构建工作"></a>执行构建工作</h4><p>使用Ctrl+Shift+B快捷键或者在编辑器上部的终端选项卡中选择运行生成任务。然后就有了.exe文件</p>
-<p>![屏幕截图 2022-03-23 211641](<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE">https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/屏幕截图</a> 2022-03-23 211641.png)</p>
-<p>运行.exe文件：</p>
-<p>直接在终端中键入可执行文件名或者.&#x2F;可执行文件名。</p>
-<h2 id="step2-配置launch-json"><a href="#step2-配置launch-json" class="headerlink" title="step2 配置launch.json"></a>step2 配置launch.json</h2><p><strong>自动生成launch.json文件的方法</strong>：在编辑器上方的运行选项卡中选择<code>编辑配置...</code>选项，然后可以根据需要选择一个，之后就会生成launch.json文件。</p>
-<p>生成的launch.json:</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gcc.exe - Build and debug active file&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\mingw64\\bin\\gdb.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;setupCommands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Enable pretty-printing for gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-enable-pretty-printing&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>program</code> - 指定了要调试的可执行文件。</li>
-<li><code>args</code> - 传递给程序的参数，使用双引号将参数括起来，参数间用逗号分隔。如果有转义字符，需要用双斜杠转义。</li>
-<li><code>cwd</code> - 指定了要调试的程序的工作目录。</li>
-<li><code>stopAtEntry</code> - 是否在main函数入口处停止。</li>
-<li><code>MIMode</code>：调制程序，只允许gdb或lldb。</li>
-<li><code>externalConsole</code>：是否为调试对象使用独立的控制台。</li>
-<li><code>miDebuggerPath</code> 调试程序路径</li>
-<li><code>preLaunchTask</code> - 指定了在执行运行或调试任务前要执行的任务。<strong>注意这里的值要和tasks.json中的label的值相同。</strong></li>
-</ul>
-<h4 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h4><p>使用F5或者<strong>Run &gt; Start Debugging</strong>开始调试。</p>
-<p>在监视（WATCH）中点加号可以添加想要观察的变量。</p>
-<h2 id="step3-编辑c-cpp-properties-json"><a href="#step3-编辑c-cpp-properties-json" class="headerlink" title="step3 编辑c_cpp_properties.json"></a>step3 编辑c_cpp_properties.json</h2><p>这个配置文件是可以可视化配置的：使用 Ctrl+Shift+P快捷键打开命令面板，然后选择**C&#x2F;C++: Edit Configurations (UI)**就可以了。</p>
-<p>我的配置文件：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GCC&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;includePath&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;defines&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;_DEBUG&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;UNICODE&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;_UNICODE&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;windowsSdkVersion&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10.0.18362.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;compilerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gnu99&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cppStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;c++17&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;intelliSenseMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-gcc-x64&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">4</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>includePath：源文件随附的头文件目录，**表示递归搜索。如果在compilerPath中指定了编译器，就不用在这里设置系统include路径。</li>
-<li>compilerPath：编译器位置</li>
-</ul>
-<h2 id="附录-vscode配置文件中的变量"><a href="#附录-vscode配置文件中的变量" class="headerlink" title="附录 vscode配置文件中的变量"></a>附录 vscode配置文件中的变量</h2><p>在<code>launch.json</code>或<code>tasks.json</code>中，使用**${variableName}**这样的语法引用变量。</p>
-<h4 id="预定义变量（部分）"><a href="#预定义变量（部分）" class="headerlink" title="预定义变量（部分）"></a>预定义变量（部分）</h4><p>直接看例子吧。</p>
-<p>假设编辑器打开的文件的路径是：<code>/home/your-username/your-project/folder/file.ext</code></p>
-<p>项目的根目录是<code>/home/your-username/your-project</code></p>
-<ul>
-<li><p><strong>${workspaceFolder}</strong> -<code>/home/your-username/your-project</code></p>
-</li>
-<li><p><strong>${workspaceFolderBasename}</strong> - <code>your-project</code></p>
-</li>
-<li><p><strong>${file}</strong> - <code>/home/your-username/your-project/folder/file.ext</code></p>
-</li>
-<li><p><strong>${fileWorkspaceFolder}</strong> - <code>/home/your-username/your-project</code></p>
-</li>
-<li><p><strong>${relativeFile}</strong> - <code>folder/file.ext</code> 这个是当前编辑文件相对于项目根目录的路径</p>
-</li>
-<li><p><strong>${relativeFileDirname}</strong> - <code>folder</code></p>
-</li>
-<li><p><strong>${fileBasename}</strong> - <code>file.ext</code></p>
-</li>
-<li><p><strong>${fileBasenameNoExtension}</strong> - <code>file</code></p>
-</li>
-<li><p><strong>${fileDirname}</strong> - <code>/home/your-username/your-project/folder</code></p>
-</li>
-<li><p><strong>${fileExtname}</strong> - <code>.ext</code></p>
-</li>
-</ul>
-<p>主要参考自vscode官方文档：<a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/cpp/config-mingw">https://code.visualstudio.com/docs/cpp/config-mingw</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/24/VSCode%E9%85%8D%E7%BD%AEC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
