@@ -1,0 +1,1720 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>C语言：存储类别 链接 内存管理</title>
+    <url>/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<blockquote>
+<p>作用域与链接描述了内存中对象的可见范围，存储期描述了内存中对象的声明周期</p>
+</blockquote>
+<h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><blockquote>
+<p>作用域描述程序中可访问标识符的区域</p>
+</blockquote>
+<h4 id="块作用域"><a href="#块作用域" class="headerlink" title="块作用域"></a>块作用域</h4><p>块是一对花括号括起来的代码区域。定义在块中的变量具有块作用域。函数的形参虽然定义在函数体外，但也属于函数体这个块。</p>
+<p>C99中for，while，do while，if语句中的控制代码也算作块的一部分。</p>
+<h4 id="函数作用域"><a href="#函数作用域" class="headerlink" title="函数作用域"></a>函数作用域</h4><p>只应用于goto语句的标签，在整个函数中起作用。 </p>
+<h4 id="函数原型作用域"><a href="#函数原型作用域" class="headerlink" title="函数原型作用域"></a>函数原型作用域</h4><p>用于函数原型中的形参名，作用范围是从形参定义处到原型声明结束。</p>
+<h4 id="文件作用域"><a href="#文件作用域" class="headerlink" title="文件作用域"></a>文件作用域</h4><p>定义在函数外的变量具有文件作用域，也叫做<strong>全局变量</strong></p>
+<p><strong>什么是翻译单元</strong>：翻译单元包括一个源代码文件与它所include的文件，文件作用域实际是翻译单元作用域。</p>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><p>C变量有三种链接属性：</p>
+<ul>
+<li>外部链接：该变量可以在多文件中使用， <strong>全局变量默认为外部链接</strong>。引用别的文件中的外部链接变量必须使用<code>extern</code>关键字引用式声明</li>
+<li>内部链接：只可以在声明变量的那个翻译单元中使用，<strong>全局变量前加上<code>static</code>关键字变为内部链接</strong></li>
+<li>无链接：除了全局变量，其它类型变量为无链接变量。</li>
+</ul>
+<h2 id="存储期"><a href="#存储期" class="headerlink" title="存储期"></a>存储期</h2><blockquote>
+<p>描述了通过这些标识符访问的对象的生存期</p>
+</blockquote>
+<ul>
+<li><p>静态存储期：在程序执行期间一直存在，文件作用域变量具有静态存储期</p>
+</li>
+<li><p>线程存储期：从被声明到线程结束</p>
+</li>
+<li><p>自动存储期：块作用域的变量通常是。进入块时分配，退出块时释放。变长数组的存储期是从声明到块的结尾。</p>
+<ul>
+<li><strong>把变量声明在块中，并加上<code>static</code>关键字，使得块变量具有静态存储期</strong>。注意给全局变量加上<code>static</code>关键字改变的是变量的可见性，而不是生命周期。</li>
+</ul>
+</li>
+<li><p>动态分配存储期：从<code>malloc</code>开始，到<code>free</code>结束</p>
+</li>
+</ul>
+<h2 id="寄存器变量"><a href="#寄存器变量" class="headerlink" title="寄存器变量"></a>寄存器变量</h2><p>在变量声明前加上<code>register</code>关键字可以<strong>请求</strong>编译器把变量只放置于cpu通用寄存器中。请求意味着编译器可能没有这样做，但无论如何都不能对这种类型的变量使用取地址运算符。</p>
+<p>只作用于块作用域的变量。</p>
+<h2 id="存储类别与函数"><a href="#存储类别与函数" class="headerlink" title="存储类别与函数"></a>存储类别与函数</h2><p>函数可以是外部函数或静态函数，默认为外部函数。外部函数可以在其它文件中访问，静态函数只能用于其定义所在的文件。使用static表明静态函数。</p>
+<h2 id="const与volatile类型限定符"><a href="#const与volatile类型限定符" class="headerlink" title="const与volatile类型限定符"></a>const与volatile类型限定符</h2><ul>
+<li>const：<ul>
+<li>声明普通变量和数组时加上const表示内容在声明后不可以更改。</li>
+<li>在指针声明中使用const：<ul>
+<li>const在<code>*</code>之前：指针指向的内存区域不可更改</li>
+<li>const在<code>*</code>之后：指针不可更改</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>volatile：C90开始支持，提醒编译器它后面所定义的变量随时都有可能改变，因此编译后的程序每次需要存储或读取这个变量的时候，都会直接从变量地址中读取数据。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>C programming</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C语言 预处理器与高级特性</title>
+    <url>/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80-%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%8E%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</url>
+    <content><![CDATA[<h2 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h2><blockquote>
+<p>可用来定义常量或者宏函数</p>
+</blockquote>
+<p>预处理器发现程序中的宏后，会用宏等价的替换文本进行替换。如果替换的字符串中还包含宏，则继续替换这些宏。但是在双引号中不会发生宏替换。</p>
+<h4 id="在-define中使用参数"><a href="#在-define中使用参数" class="headerlink" title="在#define中使用参数"></a>在#define中使用参数</h4><figure class="highlight tp"><table><tr><td class="code"><pre><span class="line">#define MEAN(<span class="keyword">X</span>,<span class="keyword">Y</span>)  ((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)  </span><br><span class="line">这里MEAN是宏标识符，<span class="keyword">X</span>,<span class="keyword">Y</span>是宏参数，((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)是替换列表</span><br></pre></td></tr></table></figure>
+
+<h4 id="用宏参数创建字符串：-运算符"><a href="#用宏参数创建字符串：-运算符" class="headerlink" title="用宏参数创建字符串：#运算符"></a>用宏参数创建字符串：#运算符</h4><p>在类函数宏的替换体中，#作为一个预处理运算符，可以把记号转换为字符串。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">PSQR</span>(X)  <span class="built_in">printf</span>(<span class="string">&quot; The square of &quot;</span> <span class="selector-id">#x</span> <span class="string">&quot; is %d&quot;</span>,((X)*(x)))</span><br><span class="line">int y = <span class="number">5</span></span><br><span class="line"><span class="function"><span class="title">PSQR</span><span class="params">(y)</span></span></span><br><span class="line">输出：the square of y is <span class="number">25</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="预处理器粘合剂：-运算符"><a href="#预处理器粘合剂：-运算符" class="headerlink" title="预处理器粘合剂：##运算符"></a>预处理器粘合剂：##运算符</h4><p>##运算符把两个记号组合成1个记号</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">XNAME</span>(n) x ## n</span><br><span class="line"><span class="built_in">XNAME</span>(<span class="number">4</span>)将展开为x4</span><br></pre></td></tr></table></figure>
+
+<h4 id="变参宏-…和-VA-ARGS"><a href="#变参宏-…和-VA-ARGS" class="headerlink" title="变参宏: …和__VA_ARGS__"></a>变参宏: …和__VA_ARGS__</h4><h2 id="文件包含：-include"><a href="#文件包含：-include" class="headerlink" title="文件包含：#include"></a>文件包含：#include</h2><p>把被包含文件的全部内容输入到#include所在的位置</p>
+<ul>
+<li><p>文件名在尖括号中告诉预处理器在标准系统目录中查找该文件</p>
+</li>
+<li><p>文件名在双引号中表示先查找当前目录或文件名指定的目录，如果没有找到再查找标准系统目录</p>
+</li>
+</ul>
+<h2 id="undef"><a href="#undef" class="headerlink" title="#undef"></a>#undef</h2><p>#undef &lt;macro&gt;用来取消对macro的定义，如果之前没有定义过macro，则会直接忽略掉。如果之前定义过macro，则使用#undef取消对macro的定义后可以对macro赋一个新值</p>
+<p>注意：如果宏通过头文件引入，那么#define在文件中的位置取决于#include指令的位置</p>
+<h2 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h2><p>可以使用某些指令告诉编译器根据编译时的条件执行或忽略信息块或代码块</p>
+<h4 id="ifdef，-else与-endif"><a href="#ifdef，-else与-endif" class="headerlink" title="#ifdef， #else与#endif"></a>#ifdef， #else与#endif</h4><p>可以嵌套</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> MAVIS</span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hourse.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cow.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br><span class="line">	</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> JUST_CHECKING</span></span><br><span class="line">	<span class="built_in">printf</span>(...);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="ifndef"><a href="#ifndef" class="headerlink" title="#ifndef"></a>#ifndef</h4><ul>
+<li><p>与#ifdef类似，可以和#else，#endif配合使用，但是意义相反</p>
+</li>
+<li><p>常用来避免某个文件多次被包含</p>
+</li>
+</ul>
+<h4 id="if与-elif"><a href="#if与-elif" class="headerlink" title="#if与#elif"></a>#if与#elif</h4><ul>
+<li><p>#if后跟整型常量表达式，如果表达式非零，则表达式为真，可以在指令中使用C的关系运算符与逻辑运算符</p>
+</li>
+<li><p>可以用另一种方法测试名称是否已经被定义：用#if defined (macro) 代替 #ifdef macro</p>
+</li>
+</ul>
+<h4 id="error"><a href="#error" class="headerlink" title="#error"></a>#error</h4><p>#error指令让预处理器发出一条错误信息，包含指令中的文本，如果可能的话，编译应当中断。</p>
+<h2 id="内联函数-C99"><a href="#内联函数-C99" class="headerlink" title="内联函数(C99)"></a>内联函数(C99)</h2><blockquote>
+<p> 把函数变为内联函数，编译器可能会用内联代码替换函数调用，并（或）执行一些其它的优化，但是也可能不起作用。</p>
+</blockquote>
+<p>内联函数的主要作用是消除函数调用的开销。</p>
+<p>内联函数使用<code>inline</code>关键字声明，具有内部链接的函数可以成为内联函数，并且内联函数的定义与调用必须在一个文件中。</p>
+<p>如果多个文件都要使用同一个内联函数，则简单的做法是将内联函数的定义放在头文件中。</p>
+<h2 id="可变参数：stdarg-h"><a href="#可变参数：stdarg-h" class="headerlink" title="可变参数：stdarg.h"></a>可变参数：stdarg.h</h2><p>要使用需：</p>
+<ul>
+<li>提供一个使用省略号的函数原型，至少有一个形参，最右边的形参叫做<code>parmN</code>，代表省略号部分的参数数量。</li>
+<li>在函数定义中创建一个<code>va_list</code>类型的变量，暂且叫做ap，该类型是编译器内建类型，是一个指向参数的指针。</li>
+<li>用宏把该变量初始化为一个参数列表：使用&#96;&#96;va_start(va_list ap, lastarg)<code>宏(实际是内建函数)，把参数列表拷贝到</code>va_list&#96;类型变量中。(让ap指向函数的最后一个确定的参数（parmN）的下一个参数的地址。)</li>
+<li>用宏访问参数列表：使用<code>va_arg((va_list ap, 类型)</code>宏(实际是内建函数)。获取可变参数的当前参数，返回指定类型并将指针指向下一参数</li>
+<li>用宏完成清理工作：<code>va_end(va_list ap)</code></li>
+</ul>
+<p>实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">typedef</span> <span class="type">char</span> * va_list;</span><br><span class="line"> <span class="number">2</span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="keyword">define</span> __INTSIZEOF(n) \</span></span><br><span class="line"><span class="meta"> 4     ((sizeof(n) + sizeof(int) - 1) &amp; ~(sizeof(int) - 1) )</span></span><br><span class="line"> <span class="number">5</span></span><br><span class="line"> <span class="number">6</span> <span class="meta">#<span class="keyword">define</span> __ADDRESS(v) (&amp;(v))</span></span><br><span class="line"> <span class="number">7</span></span><br><span class="line"> <span class="number">8</span> <span class="meta">#<span class="keyword">define</span> va_start(ap, v) \</span></span><br><span class="line"><span class="meta"> 9     (ap = (va_list) __ADDRESS(v) + __INTSIZEOF(v))</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="number">11</span> <span class="meta">#<span class="keyword">define</span> va_arg(ap, t) \</span></span><br><span class="line"><span class="meta">12     (*(t*)((ap += __INTSIZEOF(t)) - __INTSIZEOF(t)))</span></span><br><span class="line"><span class="number">13</span></span><br><span class="line"><span class="number">14</span> <span class="meta">#<span class="keyword">define</span> va_end(ap) \</span></span><br><span class="line"><span class="meta">15     (ap = (va_list) 0)  </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h2><p>内建函数是编译器内部实现的函数，可以直接使用，不用像标准库一样include进来。</p>
+<p>内建函数的命名通常以<code>__buildin</code>开头。</p>
+<p>主要用途包括处理变长参数列表，程序运行异常，编译优化，查看底层信息，以及C标准库的内建版本。</p>
+]]></content>
+      <tags>
+        <tag>C programming</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Shell脚本</title>
+    <url>/2022/03/24/2022-03-24-Shell%E8%84%9A%E6%9C%AC/</url>
+    <content><![CDATA[<h2 id="bash"><a href="#bash" class="headerlink" title="bash"></a>bash</h2><h3 id="常见操作"><a href="#常见操作" class="headerlink" title="常见操作"></a>常见操作</h3><ul>
+<li>为变量赋值：<variable>&#x3D;<value></li>
+<li>访问变量中存储的值：$<variable> </li>
+<li>注意为变量赋值的时候等号左右不能有空格，否则bash会将第一个字符串作为程序调用，之后的字符串作为程序的参数传入程序。</li>
+<li>bash中的字符串通过<code>&#39;</code>和<code>&quot;</code>定义，以<code>&#39;</code>定义的字符串为原义字符串，其中的变量不会被转义，而 <code>&quot;</code>定义的字符串会将变量值进行替换。</li>
+</ul>
+<h3 id="bash脚本的参数"><a href="#bash脚本的参数" class="headerlink" title="bash脚本的参数"></a>bash脚本的参数</h3><ul>
+<li><p><code>$0</code> - 脚本名</p>
+</li>
+<li><p><code>$1</code> 到 <code>$9</code> - 脚本的参数。 <code>$1</code> 是第一个参数，依此类推。 </p>
+</li>
+<li><p><code>$@</code> - 所有参数</p>
+</li>
+<li><p><code>$#</code> - 参数个数</p>
+</li>
+<li><p><code>$?</code> - 前一个命令的返回值，返回值为0代表程序正常执行，其他所有非零值表示有错误发生</p>
+</li>
+<li><p><code>$$</code> - 当前脚本的进程识别码</p>
+</li>
+<li><p><code>!!</code> - 完整的上一条命令，包括参数。常见应用：当你因为权限不足执行命令失败时，可以使用 <code>sudo !!</code>再尝试一次。</p>
+</li>
+<li><p><code>$_</code> - 上一条命令的最后一个参数。如果你正在使用的是交互式shell，你可以通过按下 <code>Esc</code> 之后键入 . 来获取这个值。</p>
+</li>
+<li><p><code>$HOME</code>，当前用户目录，登录后默认进入的目录。比如我的是<code>/home/ghy</code></p>
+<p>退出码可以搭配操作符<code>&amp;&amp;</code>或操作符<code>||</code>使用。对于<code>&amp;&amp;</code>操作符，只有当该操作符左侧的程序返回值非0时，该操作符右侧的程序才会被执行。对于<code>||</code>操作符，如果该操作符左侧程序返回值非0，则其右侧的程序不会被执行。如果该操作符左侧的返回值为0，右侧的程序才会被执行。</p>
+</li>
+</ul>
+<h3 id="以变量的形式获取一个命令的输出（command-substitution）"><a href="#以变量的形式获取一个命令的输出（command-substitution）" class="headerlink" title="以变量的形式获取一个命令的输出（command substitution）"></a>以变量的形式获取一个命令的输出（<em>command substitution</em>）</h3><ul>
+<li>语法：<code>$(&lt;command&gt;)</code></li>
+</ul>
+<p>当以上面的这种形式执行命令时，命令的输出会替换掉<code>$(command)</code>并再次执行。比如对于如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ $(<span class="built_in">echo</span> <span class="built_in">ls</span>) </span><br></pre></td></tr></table></figure>
+
+<p>bash会先执行<code>echo ls</code>，然后将该命令的输出，即<code>ls</code>，作为bash的命令再次执行。所以<code>$(echo ls)</code>等价于<code>ls</code> .</p>
+<ul>
+<li>语法：<code>&lt;variable&gt;=$(&lt;command&gt;)</code></li>
+</ul>
+<p>也可以将命令的输出赋值给一个变量。<variable>拿到了<command>的输出。</p>
+<p>还有一个冷门的类似特性是 <em>进程替换</em>（<em>process substitution</em>）， <code>&lt;( CMD )</code> 会执行 <code>CMD</code> 并将结果输出到一个临时文件中，并将 <code>&lt;( CMD )</code> 替换成临时文件名。这在我们希望返回值通过文件而不是STDIN传递时很有用。例如， <code>diff &lt;(ls foo) &lt;(ls bar)</code> 会显示文件夹 <code>foo</code> 和 <code>bar</code> 中文件的区别。</p>
+<h3 id="通配符-globbing"><a href="#通配符-globbing" class="headerlink" title="通配符(globbing)"></a>通配符(<em><strong>globbing</strong></em>)</h3><p>类似与正则表达式</p>
+<ul>
+<li>使用<code>?</code>匹配一个任意的字符</li>
+<li>使用<code>*</code>匹配任意个任意字符</li>
+</ul>
+<p>例如，对于文件<code>foo</code>, <code>foo1</code>, <code>foo2</code>, <code>foo10</code> 和 <code>bar</code>, <code>rm foo?</code>这条命令会删除<code>foo1</code> 和 <code>foo2</code> ，而<code>rm foo*</code> 则会删除除了<code>bar</code>之外的所有文件。</p>
+<ul>
+<li>花括号<code>&#123;&#125;</code> - 执行时花括号中的值自动展开，可以搭配<code>..</code>使用。</li>
+</ul>
+<p>例如，命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> image&#123;a..g&#125;</span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> imagea imageb imagec imaged imagee imagef imageg</span><br></pre></td></tr></table></figure>
+
+<h3 id="Shebang"><a href="#Shebang" class="headerlink" title="Shebang"></a>Shebang</h3><p>Shebang是一段由<code>#!</code>构成的字符序列，位于脚本开头的前两个字符。</p>
+<p>在文件中存在Shebang的情况下，类Unix操作系统的程序加载器会分析Shebang后的内容，将这些内容作为解释器指令，并调用该指令，并将载有Shebang的文件路径作为该解释器的参数。</p>
+<p>Shebang的指令形式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!interpreter [optional-arg]</span></span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<ul>
+<li><code>#!/bin/sh</code>—使用<code>sh</code>，即<a href="https://zh.wikipedia.org/wiki/Bourne_shell">Bourne shell</a>或其它兼容shell执行脚本</li>
+<li><code>#!/usr/bin/python -O</code>—使用具有代码优化的<a href="https://zh.wikipedia.org/wiki/Python">Python</a>执行</li>
+<li>使用<code>#!/usr/bin/env 脚本解释器名称</code>是一种常见的在不同平台上都能正确找到解释器的办法。</li>
+</ul>
+<h3 id="好用的工具"><a href="#好用的工具" class="headerlink" title="好用的工具"></a>好用的工具</h3><ul>
+<li><a href="https://github.com/koalaman/shellcheck">shellcheck</a>，给脚本挑错</li>
+<li>man <command> 调用命令的手册</li>
+<li><a href="https://tldr.sh/">TLDR pages</a>查看命令的常见用法，语法： tldr <command></li>
+</ul>
+<h2 id="shell脚本"><a href="#shell脚本" class="headerlink" title="shell脚本"></a>shell脚本</h2><h3 id="shell-debug"><a href="#shell-debug" class="headerlink" title="shell debug"></a>shell debug</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bash -x a.sh <span class="comment">#把完整的执行过程输出</span></span><br><span class="line"><span class="built_in">set</span> -x <span class="comment">#开始debug，写在脚本内</span></span><br><span class="line"><span class="built_in">set</span> +x <span class="comment">#结束debug，写在脚本内</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h3><ul>
+<li><p>shell无法辨别变量与常量，常量的值不可变，因此shell中创建的任何”变量”实际都是字符串常量</p>
+</li>
+<li><p>当shell碰到一个变量的时候，它会自动的创建这个变量。</p>
+</li>
+<li><p>变量名规则：</p>
+<ul>
+<li>变量名可由字母数字字符（字母和数字）和下划线字符组成。</li>
+<li>变量名的第一个字符必须是一个字母或一个下划线。</li>
+<li>变量名中不允许出现空格和标点符号。</li>
+</ul>
+</li>
+</ul>
+<h4 id="给变量与常量赋值"><a href="#给变量与常量赋值" class="headerlink" title="给变量与常量赋值"></a>给变量与常量赋值</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">variable=value	<span class="comment"># variable是变量的名字，value是一个字符串。shell把变量值都视作字符串，在赋值过程中，				# 等号两侧不能由空格</span></span><br></pre></td></tr></table></figure>
+
+<p>值的类型：可以展开成字符串的任意值</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=z					<span class="comment"># Assign the string &quot;z&quot; to variable a.</span></span><br><span class="line">b=<span class="string">&quot;a string&quot;</span>		<span class="comment"># Embedded spaces must be within quotes.</span></span><br><span class="line">c=<span class="string">&quot;a string and <span class="variable">$b</span>&quot;</span> <span class="comment"># Other expansions such as variables can be</span></span><br><span class="line">                    <span class="comment"># expanded into the assignment.</span></span><br><span class="line">d=$(<span class="built_in">ls</span> -l foo.txt)  <span class="comment"># Results of a command. </span></span><br><span class="line">e=$((<span class="number">5</span> * <span class="number">7</span>))        <span class="comment"># Arithmetic expansion.</span></span><br><span class="line">f=<span class="string">&quot;\t\ta string\n&quot;</span>  <span class="comment"># Escape sequences such as tabs and newlines.</span></span><br></pre></td></tr></table></figure>
+
+<p>可以在同一行中对多个变量赋值</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">a=5 		b=<span class="string">&quot;a string&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>当由于变量名周围的上下文使得变量引用变得不明确的情况下，可以使用花括号将变量名包围，像这样：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">filename=<span class="string">&quot;myfile&quot;</span></span><br><span class="line"><span class="built_in">touch</span> <span class="variable">$filename</span></span><br><span class="line"><span class="built_in">mv</span> <span class="variable">$filename</span> <span class="variable">$&#123;filename&#125;</span>1</span><br><span class="line"><span class="comment"># 将把myfile变为myfile1</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="here-documents"><a href="#here-documents" class="headerlink" title="here documents"></a>here documents</h3><p>另一种输入重定向方式</p>
+<h3 id="Shell函数"><a href="#Shell函数" class="headerlink" title="Shell函数"></a>Shell函数</h3><blockquote>
+<p>shell 函数是位于其它脚本中的“微脚本”，作为自主程序。</p>
+</blockquote>
+<p>两种语法形式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> name &#123;</span><br><span class="line">    commands</span><br><span class="line">    <span class="built_in">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">name</span></span> () &#123;</span><br><span class="line">    commands</span><br><span class="line">    <span class="built_in">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>脚本中函数定义必须在函数调用之前，使用函数名调用函数。</p>
+<p>调用函数时的参数传递方式与shell脚本相同。</p>
+<p>通过在return后加上一个整型，shell函数可以返回退出状态。</p>
+<h3 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h3><p>局部变量只能在定义它们的 shell 函数中使用，并且一旦 shell 函数执行完毕，它们就不存在了。</p>
+<p>使用在变量名前加上local声明局部变量</p>
+<h3 id="if语句"><a href="#if语句" class="headerlink" title="if语句"></a>if语句</h3><p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> commands; <span class="keyword">then</span>	<span class="comment"># 如果commands命令的退出状态码为0（成功执行），就进if</span></span><br><span class="line">     commands</span><br><span class="line">[<span class="keyword">elif</span> commands; <span class="keyword">then</span></span><br><span class="line">     commands...]</span><br><span class="line">[<span class="keyword">else</span></span><br><span class="line">     commands]</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>test命令经常与if搭配使用，有两种等价模式：</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line"><span class="keyword">test </span>expression</span><br><span class="line">[ expression ]</span><br></pre></td></tr></table></figure>
+
+<p>expression是一个表达式，执行结果是 true 或者是 false。当表达式为真时test返回True，否则为False。</p>
+<p><strong>测试字符串表达式</strong></p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>何时为真</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>string 不为 null。</td>
+</tr>
+<tr>
+<td>-n string</td>
+<td>字符串 string 的长度大于零。</td>
+</tr>
+<tr>
+<td>-z string</td>
+<td>字符串 string 的长度为零。</td>
+</tr>
+<tr>
+<td>string1 &#x3D; string2或string1 &#x3D;&#x3D; string2</td>
+<td>string1 和 string2 相同. 单或双等号都可以</td>
+</tr>
+<tr>
+<td>string1 !&#x3D; string2</td>
+<td>string1 和 string2 不相同。</td>
+</tr>
+<tr>
+<td>string1 &gt; string2</td>
+<td>sting1 排列在 string2 之后。注意&gt;要用双引号引起来或是用反斜杠转义</td>
+</tr>
+<tr>
+<td>string1 &lt; string2</td>
+<td>string1 排列在 string2 之前。注意&lt;要用双引号引起来或是用反斜杠转义</td>
+</tr>
+</tbody></table>
+<p><strong>测试整数表达式</strong></p>
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>何时为真</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>integer1 -eq integer2</td>
+<td>integer1 等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -ne integer2</td>
+<td>integer1 不等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -le integer2</td>
+<td>integer1 小于或等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -lt integer2</td>
+<td>integer1 小于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -ge integer2</td>
+<td>integer1 大于或等于 integer2.</td>
+</tr>
+<tr>
+<td>integer1 -gt integer2</td>
+<td>integer1 大于 integer2.</td>
+</tr>
+</tbody></table>
+<h4 id="更现代的测试版本"><a href="#更现代的测试版本" class="headerlink" title="更现代的测试版本"></a>更现代的测试版本</h4><figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="string">[[ expression ]]</span></span><br></pre></td></tr></table></figure>
+
+<p>相比于test，这样写增加了两个新功能：</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="string">[[ string1 =~ regex ]]</span>	   # 如果string1匹配扩展的正则表达式 regex，则返回值为真</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line">FILE=foo.bar</span><br><span class="line"><span class="keyword">if</span> <span class="string">[[ $FILE == foo.* ]]</span>; <span class="keyword">then</span>	# ==操作符支持类型匹配</span><br></pre></td></tr></table></figure>
+
+<h4 id="为整数设计"><a href="#为整数设计" class="headerlink" title="(( )) - 为整数设计"></a>(( )) - 为整数设计</h4><p><code>(( ))</code>被用来执行算术真测试。如果算术计算的结果是非零值，则一个算术真测试值为真。</p>
+<h3 id="结合表达式"><a href="#结合表达式" class="headerlink" title="结合表达式"></a>结合表达式</h3><p><strong>逻辑操作符</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">测试</th>
+<th align="left">[[ ]] and (( ))</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AND</td>
+<td align="left">-a</td>
+<td align="left">&amp;&amp;</td>
+</tr>
+<tr>
+<td align="left">OR</td>
+<td align="left">-o</td>
+<td align="left">||</td>
+</tr>
+<tr>
+<td align="left">NOT</td>
+<td align="left">!</td>
+<td align="left">!</td>
+</tr>
+</tbody></table>
+<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> commands; <span class="keyword">do</span> </span><br><span class="line">	commands</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>和 if 一样， while 计算一系列命令的退出状态。只要退出状态为零，它就执行循环内的命令。</p>
+<p>具有break与continue</p>
+]]></content>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>总线接口总结</title>
+    <url>/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h1 id="各类总线接口"><a href="#各类总线接口" class="headerlink" title="各类总线接口"></a>各类总线接口</h1><h1 id="单周期SRAM接口说明"><a href="#单周期SRAM接口说明" class="headerlink" title="单周期SRAM接口说明"></a>单周期SRAM接口说明</h1><h2 id="1-端口描述"><a href="#1-端口描述" class="headerlink" title="1.端口描述"></a>1.端口描述</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>宽度</th>
+<th>方向</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clk</td>
+<td>1</td>
+<td>-&gt;master&#x2F;slave</td>
+<td>时钟</td>
+</tr>
+<tr>
+<td>en</td>
+<td>1</td>
+<td>-&gt;slave</td>
+<td>使能信号，片选，读写均需要高电平有效</td>
+</tr>
+<tr>
+<td>addr</td>
+<td>32</td>
+<td>-&gt;slave</td>
+<td>地址，读写均使用同一地址线</td>
+</tr>
+<tr>
+<td>wen</td>
+<td>4</td>
+<td>-&gt;slave</td>
+<td>字节写使能，指示写字节的位置</td>
+</tr>
+<tr>
+<td>din</td>
+<td>32</td>
+<td>-&gt;slave</td>
+<td>写数据</td>
+</tr>
+<tr>
+<td>dout</td>
+<td>32</td>
+<td>slave-&gt;</td>
+<td>读数据</td>
+</tr>
+</tbody></table>
+<ul>
+<li>指令SRAM大小为1MB，数据SRAM大小为256KB</li>
+<li>SRAM按字寻址，在<code>soc_lit_top.v</code>中进行字节寻址到字寻址的转换</li>
+</ul>
+<h2 id="2-时序"><a href="#2-时序" class="headerlink" title="2.时序"></a>2.时序</h2><h3 id="读写数据"><a href="#读写数据" class="headerlink" title="读写数据"></a>读写数据</h3><ul>
+<li>读：当拍传地址，下拍回数据</li>
+<li>避免同时读写</li>
+<li>大赛中提供的sram具有读保持功能，即当RAM的片选信号无效时，即使读地址在不断变化，RAM的输出数据仍保持最后一次片选信号有效时的地址对应的输出值。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%8D%95%E5%91%A8%E6%9C%9FSRAM%E6%97%B6%E5%BA%8F%E5%9B%BE.drawio.png" alt="单周期SRAM时序图.drawio"></p>
+<h1 id="类SRAM接口"><a href="#类SRAM接口" class="headerlink" title="类SRAM接口"></a>类SRAM接口</h1><ul>
+<li>addr_ok信号用于和req信号一起完成读写请求的握手。只有在clk上升沿同时看到req和addr_ok为1的时候才是一次成功的请求握手。</li>
+<li>默认master端可以随时接收数据。因此data_ok为1代表一次成功的数据响应握手。</li>
+<li>在req为1且addr_ok为0时，允许主方更改请求类型和地址。</li>
+</ul>
+<h2 id="1-接口定义"><a href="#1-接口定义" class="headerlink" title="1.接口定义"></a>1.接口定义</h2><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>方向</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clk</td>
+<td>1</td>
+<td>input</td>
+<td>时钟</td>
+</tr>
+<tr>
+<td>req</td>
+<td>1</td>
+<td>m-&gt;s</td>
+<td>请求信号，为1时有读写请求</td>
+</tr>
+<tr>
+<td>wr</td>
+<td>1</td>
+<td>m-&gt;s</td>
+<td>该次请求是写</td>
+</tr>
+<tr>
+<td>size</td>
+<td>[1:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求传输的字节数，0：byte，1:half word，2:word</td>
+</tr>
+<tr>
+<td>addr</td>
+<td>[31:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求的地址</td>
+</tr>
+<tr>
+<td>wdata</td>
+<td>[31:0]</td>
+<td>m-&gt;s</td>
+<td>该次请求的写数据</td>
+</tr>
+<tr>
+<td>addr_ok</td>
+<td>1</td>
+<td>s-&gt;m</td>
+<td>地址握手信号，读：地址被接收，写：地址和数据被接收</td>
+</tr>
+<tr>
+<td>data_ok</td>
+<td>1</td>
+<td>s-&gt;m</td>
+<td>数据握手信号，读：数据返回，写：数据写入完成</td>
+</tr>
+<tr>
+<td>rdata</td>
+<td>[31:0]</td>
+<td>s-&gt;m</td>
+<td>该次请求返回的读数据</td>
+</tr>
+</tbody></table>
+<ul>
+<li>类SRAM的地址信号是字节寻址，且只支持地址对齐访问</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184338176.png" alt="image-20220124184338176"></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124184432152.png" alt="image-20220124184432152"></p>
+<p>读一个半字的时序逻辑：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223906259.png" alt="image-20220124223906259" style="zoom: 50%;" />
+
+<p>写一个字节的时序逻辑：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220124223954744.png" alt="image-20220124223954744" style="zoom: 50%;" />
+
+<h1 id="AXI接口"><a href="#AXI接口" class="headerlink" title="AXI接口"></a>AXI接口</h1><h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><ul>
+<li>增加乱序的特性，如乱序访问，乱序返回</li>
+<li>读操作,分为地址传输和数据传输</li>
+<li>写操作，分为地址传输，数据传输和响应传输</li>
+<li>有5个通道，读写操作完全分开，读操作占用两个通道，写操作占用三个通道，每个通道有自己的握手信号</li>
+<li>支持burst传输</li>
+<li>AXI4与AXI3相比无写数据ID，写数据必须in order，且增加了burst长度</li>
+</ul>
+<h4 id="读通道"><a href="#读通道" class="headerlink" title="读通道"></a>读通道</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094830188.png" alt="image-20220125094830188"></p>
+<h4 id="写通道"><a href="#写通道" class="headerlink" title="写通道"></a>写通道</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125094904221.png" alt="image-20220125094904221"></p>
+<h4 id="通道定义"><a href="#通道定义" class="headerlink" title="通道定义"></a>通道定义</h4><ul>
+<li><p>五个独立的通道分别包含一组信号，并且使用双向的VALID READY握手机制</p>
+</li>
+<li><p>数据源使用VALID信号表示数据和控制信号在通道中是可以采样的，数据接收者使用READY信号表示可以接收通道中的信号了。读数据通道和写数据通道还分别包含LAST信号，用以表示此时在通道中的是否为本次传输的最后一个数据。</p>
+</li>
+<li><p>数据传输发生在VALID和READY同时有效的时候</p>
+</li>
+<li><p>使用相同的ID保证数据按照期望的顺序传输</p>
+</li>
+</ul>
+<h2 id="端口描述"><a href="#端口描述" class="headerlink" title="端口描述"></a>端口描述</h2><ul>
+<li>写地址以<code>aw</code>开头，写数据以<code>w</code>开头，写响应以<code>b</code>开头，读地址以<code>ar</code>开头，读数据以<code>r</code>开头</li>
+</ul>
+<h4 id="全局信号"><a href="#全局信号" class="headerlink" title="全局信号"></a>全局信号</h4><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ACLK</strong></td>
+<td><strong>1</strong></td>
+<td><strong>时钟源</strong></td>
+<td><strong>全局时钟</strong></td>
+</tr>
+<tr>
+<td><strong>ARESETn</strong></td>
+<td><strong>1</strong></td>
+<td><strong>复位源</strong></td>
+<td><strong>低电平有效</strong></td>
+</tr>
+</tbody></table>
+<h4 id="读请求通道"><a href="#读请求通道" class="headerlink" title="读请求通道"></a>读请求通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ARID</strong></td>
+<td></td>
+<td><strong>master</strong></td>
+<td><strong>读请求ID号，取指置为0,取数置为1</strong></td>
+</tr>
+<tr>
+<td><strong>ARADDR</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>读地址</strong></td>
+</tr>
+<tr>
+<td>ARLEN</td>
+<td></td>
+<td>master</td>
+<td>Burst长度，固定为0，即每次传输1个数据</td>
+</tr>
+<tr>
+<td><strong>ARSIZE</strong></td>
+<td><strong>[2:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>数据传输每拍字节数</strong></td>
+</tr>
+<tr>
+<td>ARBURST</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>burst类型，固定为2’b01，INCR Type</td>
+</tr>
+<tr>
+<td>ARLOCK</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Lock类型,固定为0</td>
+</tr>
+<tr>
+<td>ARCACHE</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Cache类型，固定为0</td>
+</tr>
+<tr>
+<td>ARPORT</td>
+<td>[2:0]</td>
+<td>master</td>
+<td>保护类型，固定为0</td>
+</tr>
+<tr>
+<td><strong>ARVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>读地址与控制信号在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>ARREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>准备好接受通道中信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="读数据通道"><a href="#读数据通道" class="headerlink" title="读数据通道"></a>读数据通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RID</td>
+<td>[3:0]</td>
+<td>slave</td>
+<td>ID号,0为取指，1为数据</td>
+</tr>
+<tr>
+<td><strong>RDATA</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>读数据</strong></td>
+</tr>
+<tr>
+<td>RRESP</td>
+<td>[1:0]</td>
+<td>slave</td>
+<td>读请求控制信号，本次读请求是否成功完成</td>
+</tr>
+<tr>
+<td>RLAST</td>
+<td>1</td>
+<td>slave</td>
+<td>本次读请求的最后一拍数据的指示信号</td>
+</tr>
+<tr>
+<td><strong>RVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>读数据在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>RREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>准备好接受读通道中的信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写请求通道"><a href="#写请求通道" class="headerlink" title="写请求通道"></a>写请求通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AWID</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写地址ID，固定为1</td>
+</tr>
+<tr>
+<td><strong>AWADDR</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写地址</strong></td>
+</tr>
+<tr>
+<td>AWLEN</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Burst长度，固定为0</td>
+</tr>
+<tr>
+<td><strong>AWSIZE</strong></td>
+<td><strong>[2:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>数据传输每拍字节数</strong></td>
+</tr>
+<tr>
+<td>AWBURST</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Burst类型，固定为2’b01</td>
+</tr>
+<tr>
+<td>AWLOCK</td>
+<td>[1:0]</td>
+<td>master</td>
+<td>Lock类型,固定为0</td>
+</tr>
+<tr>
+<td>AWCACHE</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>Cache类型，固定为0</td>
+</tr>
+<tr>
+<td>AWPROT</td>
+<td>[2:0]</td>
+<td>master</td>
+<td>保护的类型，固定为0</td>
+</tr>
+<tr>
+<td><strong>AWVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写地址有效，地址和控制信号保持稳定直到AWREADY置1</strong></td>
+</tr>
+<tr>
+<td><strong>AWREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>高电平表明已准备好接受写地址与控制信号</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写数据通道"><a href="#写数据通道" class="headerlink" title="写数据通道"></a>写数据通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WID</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写数据的ID，必须与AWID匹配，固定为1</td>
+</tr>
+<tr>
+<td><strong>WDATA</strong></td>
+<td><strong>[31:0]</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写数据</strong></td>
+</tr>
+<tr>
+<td>WSTRB</td>
+<td>[3:0]</td>
+<td>master</td>
+<td>写字节使能</td>
+</tr>
+<tr>
+<td>WLAST</td>
+<td>1</td>
+<td>master</td>
+<td>write last,the last transfer in a write burst.，固定为1</td>
+</tr>
+<tr>
+<td><strong>WVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>写数据与字节使能有效</strong></td>
+</tr>
+<tr>
+<td><strong>WREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>高电平表明已准备好接受写数据</strong></td>
+</tr>
+</tbody></table>
+<h4 id="写反馈通道"><a href="#写反馈通道" class="headerlink" title="写反馈通道"></a>写反馈通道</h4><table>
+<thead>
+<tr>
+<th>信号</th>
+<th>位宽</th>
+<th>源</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BID</td>
+<td>[3:0]</td>
+<td>slave</td>
+<td>返回的ID，必须匹配AWID，可忽略</td>
+</tr>
+<tr>
+<td>BRESP</td>
+<td>[1:0]</td>
+<td>slave</td>
+<td>写反馈，本次写是否成功完成，可忽略</td>
+</tr>
+<tr>
+<td><strong>BVALID</strong></td>
+<td><strong>1</strong></td>
+<td><strong>slave</strong></td>
+<td><strong>写反馈在通道中有效</strong></td>
+</tr>
+<tr>
+<td><strong>BREADY</strong></td>
+<td><strong>1</strong></td>
+<td><strong>master</strong></td>
+<td><strong>高电平表示已经准备好接受通道中信号</strong></td>
+</tr>
+</tbody></table>
+<h2 id="通道握手"><a href="#通道握手" class="headerlink" title="通道握手"></a>通道握手</h2><h4 id="写地址通道"><a href="#写地址通道" class="headerlink" title="写地址通道"></a>写地址通道</h4><ul>
+<li><p>主设备只有当它驱动的地址和控制信号有效的时候才可以将AWVALID置为有效。AWVALID信号必须保持有效直到从设备接受数据并发送对应的AWREADY信号。</p>
+</li>
+<li><p>AWREADY的默认值可以为HIGH或LOW。推荐的是HIGH。因为如果是LOW的话要至少两个周期才能完成握手。</p>
+</li>
+</ul>
+<h4 id="写数据通道-1"><a href="#写数据通道-1" class="headerlink" title="写数据通道"></a>写数据通道</h4><ul>
+<li>在burst传输中，主设备可以在只有数据有效的时候将WVALID置为有效。WVALID必须保持有效直到从设备接受数据并发送WREADY。</li>
+<li>主设备在burst传输中传输最后一个数据的时候必须将WLAST置为有效。</li>
+<li>当WVALID无效的时候，WSTRB可以是任意值。</li>
+</ul>
+<h4 id="写反馈通道-1"><a href="#写反馈通道-1" class="headerlink" title="写反馈通道"></a>写反馈通道</h4><ul>
+<li>BVALID置为有效后必须保持直到握手成功。</li>
+<li>这个通道的目的是化解写后读冲突。</li>
+</ul>
+<h4 id="读地址通道"><a href="#读地址通道" class="headerlink" title="读地址通道"></a>读地址通道</h4><ul>
+<li>ARREADY的默认值可以为HIGH或LOW，推荐的默认值是HIGH。</li>
+</ul>
+<h4 id="读数据通道-1"><a href="#读数据通道-1" class="headerlink" title="读数据通道"></a>读数据通道</h4><ul>
+<li>从设备只有当接收到请求后才能将RVALID置为有效。</li>
+<li>RREADY的默认值可以为HIGH，不过需要保证主设备在发送读请求后随时可以接收数据。</li>
+<li>从设备在burst传输最后一个数据时必须将RLAST信号置为有效。</li>
+</ul>
+<h4 id="通道间的关系"><a href="#通道间的关系" class="headerlink" title="通道间的关系"></a>通道间的关系</h4><ul>
+<li>读数据请求必须跟在读地址请求之后</li>
+<li>写反馈必须在最后一次写传输之后</li>
+</ul>
+<h4 id="握手信号依赖关系"><a href="#握手信号依赖关系" class="headerlink" title="握手信号依赖关系"></a>握手信号依赖关系</h4><ul>
+<li><p>VALID信号不能依赖READY信号</p>
+</li>
+<li><p>READY信号可以等待VALID信号置为有效</p>
+</li>
+<li><p>两个箭头表示依赖关系不能改变</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113135018.png" alt="image-20220125113135018"></p>
+<ul>
+<li>如果一个读事务的读请求还没有被从方接收，那么这个时候rvalid和当前的读事务没有任何关系。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220125113147368.png" alt="image-20220125113147368"></p>
+<ul>
+<li>只有等到写请求和写数据都发出之后，才有看bvalid的必要</li>
+</ul>
+<h4 id="转接桥设计要求"><a href="#转接桥设计要求" class="headerlink" title="转接桥设计要求"></a>转接桥设计要求</h4><ul>
+<li>aresetn有效期间，AXImaster端的所有valid类输出必须为0，所有ready类输出不能为x值。</li>
+<li>AXImaster端的所有valid输出信号的置1逻辑中，不允许组合逻辑来自同一通道的ready信号，ready也一样。</li>
+<li>无论读写请求，类SRAM接口上的事务要和AXI接口上的事务严格一一对应。</li>
+<li>一旦发出请求就不允许更改。</li>
+<li>AXImaster端在发起读请求的时候，要先确保该请求与”已发出请求但尚未接受到写响应的写请求“不存在地址相关。</li>
+</ul>
+<h2 id="Burst传输"><a href="#Burst传输" class="headerlink" title="Burst传输"></a>Burst传输</h2><h4 id="burst长度"><a href="#burst长度" class="headerlink" title="burst长度"></a>burst长度</h4><table>
+<thead>
+<tr>
+<th>ARLEN[3:0]   AWLEN[3:0]</th>
+<th>number of data transfers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b0000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>b0001</td>
+<td>2</td>
+</tr>
+<tr>
+<td>b0010</td>
+<td>3</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>b1101</td>
+<td>14</td>
+</tr>
+<tr>
+<td>b1110</td>
+<td>15</td>
+</tr>
+<tr>
+<td>b1111</td>
+<td>16</td>
+</tr>
+</tbody></table>
+<ul>
+<li>burst传输一旦开始，就没有信号可以提前终止它。设备如果不想接收剩下的数据，只能通过字节使能等方法内部消化。但是必须完整接收burst传输的所有数据，否则会出错。</li>
+</ul>
+<h4 id="burst大小（单个数据块的大小）"><a href="#burst大小（单个数据块的大小）" class="headerlink" title="burst大小（单个数据块的大小）"></a>burst大小（单个数据块的大小）</h4><table>
+<thead>
+<tr>
+<th>ARSIZE[2:0]   AWSIZE[2:0]</th>
+<th>Bytes in transfer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>b001</td>
+<td>2</td>
+</tr>
+<tr>
+<td>b010</td>
+<td>4</td>
+</tr>
+<tr>
+<td>b011</td>
+<td>8</td>
+</tr>
+<tr>
+<td>b100</td>
+<td>16</td>
+</tr>
+<tr>
+<td>b101</td>
+<td>32</td>
+</tr>
+<tr>
+<td>b110</td>
+<td>64</td>
+</tr>
+<tr>
+<td>b111</td>
+<td>128</td>
+</tr>
+</tbody></table>
+<h4 id="burst类型"><a href="#burst类型" class="headerlink" title="burst类型"></a>burst类型</h4><table>
+<thead>
+<tr>
+<th>ARBURST[1:0]</th>
+<th>Burst Type</th>
+<th>Description</th>
+<th>Access</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>b00</td>
+<td>FIXED</td>
+<td>每次burst的地址都一样，用于重复的从某一个地址获取数据</td>
+<td>FIFO-Type</td>
+</tr>
+<tr>
+<td>b01</td>
+<td>INCR</td>
+<td>在burst传输中每次数据传输的地址相较于上一次传输时增加了，增量就是burst中每次传输的字节数。</td>
+<td>Normal sequential memory</td>
+</tr>
+<tr>
+<td>b10</td>
+<td>WRAP</td>
+<td>与INCR类似，只不过当传输结束时地址又绕回了低地址。限制：起始地址需要与单次传输大小对齐。burst长度只能是2,4,8,16</td>
+<td>Cache line</td>
+</tr>
+<tr>
+<td>b11</td>
+<td>reserved</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+]]></content>
+      <tags>
+        <tag>digital design</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数字电路 FIFO设计</title>
+    <url>/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/</url>
+    <content><![CDATA[<p>FIFO是<code>First In First Out</code>的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。</p>
+<p>比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，另一种是在发送方与接收方之间添加一个Buffer结构用来接收发送方发来的数据并缓存，接收方从Buffer中读走数据，此时在发送方与接收方眼中对方仅仅是一个Buffer结构。FIFO就是这样一种缓存数据的结构，并且常用在写快读慢的情况中。 </p>
+<h2 id="1、FIFO类型"><a href="#1、FIFO类型" class="headerlink" title="1、FIFO类型"></a>1、FIFO类型</h2><p>FIFO有同步FIFO与异步FIFO两种。</p>
+<ul>
+<li>同步FIFO：FIFO的读逻辑与写逻辑处于同一个时钟域中，FIFO的各个部分接收的时钟信号都是同一个信号。</li>
+<li>异步FIFO：FIFO的读写时钟不是同一个时钟，读写时钟彼此相互独立，并且频率可能不一样。</li>
+</ul>
+<h2 id="2-同步FIFO结构"><a href="#2-同步FIFO结构" class="headerlink" title="2.同步FIFO结构"></a>2.同步FIFO结构</h2><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg" alt="224278617_1_202106160112166"></p>
+<h3 id="1-双端口RAM"><a href="#1-双端口RAM" class="headerlink" title="1.双端口RAM"></a>1.双端口RAM</h3><p>同步FIFO的主体是一个存储器，用来存储需要缓存的数据。存储器可以用block_ram或者寄存器实现。当存储器需要比较大的时候block_ram相对于寄存器而言读写时序会好一些，并且空间占用比寄存器小。但是寄存器可以在<strong>给地址的当拍</strong>传出地址对应的数据，而block_ram最快也要在<strong>给出地址的下一拍</strong>传出数据。但不管采用什么结构实现，FIFO的存储器必须是一个双端口RAM，即有一个读地址与写地址端口和对应的数据即控制端口，使得读写可以在同一拍中进行。</p>
+<h3 id="2-读写指针"><a href="#2-读写指针" class="headerlink" title="2.读写指针"></a>2.读写指针</h3><p>同步FIFO还有两个指针，读指针与写指针。这两个指针本质上是两个寄存器，直接与FIFO存储器的读地址端口与写地址端口相连，存储着FIFO的读地址与写地址（因此这两个寄存器的宽度是<code>log2(存储器深度)</code>）。读指针中存储的地址是下一拍将要读取的位置，写指针中存储的是下一拍将要写入的位置。每次读操作使读指针加1，每次写操作使写指针加1.</p>
+<h3 id="3-空满状态判断模块"><a href="#3-空满状态判断模块" class="headerlink" title="3.空满状态判断模块"></a>3.空满状态判断模块</h3><p>FIFO必须有两个标志：空标志与满标志指示FIFO的当前状态。如果在空标志有效时对FIFO进行读取会产生<code>underflow</code>，读出了一个无效的数据。满标志有效时对FIFO进行写入会产生<code>overflow</code>，导致FIFO中还没有被读走的数据被新来的数据覆盖。并且如果FIFO的读写指针没有保护机制，在FIFO空满时读写很有可能会导致FIFO的读写指针在下一拍指向了错误的位置，从而导致整个FIFO彻底乱套。这里总结了三种判断空满状态的方法（这里没有考虑读写指针保护，保证FIFO被正确使用的任务由读写双方完成）：</p>
+<h4 id="3-1-通过读写指针判断"><a href="#3-1-通过读写指针判断" class="headerlink" title="3.1 通过读写指针判断"></a>3.1 通过读写指针判断</h4><h5 id="3-1-1空标志"><a href="#3-1-1空标志" class="headerlink" title="3.1.1空标志"></a>3.1.1空标志</h5><p>假设在复位后读写指针的值都为0，即指向存储器的最低位地址。此时读写指针相等，FIFO为空。FIFO的空标志应当为1.之后进行一个写操作，写操作完成后写指针加1而读指针不变，FIFO不为空，空标志置0.如果此时再来一个读操作，则读完成后读指针加1与写指针相等，FIFO为空。</p>
+<p>在FIFO的读写过程中，写指针的上溢一定在读指针上溢之前（否则之前一定有underflow或者overflow），当读指针没有发生上溢的时候写指针不可能再次发生上溢（理由同上），而写指针上溢并且读指针没有上溢的时候FIFO一定不为空。而当读指针也发生上溢后，情况就和最开始相同了。</p>
+<p>分析了这么多，代码很简单：</p>
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span><span class="comment">//注意这里空标志是用寄存器实现的。</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作&amp;&amp;(写指针==读指针+<span class="number">1</span>))</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-1-2满标志"><a href="#3-1-2满标志" class="headerlink" title="3.1.2满标志"></a>3.1.2满标志</h5><p>FIFO满的判断与读类似，当FIFO发生读操作之后FIFO一定不是满的。如果当前是写操作并且读指针等于写指针加1时FIFO在写完成后一定是满的（设想没有读，一直在写，当全部写满后写指针会发生上溢变为0）</p>
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作&amp;&amp;读指针==写指针+<span class="number">1</span>)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-通过计数器判断"><a href="#3-2-通过计数器判断" class="headerlink" title="3.2 通过计数器判断"></a>3.2 通过计数器判断</h4><p>在FIFO内部加一个计数器指示当前FIFO里有多少有效数据。这种方法最简单，但是个人感觉时序会不太好（？）</p>
+<h4 id="3-3扩展读写指针"><a href="#3-3扩展读写指针" class="headerlink" title="3.3扩展读写指针"></a>3.3扩展读写指针</h4><p>这种方法最为精妙，时序和资源占用都是最优的。分别将读写指针扩展一位，将扩展得到的最高位设置为状态位，其余位作为地址位。当读写指针的地址位与状态位全部相同的时候，读写指针经历了相同次数的循环移动，即此时FIFO是空状态（实际上写指针最多比读指针多走一圈）。如果读写指针的地址位相同而状态位相反，则写指针比读指针多循环一次，FIFO处于满状态。</p>
+]]></content>
+      <tags>
+        <tag>digital design</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>量化设计与分析基础</title>
+    <url>/2022/03/24/2022-03-24-%E9%87%8F%E5%8C%96%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h2 id="并行度与并行体系结构的分类"><a href="#并行度与并行体系结构的分类" class="headerlink" title="并行度与并行体系结构的分类"></a>并行度与并行体系结构的分类</h2><ul>
+<li>应用程序中的并行：<ul>
+<li>数据级并行（DLP）</li>
+<li>任务级并行（TLP）</li>
+</ul>
+</li>
+<li>硬件中的并行：<ul>
+<li>指令级并行（）</li>
+<li>向量体系结构和GPU</li>
+<li>线程级并行</li>
+<li>请求级并行</li>
+</ul>
+</li>
+<li>计算机的分类<ul>
+<li>单指令流，单数据流（SISD）：如单处理器</li>
+<li>单指令流，多数据流（SIMD）：同一指令由多个使用不同数据流的处理器执行</li>
+<li>多指令流，单数据流（MISD）：无</li>
+<li>多指令流，多数据流（MIMD）：每个处理器都提取自己的指令，对自己的数据进行操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="集成电路中的功率和能耗趋势"><a href="#集成电路中的功率和能耗趋势" class="headerlink" title="集成电路中的功率和能耗趋势"></a>集成电路中的功率和能耗趋势</h2><h4 id="性能，功率（功耗）与能耗的关注事项："><a href="#性能，功率（功耗）与能耗的关注事项：" class="headerlink" title="性能，功率（功耗）与能耗的关注事项："></a>性能，功率（功耗）与能耗的关注事项：</h4><ul>
+<li>1.一个处理器需要的最大功率：决定了电源系统。</li>
+<li>2.持续功耗是多少（热设计功耗TDP）：决定了冷却需求。</li>
+<li>3.能耗与能耗效率：<code>执行一项工作负载的能耗=平均功率*此项工作负载执行时间。</code>可以评估处理器在特定任务上的表现。</li>
+</ul>
+<h4 id="微处理器内部的能耗和功率"><a href="#微处理器内部的能耗和功率" class="headerlink" title="微处理器内部的能耗和功率"></a>微处理器内部的能耗和功率</h4><p>对CMOS芯片，传统的主要能耗源是开关晶体管，即<strong>动态能耗</strong>。每个晶体管所需的能耗与该晶体管驱动的容性负载与电压平方乘积成正比</p>
+<p>单个晶体管一次电平转换（0-1或1-0）的动态能耗：<br>$$<br>能耗_{动态} \propto 0.5 \times 容性负载 \times 电压^2<br>$$<br>单个晶体管需要的功率：<br>$$<br>功率_{动态} \propto 0.5 \times 容性负载 \times 电压^2 \times 开关频率<br>$$</p>
+<ul>
+<li>降低电压可以大幅降低动态功率和能耗。</li>
+<li>对于某一个指定的任务，降低时钟频率可以降低功率，但不会降低功耗</li>
+</ul>
+<p>一些提高能耗效率的方法：</p>
+<ul>
+<li>以逸待劳：关闭非活动模块的时钟</li>
+<li>动态电压-频率调整</li>
+<li>针对典型情景设计：如允许处理器超负荷短时间工作，当芯片检测到片上温度超过某一设定值的时候自动降低时钟频率或电压。</li>
+<li>超频</li>
+<li>控制静态功率：关闭非活动模块的电源。</li>
+</ul>
+<h2 id="性能的测量，报告与汇总"><a href="#性能的测量，报告与汇总" class="headerlink" title="性能的测量，报告与汇总"></a>性能的测量，报告与汇总</h2><h4 id="一些术语："><a href="#一些术语：" class="headerlink" title="一些术语："></a>一些术语：</h4><ul>
+<li><p>带宽（吞吐量）：在给定时间内完成的总工作量</p>
+</li>
+<li><p>延迟（响应时间）：一个事件从开始到完成所经历的时间，包括磁盘访问，输入输出活动，操作系统开销等时间</p>
+</li>
+<li><p>CPU时间：处理器执行计算的时间，不包括等待IO或运行其它程序的时间</p>
+</li>
+</ul>
+<p>报告性能结果的基本原则：可重现性，尽量包括重现所需的所有参数。</p>
+<h4 id="不同硬件间性能比较的基本思想"><a href="#不同硬件间性能比较的基本思想" class="headerlink" title="不同硬件间性能比较的基本思想"></a>不同硬件间性能比较的基本思想</h4><ul>
+<li>1.选择一种基准测试套件来测量性能，并用一个数值来代表套件评测出的硬件的性能。基准测试套件中包含多个侧重于不同类型任务的测试程序。</li>
+<li>2.任意选择一个基准计算机，将基准测试程序在基准计算机上的执行时间除以待评价计算机上的执行时间，得到一个与待评价计算机的性能成正比的比值。（相当于归一化）</li>
+<li>3.将所有测试程序通过2步得到的数值求<strong>几何平均值</strong>，作为待测量硬件在该基准测试套件上的性能度量。</li>
+</ul>
+<h4 id="Amdahl定律"><a href="#Amdahl定律" class="headerlink" title="Amdahl定律"></a>Amdahl定律</h4><p>$$<br>加速比&#x3D;整个任务未采用该升级时的执行时间&#x2F;整个任务采用该升级时的执行时间<br>$$</p>
+<p>加速比取决于两个因素：</p>
+<ul>
+<li>原计算机计算时间中可升级部分所占的比例，称之为<strong>升级比例</strong>。</li>
+<li>通过升级执行模式得到的改进，即在为整个程序使用这一执行模式时，任务的运行速度会提高多少倍，等于（升级的部分的）原模式执行时间除升级模式执行时间。称之为<strong>升级加速比</strong>。</li>
+</ul>
+<p>$$<br>新执行时间&#x3D;原执行时间 \times ((1-升级比例)+\frac{升级比例}{升级加速比})<br>$$</p>
+<h4 id="处理器性能公式"><a href="#处理器性能公式" class="headerlink" title="处理器性能公式"></a>处理器性能公式</h4><p>$$<br>CPU时间&#x3D;\frac{程序的CPU时钟周期数}{时间频率}<br>$$</p>
+<p>$$<br>每条指令时钟周期数CPI&#x3D;\frac{程序的CPU时钟周期数}{指令数}<br>$$</p>
+<p>影响处理器性能的三个因素：</p>
+<ul>
+<li>时钟周期时间</li>
+<li>CPI</li>
+<li>指令数</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>正则表达式</title>
+    <url>/2022/03/24/2022-03-24-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<p>正则语言是：在使用有限的内存下，遍历一次就能匹配的字符的集合。</p>
+<p>java.util.regex 包主要包括以下三个类：</p>
+<ul>
+<li><p>Pattern类：pattern 对象是一个正则表达式的编译表示。Pattern 类没有公共构造方法。要创建一个 Pattern 对象，你必须首先调用其公共静态编译方法，它返回一个 Pattern 对象。该方法接受一个正则表达式作为它的第一个参数。</p>
+</li>
+<li><p>Matcher类：Matcher 对象是对输入字符串进行解释和匹配操作的引擎。与Pattern 类一样，Matcher 也没有公共构造方法。你需要调用 Pattern 对象的 matcher 方法来获得一个 Matcher 对象。</p>
+</li>
+<li><p>PatternSyntaxException：</p>
+<p>PatternSyntaxException 是一个非强制异常类，它表示一个正则表达式模式中的语法错误。</p>
+</li>
+</ul>
+<h2 id="1-元字符"><a href="#1-元字符" class="headerlink" title="1.元字符"></a>1.元字符</h2><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.</td>
+<td>匹配除换行符外的任意字符</td>
+</tr>
+<tr>
+<td>\u####</td>
+<td>指定Unicode字符</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>匹配一个字母或数字或下划线</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>匹配\w不能匹配的字符</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>匹配一个空格字符或<code>tab  \t</code></td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配\s不能匹配的字符</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>匹配任意单个数字</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配一个非数字</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>匹配字符串的边界，边界指的是子串间有空格，或者是目标字符串的结束位置。sp<strong>han</strong> nn<strong>han</strong></td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配字符串的非边界</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配字符串的开始</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串的结束</td>
+</tr>
+</tbody></table>
+<h2 id="2-重复限定符"><a href="#2-重复限定符" class="headerlink" title="2.重复限定符"></a>2.重复限定符</h2><ul>
+<li>在重复限定符后加上？表示非贪婪匹配</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>*</td>
+<td>重复零次或多次</td>
+</tr>
+<tr>
+<td>+</td>
+<td>重复一次或多次</td>
+</tr>
+<tr>
+<td>?</td>
+<td>重复零次或一次</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>重复n次</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>重复n次或更多次</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>重复n次到m次</td>
+</tr>
+<tr>
+<td>(?i)</td>
+<td>表示(?i)所在的捕获组中后的字符匹配不区分大小写</td>
+</tr>
+</tbody></table>
+<h2 id="3-分组"><a href="#3-分组" class="headerlink" title="3.分组"></a>3.分组</h2><p>正则表达式中用小括号()来做分组，也就是括号中的内容作为一个整体。第一个小括号代表第一组，第二个小括号代表第二组…</p>
+<p>在java中，调用Matcher类实例化的matcher对象的<code>find()</code>方法后，可以用matcher对象的<code>String group(int n)</code>方法获取本次匹配到的子字符串以及子字符串中的匹配组。参数n&#x3D;0代表匹配到的整个子字符串，n&#x3D;1代表子字符串中的第一个匹配组，以此类推。</p>
+<h4 id="分组，捕获与反向引用"><a href="#分组，捕获与反向引用" class="headerlink" title="分组，捕获与反向引用"></a>分组，捕获与反向引用</h4><h5 id="1-分组"><a href="#1-分组" class="headerlink" title="1.分组"></a>1.分组</h5><p>圆括号括起来的一个正则表达式是一个分组</p>
+<h5 id="2-捕获"><a href="#2-捕获" class="headerlink" title="2.捕获"></a>2.捕获</h5><p>把正则表达式中的分组匹配到的内容，保存到内存中。保存的可能是索引也可能是拷贝。java中捕获组的索引保存在Match实例化对象的groups数组中。捕获的作用是如果之后还要用到分组的内容，不用再从字符串的开始重新匹配一遍。从左到右，以分组的左括号为标志，第一个出现的分组组号为1，以此类推。组0代表的是整个表达式。</p>
+<h5 id="3-反向引用"><a href="#3-反向引用" class="headerlink" title="3.反向引用"></a>3.反向引用</h5><p>圆括号的内容被捕获后，可以在这个括号后被引用。这种引用可以在正则表达式内部也可以在外部。内部反向引用使用<code>\\分组号</code>，外部使用<code>$分组号</code></p>
+<h2 id="4-转义"><a href="#4-转义" class="headerlink" title="4.转义"></a>4.转义</h2><p>在java正则表达式中使用<code>\\</code>表示转义。</p>
+<p>要这样来理解为什么要使用两个反斜杠表示转义而不是一个：首先考虑正则表达式本身的语法，在java正则表达式中如果需要匹配特殊字符，比如符号<code>$</code>或者<code>(</code>,就要在这个符号前加上一个反斜杠表示转义。比如正则表达式<code>a\&amp;c</code>可以精确匹配字符串<code>a&amp;c</code>。</p>
+<p>由于正则表达式在java代码中也是一个字符串，因此需要考虑字符串本身的转义问题。所以对于正则表达式<code>a\&amp;c</code>而言，对应的java字符串是<code>a\\&amp;c</code>.字符串的第一个反斜杠是在字符串处理层面给第二个反斜杠转义的，而第二个反斜杠是在正则表达式处理层面给字符<code>&amp;</code>转义的。</p>
+<h2 id="5-条件或"><a href="#5-条件或" class="headerlink" title="5.条件或"></a>5.条件或</h2><p>正则用符号 | 来表示或，也叫做分支条件，当满足正则里的分支条件的任何一种条件时，都会当成是匹配成功。</p>
+<p>如 <code>AB|CD</code>可以匹配AB或CD</p>
+<h2 id="6-区间"><a href="#6-区间" class="headerlink" title="6.区间"></a>6.区间</h2><p>正则提供一个元字符中括号 [] 来表示区间条件。</p>
+<ol>
+<li>限定0到9 可以写成[0-9]</li>
+<li>限定A-Z 写成[A-Z]</li>
+<li>限定某些数字 [165]</li>
+</ol>
+<ul>
+<li><code>[^]</code>是不接受的字符列表，表示匹配该字符列表范围外的任意<strong>一个</strong>字符</li>
+</ul>
+<h2 id="7-断言"><a href="#7-断言" class="headerlink" title="7.断言"></a>7.断言</h2><h2 id="8-捕获和非捕获"><a href="#8-捕获和非捕获" class="headerlink" title="8.捕获和非捕获"></a>8.捕获和非捕获</h2><h4 id="数字编号捕获组："><a href="#数字编号捕获组：" class="headerlink" title="数字编号捕获组："></a>数字编号捕获组：</h4><p>语法：<code>(expression)</code></p>
+<p>解释：从表达式左侧开始，每出现一个左括号，则和它对应的右括号之间的内容为一个分组，在分组中，第0组为整个表达式，第一组开始为分组。</p>
+<h4 id="命名编号捕获组："><a href="#命名编号捕获组：" class="headerlink" title="命名编号捕获组："></a>命名编号捕获组：</h4><p>语法：<code>(?&lt;name&gt;expression)</code><br>解释：分组的命名由表达式中的name指定</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">比如对于时间字符串：<span class="number">2017</span>-<span class="number">04</span>-<span class="number">25</span>，表达式如下:</span><br><span class="line">(?&lt;year&gt;\\d&#123;<span class="number">4</span>&#125;)-(?&lt;md&gt;(?&lt;month&gt;\\d&#123;<span class="number">2</span>&#125;)-(?&lt;date&gt;\\d&#123;<span class="number">2</span>&#125;))</span><br><span class="line">可以这样获取md：</span><br><span class="line">    matcher.group(<span class="string">&#x27;md&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="非捕获组："><a href="#非捕获组：" class="headerlink" title="非捕获组："></a>非捕获组：</h4><p>非捕获匹配就是括号中的内容不会存储在捕获组中，用group()函数索引捕获组会返回异常。</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line">对于时间字符串：<span class="number">2017</span>-<span class="number">04</span>-<span class="number">25</span>，表达式如下:</span><br><span class="line">	(?:\\d&#123;<span class="number">4</span>&#125;)<span class="built_in">-</span>((\\d&#123;<span class="number">2</span>&#125;)<span class="built_in">-</span>(\\d&#123;<span class="number">2</span>&#125;))</span><br><span class="line">第一组 (?:\d&#123;<span class="number">4</span>&#125;)，其实是被忽略的。当使用 matcher<span class="selector-class">.group</span>(<span class="number">4</span>) 时，系统会报错。</span><br></pre></td></tr></table></figure>
+
+
+
+<table>
+<thead>
+<tr>
+<th>常用分组构造形式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(?:pattern)</td>
+<td>匹配pattern但不捕获。常用在一个要匹配的模式有一些变种，但是各个变种之间的差别很小的情况中。比如industr(?:y|ies)可以匹配industry和industries</td>
+</tr>
+<tr>
+<td>(?&#x3D;pattern)</td>
+<td>Windows(?&#x3D;95|98|NT|2000)匹配Windows 2000中的Windows，但不匹配Windows 3.1中的Windows</td>
+</tr>
+<tr>
+<td>(?!pattern)</td>
+<td>匹配模式与(?&#x3D;pattern)相反</td>
+</tr>
+</tbody></table>
+<h2 id="9-反向引用"><a href="#9-反向引用" class="headerlink" title="9.反向引用"></a>9.反向引用</h2><p><strong>捕获会返回一个捕获组，这个分组保存在内存中，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用</strong>。</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">匹配两个连续的相同数字：<span class="string">&quot;(<span class="subst">\\</span>d)<span class="subst">\\</span>1&quot;</span></span><br><span class="line">匹配个位与千位相同，十位与百位相同的数：<span class="string">&quot;(<span class="subst">\\</span>d)(<span class="subst">\\</span>d)<span class="subst">\\</span>2<span class="subst">\\</span>1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内部反向引用使用<code>\\分组号</code>，外部使用<code>$分组号</code></li>
+<li>反向引用可以搭配<code>String</code>类的<code>replaceAll</code>方法把搜索到的字符串按照指定规则进行替换。</li>
+</ul>
+<h2 id="10-贪婪和非贪婪，反义"><a href="#10-贪婪和非贪婪，反义" class="headerlink" title="10.贪婪和非贪婪，反义"></a>10.贪婪和非贪婪，反义</h2><ul>
+<li><p>贪婪匹配：当正则表达式中包含能接受重复的限定符时，通常的行为是（在使整个表达式能得到匹配的前提下）匹配尽可能多的字符，这匹配方式叫做贪婪匹配。<br>特性：一次性读入整个字符串进行匹配，每当不匹配就舍弃最右边一个字符，继续匹配，依次匹配和舍弃（这种匹配-舍弃的方式也叫做回溯），直到匹配成功或者把整个字符串舍弃完为止，因此它是一种最大化的数据返回，能多不会少。</p>
+</li>
+<li><p>多个贪婪在一起时，如果字符串能满足他们各自最大程度的匹配时，就互不干扰，但如果不能满足时，会根据深度优先原则，也就是从左到右的每一个贪婪量词，优先最大数量的满足，剩余再分配下一个量词匹配。</p>
+</li>
+<li><p>懒惰匹配（非贪婪匹配）：当正则表达式中包含能接受重复的限定符时，通常的行为是（在使整个表达式能得到匹配的前提下）匹配尽可能少的字符，这匹配方式叫做懒惰匹配。<br>特性：从左到右，从字符串的最左边开始匹配，每次试图不读入字符匹配，匹配成功，则完成匹配，否则读入一个字符再匹配，依此循环（读入字符、匹配）直到匹配成功或者把字符串的字符匹配完为止。</p>
+</li>
+<li><p>java正则表达式默认为贪婪匹配，懒惰量词是在贪婪量词后面加个<code>?</code></p>
+</li>
+</ul>
+<h4 id="反义："><a href="#反义：" class="headerlink" title="反义："></a>反义：</h4><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>\W</td>
+<td>匹配任意非字母，数字，下划线，汉字的字符</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>匹配任意不是空白符的字符</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>匹配任意非数字的字符</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>匹配不是单词开头或结束的位置</td>
+</tr>
+<tr>
+<td>[^x]</td>
+<td>匹配除了x以外的任意字符</td>
+</tr>
+<tr>
+<td>[^aeiou]</td>
+<td>匹配除了aeiou以外的任意字符</td>
+</tr>
+</tbody></table>
+<p>总结自：</p>
+<p><a href="https://www.zhihu.com/question/48219401/answer/742444326">https://www.zhihu.com/question/48219401/answer/742444326</a></p>
+<p><a href="https://www.runoob.com/w3cnote/java-capture-group.html">https://www.runoob.com/w3cnote/java-capture-group.html</a></p>
+<p><a href="https://www.bilibili.com/video/BV1Eq4y1E79W?p=15">https://www.bilibili.com/video/BV1Eq4y1E79W?p=15</a></p>
+]]></content>
+      <tags>
+        <tag>regex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VSCode配置C语言编译调试环境</title>
+    <url>/2022/03/24/VSCode%E9%85%8D%E7%BD%AEC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[<h2 id="step0-一个vscode-C项目的结构"><a href="#step0-一个vscode-C项目的结构" class="headerlink" title="step0 一个vscode C项目的结构"></a>step0 一个vscode C项目的结构</h2><p>一个vscode项目会有一个.vscode文件夹在项目根目录下。这个文件夹中包含了对于该项目的vscode配置文件。具体到C&#x2F;C++项目，创建后该文件夹中需要有两个文件（tasks.json，launch.json）才可以正常编译调试程序：</p>
+<ul>
+<li><code>tasks.json</code>:包含构建（编译）指令</li>
+<li><code>launch.json</code>:包含调试设置</li>
+</ul>
+<p>如果想有更加个性化的设置，这个文件必不可少:</p>
+<ul>
+<li><code>c_cpp_properties.json</code>：包含一些编译器设置与IntelliSense（用于自动代码补全，实时错误检查，代码改进建议）设置</li>
+</ul>
+<h2 id="step1-配置tasks-json"><a href="#step1-配置tasks-json" class="headerlink" title="step1 配置tasks.json"></a>step1 配置tasks.json</h2><p><strong>自动生成tasks.json文件的方法</strong>：在编辑器上方的终端选项中选择（应该是）最后一个：配置默认生成任务，然后在下拉菜单中选择构建所使用的编译器就可以了。</p>
+<p>我的tasks.json:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;file&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-o&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;options&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;problemMatcher&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$gcc&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;group&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;build&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;detail&quot;</span><span class="punctuation">:</span> <span class="string">&quot;compiler: C:/mingw64/bin/gcc.exe&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>type条目指定了该以何种方式解释下面的command。如果值是<code>shell</code>，则当作命令行指令解析（bash，cmd，powershell等）。一般设置为shell就可以了。（默认生成的值是<code>cppbuild</code>，不太明白什么意思。）</li>
+<li>command条目指定了编译器的绝对路径。</li>
+<li>args条目指定了传递给编译器的参数，该条目中参数的位置必须按照编译器希望的顺序摆放。这里引用的一些变量可以参看附录1.通过改变这些变量，可以编译多个文件，或者使用一些其它的编译方式。具体怎么编译就看你对gcc命令的了解程度了。</li>
+<li>label条目指定了你会在终端的tasks list中看到什么，可以随意设置。</li>
+<li>“isDefault”: 设置为true表示使用<code>Ctrl+Shift+B</code>可以执行构建任务。</li>
+</ul>
+<h4 id="执行构建工作"><a href="#执行构建工作" class="headerlink" title="执行构建工作"></a>执行构建工作</h4><p>使用Ctrl+Shift+B快捷键或者在编辑器上部的终端选项卡中选择运行生成任务。然后就有了.exe文件</p>
+<p>![屏幕截图 2022-03-23 211641](<a href="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE">https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/屏幕截图</a> 2022-03-23 211641.png)</p>
+<p>运行.exe文件：</p>
+<p>直接在终端中键入可执行文件名或者.&#x2F;可执行文件名。</p>
+<h2 id="step2-配置launch-json"><a href="#step2-配置launch-json" class="headerlink" title="step2 配置launch.json"></a>step2 配置launch.json</h2><p><strong>自动生成launch.json文件的方法</strong>：在编辑器上方的运行选项卡中选择<code>编辑配置...</code>选项，然后可以根据需要选择一个，之后就会生成launch.json文件。</p>
+<p>生成的launch.json:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gcc.exe - Build and debug active file&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\mingw64\\bin\\gdb.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;setupCommands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Enable pretty-printing for gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-enable-pretty-printing&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>program</code> - 指定了要调试的可执行文件。</li>
+<li><code>args</code> - 传递给程序的参数，使用双引号将参数括起来，参数间用逗号分隔。如果有转义字符，需要用双斜杠转义。</li>
+<li><code>cwd</code> - 指定了要调试的程序的工作目录。</li>
+<li><code>stopAtEntry</code> - 是否在main函数入口处停止。</li>
+<li><code>MIMode</code>：调制程序，只允许gdb或lldb。</li>
+<li><code>externalConsole</code>：是否为调试对象使用独立的控制台。</li>
+<li><code>miDebuggerPath</code> 调试程序路径</li>
+<li><code>preLaunchTask</code> - 指定了在执行运行或调试任务前要执行的任务。<strong>注意这里的值要和tasks.json中的label的值相同。</strong></li>
+</ul>
+<h4 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h4><p>使用F5或者<strong>Run &gt; Start Debugging</strong>开始调试。</p>
+<p>在监视（WATCH）中点加号可以添加想要观察的变量。</p>
+<h2 id="step3-编辑c-cpp-properties-json"><a href="#step3-编辑c-cpp-properties-json" class="headerlink" title="step3 编辑c_cpp_properties.json"></a>step3 编辑c_cpp_properties.json</h2><p>这个配置文件是可以可视化配置的：使用 Ctrl+Shift+P快捷键打开命令面板，然后选择**C&#x2F;C++: Edit Configurations (UI)**就可以了。</p>
+<p>我的配置文件：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GCC&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;includePath&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;defines&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;_DEBUG&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;UNICODE&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;_UNICODE&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;windowsSdkVersion&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10.0.18362.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;compilerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gnu99&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cppStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;c++17&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;intelliSenseMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-gcc-x64&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">4</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>includePath：源文件随附的头文件目录，**表示递归搜索。如果在compilerPath中指定了编译器，就不用在这里设置系统include路径。</li>
+<li>compilerPath：编译器位置</li>
+</ul>
+<h2 id="附录-vscode配置文件中的变量"><a href="#附录-vscode配置文件中的变量" class="headerlink" title="附录 vscode配置文件中的变量"></a>附录 vscode配置文件中的变量</h2><p>在<code>launch.json</code>或<code>tasks.json</code>中，使用**${variableName}**这样的语法引用变量。</p>
+<h4 id="预定义变量（部分）"><a href="#预定义变量（部分）" class="headerlink" title="预定义变量（部分）"></a>预定义变量（部分）</h4><p>直接看例子吧。</p>
+<p>假设编辑器打开的文件的路径是：<code>/home/your-username/your-project/folder/file.ext</code></p>
+<p>项目的根目录是<code>/home/your-username/your-project</code></p>
+<ul>
+<li><p><strong>${workspaceFolder}</strong> -<code>/home/your-username/your-project</code></p>
+</li>
+<li><p><strong>${workspaceFolderBasename}</strong> - <code>your-project</code></p>
+</li>
+<li><p><strong>${file}</strong> - <code>/home/your-username/your-project/folder/file.ext</code></p>
+</li>
+<li><p><strong>${fileWorkspaceFolder}</strong> - <code>/home/your-username/your-project</code></p>
+</li>
+<li><p><strong>${relativeFile}</strong> - <code>folder/file.ext</code> 这个是当前编辑文件相对于项目根目录的路径</p>
+</li>
+<li><p><strong>${relativeFileDirname}</strong> - <code>folder</code></p>
+</li>
+<li><p><strong>${fileBasename}</strong> - <code>file.ext</code></p>
+</li>
+<li><p><strong>${fileBasenameNoExtension}</strong> - <code>file</code></p>
+</li>
+<li><p><strong>${fileDirname}</strong> - <code>/home/your-username/your-project/folder</code></p>
+</li>
+<li><p><strong>${fileExtname}</strong> - <code>.ext</code></p>
+</li>
+</ul>
+<p>主要参考自vscode官方文档：<a href="https://code.visualstudio.com/docs/cpp/config-mingw">https://code.visualstudio.com/docs/cpp/config-mingw</a></p>
+]]></content>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux常用操作与工具速查</title>
+    <url>/2022/03/24/linux%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E4%B8%8E%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</url>
+    <content><![CDATA[<h1 id="bash基础操作"><a href="#bash基础操作" class="headerlink" title="bash基础操作"></a>bash基础操作</h1><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">ls - list directory contents</span><br><span class="line">用法：ls [选项]....[文件]...</span><br><span class="line">常用选项：</span><br><span class="line"><span class="code">		-a		不隐藏任何以. 开始的项目</span></span><br><span class="line"><span class="code">		-l		每行只列出一个文件</span></span><br><span class="line"><span class="code">		--block-size=SIZE	配合-l使用，打印时按照SIZE缩放尺寸</span></span><br><span class="line"><span class="code">		--color[=WHEN]	以彩色文本显示输出结果，WHEN=always,never,auto</span></span><br><span class="line"><span class="code">		-h,--human-readable	以人类可以读懂的方式打印</span></span><br><span class="line"><span class="code">		-t		根据编辑时间排序，最新的在最前面</span></span><br><span class="line"><span class="code">		-u		根据访问时间排序，最新的在最前面</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">pwd</span>	打印当前工作目录名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">touch</span>	修改文件或目录的时间属性，如果文件不存在，则ji</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span>	</span><br><span class="line">	-n	删除输出结果结尾的换行符</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sas"><table><tr><td class="code"><pre><span class="line"><span class="keyword">file</span> &lt;<span class="keyword">filename</span>&gt;</span><br><span class="line">	列出文件属性</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">less &lt;filename&gt;</span><br><span class="line">	列出文件内容</span><br><span class="line">	/<span class="built_in">characters</span> 查找指定字符串</span><br><span class="line">	n			向前查找下一个匹配的字符串</span><br><span class="line">	G			移动到最后一行</span><br><span class="line">	g			移动到开头一行</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">type &lt;command&gt; 显示命令的类型</span><br><span class="line">命令有四种形式：</span><br><span class="line"><span class="bullet">- </span>一个可执行程序，可以是二进制文件或者脚本文件</span><br><span class="line"><span class="bullet">- </span>内建于shell自身的命令</span><br><span class="line"><span class="bullet">- </span>shell函数</span><br><span class="line"><span class="bullet">- </span>命令别名 alias</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">which</span> &lt;<span class="built_in">command</span>&gt; 显示一个可执行程序的位置</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">whatis <span class="tag">&lt;<span class="name">command</span>&gt;</span> 简洁的打印命令的功能</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> &lt;<span class="built_in">command</span> name&gt; = <span class="string">&#x27;&lt;string&gt;&#x27;</span>  等号两侧不嫩有空格</span><br><span class="line">创建命令</span><br><span class="line"><span class="built_in">unalias</span> &lt;<span class="built_in">command</span> name&gt; </span><br><span class="line">删除别名</span><br><span class="line"><span class="built_in">alias</span></span><br><span class="line">查看所有定义在系统环境中的别名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">mkdir - make directories</span><br><span class="line">mkdir	<span class="selector-attr">[选项]</span>...<span class="selector-attr">[目录]</span>...</span><br><span class="line">	-<span class="selector-tag">p</span>	确保目录名称存在，不存在就建一个</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line">rmdir - remove empty directories</span><br><span class="line">rmdir	[选项]...[目录]...</span><br><span class="line">只空目录可用</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">rm - remove files or directories</span><br><span class="line">rm	<span class="selector-attr">[选项]</span>...<span class="selector-attr">[文件]</span></span><br><span class="line">常用选项：</span><br><span class="line">		-r	递归删除目录及其内容</span><br><span class="line">		-f 	强制删除，忽略不存在的文件，不提示确认</span><br><span class="line">		-<span class="selector-tag">i</span> 	删除前逐一询问确认</span><br><span class="line">		-v	显示操作信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ln</span> 	创建软连接或硬连接</span><br><span class="line"><span class="built_in">ln</span> <span class="built_in">file</span> link	创建硬连接，硬链接不能跨越物理设备，不能关联目录</span><br><span class="line"><span class="built_in">ln</span> -s <span class="keyword">item</span> link	创建符号连接，<span class="keyword">item</span>可以是一个文件或是一个目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span> - <span class="keyword">change</span> working directory</span><br><span class="line"><span class="keyword">cd</span> [路径]</span><br><span class="line">常用选项：</span><br><span class="line">		-	更改工作目录到上一次进入的目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">cat - 连接一个或多个文件，然后把它们打印到标准输出</span><br><span class="line">cat	[选项]...[文件]...</span><br><span class="line">常用选项：</span><br><span class="line">		-<span class="built_in">n</span>		由<span class="number">1</span>开始对输出的所有行编号</span><br><span class="line">		-b		与-<span class="built_in">n</span>类似，但对空白行不编号</span><br><span class="line">		-s		当遇到有连续两行以上的空白行，就代换为一行的空白行</span><br><span class="line">		-E		在每行的结束处显示$</span><br><span class="line">		-<span class="built_in">T</span>		将TAB显示为^I</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">cp - copy files and directories</span><br><span class="line">cp	<span class="selector-attr">[选项]</span>...源文件...目录</span><br><span class="line">常用选项：</span><br><span class="line">		-r	递归复制目录及其子目录内的所有内容</span><br><span class="line">		-<span class="selector-tag">a</span>  相当于-dpr		  </span><br><span class="line">		-d  复制时保留链接，相当与保留快捷方式</span><br><span class="line">        -<span class="selector-tag">p</span>  除复制文件内容外也复制修改时间和访问权限</span><br><span class="line">        -r  若给出的源文件是一个目录文件，此时将复制该目录下所有的子目录和文件。</span><br><span class="line">		-<span class="selector-tag">i</span>	询问是否覆盖已存在文件</span><br><span class="line">		-f  与-<span class="selector-tag">i</span>相反</span><br><span class="line">		-u	当把文件从一个目录复制到另一个目录时，仅复制 目标目录中不存在的文件，或者是文件内容新于目标目录中已经存在文件的内容的文件</span><br><span class="line">		-v	显示翔实的操作信息</span><br><span class="line">		-l  不复制文件，只是生成链接文件</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">mv -<span class="built_in"> move/rename </span>file</span><br><span class="line">mv	[选项]...源文件...目录</span><br><span class="line">常用选项：</span><br><span class="line">	与cp基本一致</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight smali"><table><tr><td class="code"><pre><span class="line">source -<span class="built_in"> execute </span>commands in file</span><br><span class="line">source	文件名 [参数]</span><br><span class="line">注：文件应为可执行文件，即为绿色</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight gauss"><table><tr><td class="code"><pre><span class="line"><span class="keyword">locate</span> 查找文件</span><br><span class="line">执行一次快速的路径名数据库搜索，并且输出每个与给定字符串相匹配的路径名</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line">find - search for files in a <span class="literal">directory</span> hierarchy</span><br><span class="line">find   path   -option   [   -<span class="literal">print</span> ]   [ -<span class="keyword">exec</span>   -ok   command ]   &#123;&#125; \<span class="comment">;</span></span><br><span class="line">常用选项：</span><br><span class="line">	.				在所有文件的范围中查找</span><br><span class="line">	-<span class="keyword">name</span> &lt;<span class="keyword">name</span>&gt; 	查找名称为&lt;<span class="keyword">name</span>&gt;的文件，可以使用通配符</span><br><span class="line">	-type c			查找文件类型为c的文件，d:<span class="literal">directory</span> f:regular <span class="keyword">file</span></span><br><span class="line">	-size n[cwbkMG]	查找大于，小于，或等于某一大小的文件。-代表小于，+代表大于。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep - <span class="built_in">print</span> lines matching a pattern</span><br><span class="line">grep   [选项]...PATTERN [file]...</span><br><span class="line">常用选项：</span><br><span class="line">		-a	<span class="comment"># 不忽略二进制数据进行搜索</span></span><br><span class="line">		-i	<span class="comment"># 忽略字符大小写差异</span></span><br><span class="line">		-r	<span class="comment"># 从文件夹递归查找</span></span><br><span class="line">		-n	<span class="comment"># 显示行号</span></span><br><span class="line">		-Cn <span class="comment"># 获取查找结果的前后n行上下文</span></span><br><span class="line">		-An <span class="comment"># 匹配内容时显示接下来的n行</span></span><br><span class="line">		-v	<span class="comment"># 将结果进行反选，排除(行)</span></span><br><span class="line">		-w	<span class="comment"># 精确匹配，不会匹配到子串</span></span><br><span class="line">		-E	<span class="comment"># 支持正则扩展</span></span><br><span class="line">		grep <span class="string">&#x27;xx&#x27;</span> <span class="comment"># 正则匹配</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">tee <span class="tag">&lt;<span class="name">filename</span>&gt;</span>... 从标准输入读入数据，复制数据到标准输出，同时将数据复制到一个或多个文件</span><br><span class="line">	一般用来捕捉管道中某一阶段的内容</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">tree </span><br><span class="line">tree <span class="selector-attr">[选项]</span> <span class="selector-attr">[目录名]</span></span><br><span class="line">常用选项：</span><br><span class="line">		-<span class="selector-tag">a</span> 列出全部文件</span><br><span class="line">		-d 只列出目录</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">linux文件调用权限：文件拥有者，群组，其它</span><br><span class="line">chmod	更改文件或目录的权限，只有文件的所有者或者超级用户才可以这样做</span><br><span class="line">chmod 权限设定字符串 文件...</span><br><span class="line">可以使用八进制或符号表示发设定</span><br><span class="line">权限设定字符串格式：</span><br><span class="line">		[ugoa..][[+-=][rwxX]...][,...]</span><br><span class="line">		u	该文件拥有者</span><br><span class="line">		g	与该文件的拥有者属于同一个群组</span><br><span class="line">		o	其他以外的人</span><br><span class="line">		a	all的简写，是u，g，o的联合</span><br><span class="line">		+	增加权限</span><br><span class="line">		-	取消权限</span><br><span class="line">		=	唯一设定权限</span><br><span class="line">		r	可读取</span><br><span class="line">		w	可写入</span><br><span class="line">		x	可执行</span><br><span class="line">		<span class="symbol">X</span>	</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">diff 比较文件差异</span><br><span class="line">diff   <span class="selector-attr">[选项]</span> 文件<span class="number">1</span>  文件<span class="number">2</span></span><br><span class="line">常用选项：</span><br><span class="line">		-<span class="selector-tag">b</span> 不检查空格字符的不同</span><br><span class="line">		-<span class="selector-tag">B</span> 不检查空行</span><br><span class="line">		-<span class="selector-tag">q</span> 仅显示有无差异，不显示详细信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed 	文件处理工具</span><br><span class="line">sed [-r] <span class="string">&#x27;xxxxx&#x27;</span> file <span class="comment"># 命令+选项+命令功能+文件</span></span><br><span class="line">sed -r <span class="string">&#x27;/[0-9]&#123;3&#125;/p&#x27;</span> file <span class="comment">#-r,支持扩展正则</span></span><br><span class="line"><span class="comment"># sed命令只会输出修改后的结果，不会直接对文件进行修改</span></span><br><span class="line"><span class="comment"># &#x27;&#x27;中的$无法被展开，可以用&quot;&quot;替代</span></span><br><span class="line">常用选项：</span><br><span class="line">		-n <span class="comment"># 加上 -n 参数后，则只有经过 sed 处理的内容才会被显示。</span></span><br><span class="line">		-n 4,8p &lt;file&gt; 	<span class="comment"># 显示文件4到8行的内容</span></span><br><span class="line">		-n 4p &lt;file&gt;	显示文件第4行的内容</span><br><span class="line">		-e 进行多项编辑，即对输入行应用多条 sed 命令时使用。</span><br><span class="line">		-i 直接修改读取的档案内容，而不是输出到屏幕。使用时应小心。</span><br><span class="line">常用命令：</span><br><span class="line">		a:新增 a 后紧接着\\，在当前行的后面添加一行文本</span><br><span class="line">		c:取代，c 后紧接着\\，用新的文本取代本行的文本</span><br><span class="line">		i:插入，i 后紧接着\\，在当前行的上面插入一行文本</span><br><span class="line">		d:删除，删除当前行的内容</span><br><span class="line">		p : 显示，把选择的内容输出。通常 p 会与参数 sed -n 一起使用</span><br><span class="line">		s : 取代，格式为 s/re/string，re 表示正则表达式，string 为字符串，将正则表达式替换为字符串</span><br></pre></td></tr></table></figure>
+
+<p>增删改查（功能）</p>
+<table>
+<thead>
+<tr>
+<th align="center">s</th>
+<th align="center">p</th>
+<th align="center">d</th>
+<th align="center">cai</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">替换</td>
+<td align="center">显示</td>
+<td align="center">删除</td>
+<td align="center">增加</td>
+</tr>
+</tbody></table>
+<h5 id="sed-p查找"><a href="#sed-p查找" class="headerlink" title="sed-p查找"></a>sed-p查找</h5><table>
+<thead>
+<tr>
+<th align="center">查找格式</th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">‘1p’、’2p’</td>
+<td align="center">指定行号查找</td>
+</tr>
+<tr>
+<td align="center">‘1,5p’、’4,$p’</td>
+<td align="center">指定范围内查找</td>
+</tr>
+<tr>
+<td align="center">‘&#x2F;xxx&#x2F;p’</td>
+<td align="center">类似grep，过滤，&#x2F;&#x2F;里可写正则</td>
+</tr>
+<tr>
+<td align="center">‘&#x2F;10:00&#x2F;,&#x2F;11:00&#x2F;p’</td>
+<td align="center">表示范围的过滤，若没有，则匹配首尾</td>
+</tr>
+</tbody></table>
+<h5 id="sed-d删除"><a href="#sed-d删除" class="headerlink" title="sed-d删除"></a>sed-d删除</h5><p>同sed-p，只需要把p改成d即可</p>
+<h5 id="sed-cai增加"><a href="#sed-cai增加" class="headerlink" title="sed-cai增加"></a>sed-cai增加</h5><p>同样可用p中的匹配方式 </p>
+<table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">c</td>
+<td align="center">change替代这行的内容</td>
+</tr>
+<tr>
+<td align="center">a</td>
+<td align="center">append追加内容（当前行的下一行）</td>
+</tr>
+<tr>
+<td align="center">i</td>
+<td align="center">insert插入（当前行的上一行）</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -n <span class="string">&#x27;3a 996.icu&#x27;</span> file</span><br><span class="line">sed -n <span class="string">&#x27;3c 955.wlb&#x27;</span> file</span><br></pre></td></tr></table></figure>
+
+<h5 id="sed-s替换-substitute"><a href="#sed-s替换-substitute" class="headerlink" title="sed-s替换(substitute)"></a>sed-s替换(substitute)</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sed -n <span class="string">&#x27;s#str1#str2#g&#x27;</span> file <span class="comment">#将str2替换成str1，g代表global,#可以是任意字符，但#较好</span></span><br><span class="line">sed -nr <span class="string">&#x27;s#(^.*)_(.*$)#\2_\1#g&#x27;</span> file <span class="comment">#后向引用</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight llvm"><table><tr><td class="code"><pre><span class="line">ps 	查看当前系统运行状态</span><br><span class="line">	<span class="keyword">x</span></span><br><span class="line">	aux</span><br><span class="line">top	动态<span class="keyword">c</span>	</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight pf"><table><tr><td class="code"><pre><span class="line">gcc	GNU Compiler Collection GNU编译器套件</span><br><span class="line">gcc [option]...[parameters]...</span><br><span class="line">常用选项：</span><br><span class="line">	-E				只激活预处理，但不生成文件，如果要查看需要重定向或使用管道。</span><br><span class="line">	-o <span class="variable">&lt;filename&gt;</span>		指定生成的输出文件</span><br><span class="line">	-S		将C代码转换为汇编代码（只激活预处理和编译）</span><br><span class="line">	-W<span class="literal">all</span>	显示所有警告信息</span><br><span class="line">	-g		在产生的目标文件中加入调试信息</span><br><span class="line">	-c		仅执行编译操作，不进行链接操作（激活预处理和编译，汇编）</span><br><span class="line">	-ansi	关闭gun c中与ansi c不兼容的特性，激活ansi c的专有特性。</span><br><span class="line">	-M		列出依赖</span><br><span class="line">	-MM		列出依赖，但是忽略由include造成的依赖关系</span><br><span class="line">	-include filename	编译时包含头文件，相当于在代码中include <span class="string">&quot;filename&quot;</span></span><br><span class="line">	-I<span class="variable">&lt;path&gt;</span>	编译时除了从默认路径搜索头文件外，还从<span class="variable">&lt;path&gt;</span>中搜索头文件，可以使用相对目录</span><br><span class="line">	-O0 -O1 -O2 -O3	优化级，O3最高 -O代表 -O1</span><br><span class="line">	-static		禁止使用动态库</span><br><span class="line">	-share		尽量使用动态库</span><br><span class="line">	-shared		产生共享对象，使用装载时重定位方法</span><br><span class="line">	-nostdlib	不连接系统标准启动文件和标准库文件，常用于编译内核，bootloader</span><br><span class="line">	在MOS中看到的：</span><br><span class="line">	-O          remove unneeded NOPs and swap branches</span><br><span class="line">	-G<span class="variable">&lt;number&gt;</span>  将小于number字节数的全局变量和静态变量放在特定位置</span><br><span class="line">	-mno-abicalls D<span class="keyword">on</span>&#x27;t use Irix PIC 不懂，</span><br><span class="line">	-fno-builtin  不使用内建函数</span><br><span class="line">	 -Wa,<span class="variable">&lt;options&gt;</span>            Pass comma-separated <span class="variable">&lt;options&gt;</span> <span class="keyword">on</span> <span class="keyword">to</span> the assembler</span><br><span class="line">	 -xgot                   assume a <span class="number">32</span> bit GOT</span><br><span class="line">	 -fPIC                   如果可以的话产生地址无关代码</span><br><span class="line">	 -fpic					 与-fPIC类似，不过产生的代码要小，但有平台限制。</span><br><span class="line">	  -march=                   Specify CPU <span class="keyword">for</span> code generation purposes</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tmux	终端软件</span><br><span class="line">一下操作均需先按ctrl+b，再按对应按键</span><br><span class="line">窗格操作：</span><br><span class="line">	%			水平分屏</span><br><span class="line">	<span class="string">&quot;			垂直分屏</span></span><br><span class="line"><span class="string">	方向键		  切换到对应方向的分屏</span></span><br><span class="line"><span class="string">	o			依次切换</span></span><br><span class="line"><span class="string">	z			最大化当前窗格</span></span><br><span class="line"><span class="string">	x			关闭当前窗格</span></span><br><span class="line"><span class="string">窗口操作：</span></span><br><span class="line"><span class="string">	c			创建新的窗口</span></span><br><span class="line"><span class="string">	p			切换上一个窗口</span></span><br><span class="line"><span class="string">	n			切换下一个窗口</span></span><br><span class="line"><span class="string">	num			切换到第num个窗口</span></span><br><span class="line"><span class="string">	w			列出所有窗口</span></span><br><span class="line"><span class="string">会话操作：</span></span><br><span class="line"><span class="string">	tmux	new -s &lt;name&gt;		新建名为&lt;name&gt;的会话</span></span><br><span class="line"><span class="string">	d			退出会话</span></span><br><span class="line"><span class="string">	tmux a it &lt;name&gt;	通过&lt;name&gt;回到会话</span></span><br><span class="line"><span class="string">	tmux ls				查看会话名字</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">objdump	  查看目标文件或者可执行的目标文件的构成的gcc工具</span><br><span class="line">objdump [参数] [文件]</span><br><span class="line">	常用参数：</span><br><span class="line">		-h			<span class="comment"># 将ELF文件的各个段的基本信息打印出来</span></span><br><span class="line">		-s			<span class="comment"># 将所有段的内容以16进制的形式打印</span></span><br><span class="line">		-d			<span class="comment"># 将所有包含指令的段反汇编</span></span><br><span class="line">		-D			<span class="comment"># 与-d类似，但反汇编所有section</span></span><br><span class="line">		-S			<span class="comment"># 尽可能反汇编出yuan&#x27;d</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">readelf		显示ELF文件信息</span><br><span class="line"></span><br><span class="line">常用选项：</span><br><span class="line">	-a		<span class="comment"># 显示全部信息</span></span><br><span class="line">	-h		<span class="comment"># 显示文件头信息</span></span><br><span class="line">	-l		<span class="comment"># 显示 program headers</span></span><br><span class="line">	-S		<span class="comment"># 显示 section headers</span></span><br><span class="line">    -t		<span class="comment"># section details</span></span><br><span class="line">	-s		<span class="comment"># 显示符号表段中的项</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line">size	查看ELF文件的代码，数据，和bss段的长度</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">objcopy</span>		复制与翻译目标文件</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight maxima"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nm</span>		查看ELF文件的符号表</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line"><span class="keyword">strip</span>	去掉ELF文件中的调试信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">ld	链接器</span><br><span class="line">常用参数：</span><br><span class="line">		-<span class="built_in">T</span> &lt;script&gt;		指定链接脚本</span><br><span class="line">		-<span class="built_in">N</span>	把<span class="built_in">text</span>和data节设置为可读写.同时,取消数据节的页对齐,同时,取消对共享库的连接.(不一定准确)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">gxemul</span><br><span class="line">常用参数：</span><br><span class="line">	-E <span class="built_in">t</span> 	# 尝试模拟<span class="built_in">t</span>型机器</span><br><span class="line">	-C <span class="built_in">t</span>	# 尝试模拟<span class="built_in">t</span>类型的特定CPU</span><br><span class="line">	-M m    # emulate m MBs of physical RAM</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim</span><br><span class="line">	ctrl n <span class="comment"># 自动补全，tags文件需要在当前工作目录下</span></span><br><span class="line">	normal模式下：</span><br><span class="line">		x			<span class="comment"># 删除当前光标所在的一个字符</span></span><br><span class="line">		<span class="built_in">dd</span>  		<span class="comment"># 删除当前行，并把删除的行存到剪贴板里</span></span><br><span class="line">		yy  		<span class="comment"># 拷贝当前行</span></span><br><span class="line">		p   		<span class="comment"># 粘贴剪贴板</span></span><br><span class="line">		:<span class="built_in">help</span> &lt;<span class="built_in">command</span>&gt; </span><br><span class="line">		0			<span class="comment"># 到行头</span></span><br><span class="line">		$			<span class="comment"># 到行尾</span></span><br><span class="line">		/pattern	<span class="comment"># 搜索pattern字符串，按n键到下一个</span></span><br><span class="line">		u			<span class="comment"># undo</span></span><br><span class="line">		ctrl-r 		<span class="comment"># redo</span></span><br><span class="line">		:saveas		<span class="comment"># 另存为</span></span><br><span class="line">		:N			<span class="comment"># 到第N行</span></span><br><span class="line">		G			<span class="comment"># 到最后一行</span></span><br><span class="line">		gg			<span class="comment"># 到第一行</span></span><br><span class="line">		%			<span class="comment"># 匹配括号移动（需要把光标先移到括号上）</span></span><br><span class="line">		*和<span class="comment"># 	   # 匹配光标当前所在的单词，移动光标到下一个（或上一个）匹配单词（*是下一个，#是上一						个）</span></span><br><span class="line">		:<span class="built_in">split</span> → 创建分屏 (:vsplit创建垂直分屏)</span><br><span class="line">		&lt;C-w&gt;&lt;<span class="built_in">dir</span>&gt; : <span class="built_in">dir</span>就是方向，可以是 hjkl 或是 ←↓↑→ 中的一个，其用来切换分屏。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="shell的重定向与管道"><a href="#shell的重定向与管道" class="headerlink" title="shell的重定向与管道"></a>shell的重定向与管道</h2><ul>
+<li>三种流：<ul>
+<li>标准输入：stdin: 0</li>
+<li>标准输出：stdout:1</li>
+<li>标准错误：stderr:2</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">重定向输出		 &gt;</span><br><span class="line">重定向追加输出		&gt;&gt;</span><br><span class="line">重定向输入		&lt;</span><br><span class="line">&amp;&gt;可以同时重定向标准输出与标准错误输出到指定文件</span><br><span class="line">管道：| 可以连接命令</span><br><span class="line"><span class="keyword">command</span>1 | <span class="keyword">command</span>2 | <span class="keyword">command</span>3 | <span class="string">...</span></span><br><span class="line">是将 <span class="keyword">command</span>1 的 stdout 发给 <span class="keyword">command</span>2 的 stdin，<span class="keyword">command</span>2 的 stdout 发给 <span class="keyword">command</span>3 的 stdin，依此类推。</span><br></pre></td></tr></table></figure>
+
+<h2 id="shell（字符）展开"><a href="#shell（字符）展开" class="headerlink" title="shell（字符）展开"></a>shell（字符）展开</h2><p>在从命令行输入命令后，shell会将输入的命令进行展开，然后执行展开后的命令</p>
+<h3 id="路径名展开"><a href="#路径名展开" class="headerlink" title="路径名展开"></a>路径名展开</h3><h3 id="波浪线展开"><a href="#波浪线展开" class="headerlink" title="波浪线展开"></a>波浪线展开</h3><p>跟家目录有关</p>
+<h3 id="算数表达式展开"><a href="#算数表达式展开" class="headerlink" title="算数表达式展开"></a>算数表达式展开</h3><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">算数表达式要在$((  ))中</span><br></pre></td></tr></table></figure>
+
+<h3 id="花括号展开"><a href="#花括号展开" class="headerlink" title="花括号展开"></a>花括号展开</h3><p>有点像笛卡尔积</p>
+<h3 id="参数展开"><a href="#参数展开" class="headerlink" title="参数展开"></a>参数展开</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">使用$<span class="tag">&lt;<span class="name">varname</span>&gt;</span>来引用名为<span class="tag">&lt;<span class="name">varname</span>&gt;</span>的变量，如果这个变量存在，$<span class="tag">&lt;<span class="name">varname</span>&gt;</span>会替换为变量内容，否则替换为空字符串</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令替换"><a href="#命令替换" class="headerlink" title="命令替换"></a>命令替换</h3><p>把一个命令的输出作为另一个命令的<strong>一部分</strong>来使用</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">shell</span><span class="language-bash">会把$(<span class="built_in">command</span>)替换为<span class="built_in">command</span>的输出</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="双引号与单引号"><a href="#双引号与单引号" class="headerlink" title="双引号与单引号"></a>双引号与单引号</h3><ul>
+<li><p>在双引号中：除$，\ (反斜杠），和 &#96;（倒引号）外，其它的特殊字符作为普通字符对待。这意味着单词分割、路径名展开、 波浪线展开和花括号展开都将失效，然而参数展开、算术展开和命令替换 仍然执行。</p>
+</li>
+<li><p>在单引号中：禁止所有的展开</p>
+</li>
+</ul>
+<h2 id="shell键盘操作技巧"><a href="#shell键盘操作技巧" class="headerlink" title="shell键盘操作技巧"></a>shell键盘操作技巧</h2><table>
+<thead>
+<tr>
+<th>按键</th>
+<th>行动</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ctrl-a</td>
+<td>移动光标到行首。</td>
+</tr>
+<tr>
+<td>Ctrl-e</td>
+<td>移动光标到行尾。</td>
+</tr>
+<tr>
+<td>Ctrl-f</td>
+<td>光标前移一个字符；和右箭头作用一样。</td>
+</tr>
+<tr>
+<td>Ctrl-b</td>
+<td>光标后移一个字符；和左箭头作用一样。</td>
+</tr>
+<tr>
+<td>Alt-f</td>
+<td>光标前移一个字。</td>
+</tr>
+<tr>
+<td>Alt-b</td>
+<td>光标后移一个字。</td>
+</tr>
+<tr>
+<td>Ctrl-l</td>
+<td>清空屏幕，移动光标到左上角。clear 命令完成同样的工作。</td>
+</tr>
+<tr>
+<td>Ctrl-d</td>
+<td>删除光标位置的字符。</td>
+</tr>
+<tr>
+<td>Ctrl-t</td>
+<td>光标位置的字符和光标前面的字符互换位置。</td>
+</tr>
+<tr>
+<td>Alt-t</td>
+<td>光标位置的字和其前面的字互换位置。</td>
+</tr>
+<tr>
+<td>Alt-l</td>
+<td>把从光标位置到字尾的字符转换成小写字母。</td>
+</tr>
+<tr>
+<td>Alt-u</td>
+<td>把从光标位置到字尾的字符转换成大写字母。</td>
+</tr>
+<tr>
+<td>tab</td>
+<td>自动补全</td>
+</tr>
+<tr>
+<td>Ctrl-r</td>
+<td>开启增量历史搜索</td>
+</tr>
+</tbody></table>
+<h2 id="linux文件类型与权限"><a href="#linux文件类型与权限" class="headerlink" title="linux文件类型与权限"></a>linux文件类型与权限</h2><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>文件类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-</td>
+<td>一个普通文件</td>
+</tr>
+<tr>
+<td>d</td>
+<td>一个目录</td>
+</tr>
+<tr>
+<td>l</td>
+<td>一个符号链接。注意对于符号链接文件，剩余的文件属性总是”rwxrwxrwx”，而且都是 虚拟值。真正的文件属性是指符号链接所指向的文件的属性。</td>
+</tr>
+<tr>
+<td>c</td>
+<td>一个字符设备文件。这种文件类型是指按照字节流来处理数据的设备。 比如说终端机或者调制解调器</td>
+</tr>
+<tr>
+<td>b</td>
+<td>一个块设备文件。这种文件类型是指按照数据块来处理数据的设备，例如一个硬盘或者 CD-ROM 盘。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>文件</th>
+<th>目录</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r</td>
+<td>允许打开并读取文件内容。</td>
+<td>允许列出目录中的内容，前提是目录必须设置了可执行属性（x）。</td>
+</tr>
+<tr>
+<td>w</td>
+<td>允许写入文件内容或截断文件。但是不允许对文件进行重命名或删除，重命名或删除是由目录的属性决定的。</td>
+<td>允许在目录下新建、删除或重命名文件，前提是目录必须设置了可执行属性（x）。</td>
+</tr>
+<tr>
+<td>x</td>
+<td>允许将文件作为程序来执行，使用脚本语言编写的程序必须设置为可读才能被执行。</td>
+<td>允许进入目录，例如：cd directory 。</td>
+</tr>
+</tbody></table>
+<h1 id="GIT"><a href="#GIT" class="headerlink" title="GIT"></a>GIT</h1><h2 id="git文件状态"><a href="#git文件状态" class="headerlink" title="git文件状态"></a>git文件状态</h2><ul>
+<li>untracked未跟踪：表示没有跟踪 (add) 某个文件的变化，使用 git add 即可跟踪文件</li>
+<li>unmodified未更改：表示某文件在跟踪后一直没有改动过或者改动已经被提交</li>
+<li>modified已更改：表示修改了某个文件, 但还没有加入 (add) 到暂存区中</li>
+<li>staged已暂存：表示把已修改的文件放在下次提交 (commit) 时要保存的清单中</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220302213246173.png" alt="image-20220302213246173"></p>
+<h2 id="git三棵树"><a href="#git三棵树" class="headerlink" title="git三棵树"></a>git三棵树</h2><ul>
+<li>工作区</li>
+<li>暂存区</li>
+<li>HEAD：指向最后一次的提交结果</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220302213312172.png" alt="image-20220302213312172"></p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">基础</span><br><span class="line">git <span class="keyword">help</span> <span class="symbol">&lt;command&gt;</span>			获取git命令的帮助信息</span><br><span class="line">git init					在当前目录下创建一个新的git仓库，其数据会存放在一个名为 .git 的目录下</span><br><span class="line">git status					显示当前的仓库状态</span><br><span class="line">git <span class="built_in">add</span> <span class="symbol">&lt;filename&gt;</span>			添加文件到暂存区（精确地将内容添加到下一次提交中）</span><br><span class="line">git commit					submit <span class="keyword">all</span> <span class="keyword">files</span> in the <span class="built_in">index</span> <span class="keyword">to</span> the objects</span><br><span class="line">git commit -<span class="keyword">m</span> <span class="string">&#x27;note&#x27;</span>		不会打开文本编辑器</span><br><span class="line">git commit -<span class="keyword">a</span>				将所有已经跟踪过的文件暂存起来一并提交，跳过git <span class="built_in">add</span>步骤</span><br><span class="line">git <span class="built_in">log</span>						显示历史日志</span><br><span class="line">git <span class="built_in">log</span> --<span class="keyword">all</span> --graph --decorate	 可视化历史记录（有向无环图）</span><br><span class="line">git diff <span class="symbol">&lt;filename&gt;</span>			显示同一个文件在工作区与暂存区中的差异</span><br><span class="line">git diff --staged			显示同一个文件在暂存区与最后一次提交的差异</span><br><span class="line"></span><br><span class="line">分支和合并</span><br><span class="line">git branch					显示分支</span><br><span class="line">git branch <span class="symbol">&lt;branch-name&gt;</span>	添加分支（在当前的提交对象上创建一个指针）</span><br><span class="line">git checkout <span class="symbol">&lt;branch-name&gt;</span>	切换到 <span class="symbol">&lt;branch-name&gt;</span> 代表的分支，这时候 HEAD 游标指向新的分支，分支名后加^可以到其父节点。这个时候工作区中的内容也会被替换成该分支所指向的快照内容。</span><br><span class="line">git branch -d(D) <span class="symbol">&lt;branch-name&gt;</span> 删除分支，D是强制删除</span><br><span class="line">git branch -<span class="keyword">a</span>				查看所有的远程与本地分支</span><br><span class="line">git branch -<span class="keyword">f</span> <span class="symbol">&lt;src&gt;</span> <span class="symbol">&lt;obj&gt;</span>	强制移动<span class="symbol">&lt;src&gt;</span>分支到<span class="symbol">&lt;obj&gt;</span></span><br><span class="line">git branch --<span class="keyword">set</span>-upstream branch-name origin/branch-name 建立本地分支和远程分支的关联</span><br><span class="line">git merge <span class="symbol">&lt;branch-name&gt;</span>		合并指定分支到当前分支 </span><br><span class="line">							如果想要合并的分支所指向的提交是现在所在的提交的直接后继，git会将指针向前							  移动，这种方式叫Fast-<span class="keyword">f</span></span><br><span class="line">git rebase					变基</span><br><span class="line"></span><br><span class="line">git checkout --<span class="symbol">&lt;file&gt;</span>		用暂存区指定的文件替换工作区的文件。</span><br><span class="line">git checkout HEAD <span class="symbol">&lt;file&gt;</span>	会用 HEAD 指向的 master 分支中的指定文件替换暂存区和以及工作区中的文件。</span><br><span class="line"></span><br><span class="line">撤销</span><br><span class="line">git commit --amend			用一个新的提交替换最后的旧的提交</span><br><span class="line">git rm <span class="symbol">&lt;filename&gt;</span>			从暂存区及工作区删除文件</span><br><span class="line">git rm --cached <span class="symbol">&lt;filename&gt;</span>	直接从暂存区删除文件，工作区不做出改变（就是不再追踪这些文件的信息）</span><br><span class="line">git mv file_from file_to	给文件改名，包括工作区和暂存区</span><br><span class="line">git reset HEAD	<span class="symbol">&lt;file&gt;</span>		暂存区的目录树会被重写，被 master 分支指向的目录树所替换，但是工作区不受影响。</span><br><span class="line">git checkout -- <span class="symbol">&lt;file&gt;</span>		丢弃工作区中的更改，用</span><br><span class="line">git reset --hard			hard后可以接想要转到的版本的哈希值。或者用HEAD^使之指向上一个版本</span><br><span class="line">git revert					另一种撤销分支的方式，通过新添加一个提交来撤销</span><br><span class="line"></span><br><span class="line">其它</span><br><span class="line">git switch					新版本的分支切换功能</span><br><span class="line">git remote 					查看当前仓库已经配置的远程库的信息，-v可以列出仓库地址</span><br><span class="line">git remote show <span class="symbol">&lt;remote&gt;</span>	查看某一个远程库的信息</span><br><span class="line">git remote <span class="built_in">add</span> <span class="symbol">&lt;shortname&gt;</span> <span class="symbol">&lt;url&gt;</span>	为当前仓库添加一个新的远程仓库，可之后可以使用简写代替URL</span><br><span class="line">git remote <span class="built_in">rename</span> <span class="symbol">&lt;from&gt;</span> <span class="symbol">&lt;to&gt;</span>	修改一个远程仓库的简写名</span><br><span class="line">git remote rm <span class="symbol">&lt;remote&gt;</span>		删除远程分支，所有和这个远程仓库相关的远程跟踪分支以及配置信息也会一起被删除。</span><br><span class="line">git fetch	<span class="symbol">&lt;remote&gt;</span>		从远程仓库下载本地仓库中缺失的提交记录,并将本地仓库中的远程分支更新成了远						     程仓库相应分支最新的状态。</span><br><span class="line">git clone <span class="symbol">&lt;url&gt;</span>	[&lt;local repo name&gt;]		用于从远程仓库克隆一份到本地,</span><br><span class="line">git push <span class="symbol">&lt;origin&gt;</span> <span class="symbol">&lt;master&gt;</span>	把该分支上的所有本地提交推送到远程库。推送时，要指定本地分支，这样，Git就会把该分支推送到远程库对应的远程分支上。</span><br><span class="line">git pull					从远程抓取分支</span><br><span class="line">git config </span><br><span class="line">	--<span class="keyword">list</span>					列出所有配置</span><br><span class="line">	<span class="symbol">&lt;key&gt;</span>					查看某一项配置</span><br><span class="line">	-local -<span class="keyword">l</span>				查看仓库级的config</span><br><span class="line">	-<span class="keyword">global</span> -<span class="keyword">l</span>				查看全局级的config</span><br><span class="line">	-<span class="built_in">system</span> -<span class="keyword">l</span>				查看系统级配置</span><br><span class="line">git config [–local|–<span class="keyword">global</span>|–<span class="built_in">system</span>] -<span class="keyword">e</span> 		使用默认的编辑器打开配置文件</span><br><span class="line">git config [–local|–<span class="keyword">global</span>|–<span class="built_in">system</span>] –<span class="built_in">add</span> section.key value	添加配置，默认添加在local	</span><br></pre></td></tr></table></figure>
+
+<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><p>基本规则：</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">target ... : prerequisites ...</span><br><span class="line">    command</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>target:规则的目标，通常是最后需要生成的文件或者为了实现这个目的而必须的中间过程文件名，也可以是一个动作（伪目标）。</li>
+<li>prerequisites：规则的依赖文件</li>
+<li>command:要执行的命令，任意的shell命令或者可在shell下执行的程序，限定了make执行这条规则时所需要的动作。</li>
+</ul>
+<figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">.PHONY	:		 显式指明一个目标是伪目标</span><br><span class="line">变量名称 = 值列表	定义变量，变量代表了一个文本字符串</span><br><span class="line">变量名称 := 值列表 这样定义变量使得前面的变量不能使用后面的变量，只能使用前面已定义好的变量</span><br><span class="line">$(变量名)		   引用变量，执行时会原样替换在引用的地方</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>可以使用反斜线来将逻辑上的一行分解为物理上的多行，但是反斜线后不能有空格。</p>
+</li>
+<li><p>默认情况下make执行的是Makefile中的第一个规则</p>
+</li>
+</ul>
+<h4 id="ifeq与ifneq"><a href="#ifeq与ifneq" class="headerlink" title="ifeq与ifneq"></a>ifeq与ifneq</h4><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">语法：</span><br><span class="line"><span class="keyword">ifeq</span> (ARG1, ARG2)</span><br><span class="line"><span class="keyword">ifeq</span> &#x27;ARG1&#x27; &#x27;ARG2&#x27;</span><br><span class="line"><span class="keyword">ifeq</span> <span class="string">&quot;ARG1&quot;</span> <span class="string">&quot;ARG2&quot;</span></span><br><span class="line"><span class="keyword">ifeq</span> <span class="string">&quot;ARG1&quot;</span> &#x27;ARG2&#x27;</span><br><span class="line"><span class="keyword">ifeq</span> &#x27;ARG1&#x27; <span class="string">&quot;ARG2&quot;</span></span><br><span class="line">例子：</span><br><span class="line"><span class="keyword">ifeq</span>(<span class="variable">$(CC)</span>,gcc)</span><br><span class="line">    <span class="variable">$(CC)</span> -o foo <span class="variable">$(objects)</span> <span class="variable">$(libs_for_gcc)</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="variable">$(CC)</span> -o foo <span class="variable">$(objects)</span> <span class="variable">$(noemal_libs)</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="自动化变量"><a href="#自动化变量" class="headerlink" title="自动化变量"></a>自动化变量</h4><figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="variable">$@</span> 表示规则中的目标文件集，在模式规则中，如果有多个目标，那么， <span class="variable">$@</span> 就是匹配于目标中模式定义的集合。</span><br><span class="line"><span class="variable">$&lt;</span> 依赖目标中的第一个目标名字。如果依赖目标是以模式（即 % ）定义的，那么 <span class="variable">$&lt;</span> 将是符合模式的一系列的文件集。注意，其是一个一个取出来的。</span><br></pre></td></tr></table></figure>
+
+<h4 id="make的参数"><a href="#make的参数" class="headerlink" title="make的参数"></a>make的参数</h4><figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">--directory</span>=&lt;dir&gt; 		<span class="comment"># 指定读取makefile的目录</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+</search>
