@@ -336,7 +336,7 @@
 
 
 <h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>test命令经常与if搭配使用，有两种等价模式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test expression</span><br><span class="line">[ expression ]</span><br></pre></td></tr></table></figure>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">test </span>expression</span><br><span class="line">[ expression ]</span><br></pre></td></tr></table></figure>
 
 <p>expression是一个表达式，执行结果是 true 或者是 false。当表达式为真时test返回True，否则为False。</p>
 <p><strong>测试字符串表达式</strong></p>
@@ -409,12 +409,12 @@
 <td>integer1 大于 integer2.</td>
 </tr>
 </tbody></table>
-<h4 id="更现代的测试版本"><a href="#更现代的测试版本" class="headerlink" title="更现代的测试版本"></a>更现代的测试版本</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[ expression ]]</span><br></pre></td></tr></table></figure>
+<h4 id="更现代的测试版本"><a href="#更现代的测试版本" class="headerlink" title="更现代的测试版本"></a>更现代的测试版本</h4><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">[[ expression ]]</span></span><br></pre></td></tr></table></figure>
 
 <p>相比于test，这样写增加了两个新功能：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[ string1 =~ regex ]]	   # 如果string1匹配扩展的正则表达式 regex，则返回值为真</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">[[ string1 =~ regex ]]</span>	   # 如果string1匹配扩展的正则表达式 regex，则返回值为真</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE=foo.bar</span><br><span class="line">if [[ $FILE == foo.* ]]; then	# ==操作符支持类型匹配</span><br></pre></td></tr></table></figure>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE=foo.bar</span><br><span class="line"><span class="keyword">if</span> <span class="string">[[ $FILE == foo.* ]]</span>; <span class="keyword">then</span>	# ==操作符支持类型匹配</span><br></pre></td></tr></table></figure>
 
 <h4 id="为整数设计"><a href="#为整数设计" class="headerlink" title="(( )) - 为整数设计"></a>(( )) - 为整数设计</h4><p><code>(( ))</code>被用来执行算术真测试。如果算术计算的结果是非零值，则一个算术真测试值为真。</p>
 <h3 id="结合表达式"><a href="#结合表达式" class="headerlink" title="结合表达式"></a>结合表达式</h3><p><strong>逻辑操作符</strong></p>
@@ -480,8 +480,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="C语言：存储类别 链接 内存管理">
-                  <i class="fa fa-chevron-left"></i> C语言：存储类别 链接 内存管理
+                <a href="/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/" rel="prev" title="数字电路 FIFO设计">
+                  <i class="fa fa-chevron-left"></i> 数字电路 FIFO设计
                 </a>
             </div>
             <div class="post-nav-item">

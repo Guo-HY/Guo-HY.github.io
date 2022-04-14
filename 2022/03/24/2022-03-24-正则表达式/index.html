@@ -351,7 +351,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">比如对于时间字符串：<span class="number">2017</span>-<span class="number">04</span>-<span class="number">25</span>，表达式如下:</span><br><span class="line">(?&lt;year&gt;\\d&#123;<span class="number">4</span>&#125;)-(?&lt;md&gt;(?&lt;month&gt;\\d&#123;<span class="number">2</span>&#125;)-(?&lt;date&gt;\\d&#123;<span class="number">2</span>&#125;))</span><br><span class="line">可以这样获取md：</span><br><span class="line">    matcher.group(<span class="string">&#x27;md&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h4 id="非捕获组："><a href="#非捕获组：" class="headerlink" title="非捕获组："></a>非捕获组：</h4><p>非捕获匹配就是括号中的内容不会存储在捕获组中，用group()函数索引捕获组会返回异常。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对于时间字符串：2017-04-25，表达式如下:</span><br><span class="line">	(?:\\d&#123;4&#125;)-((\\d&#123;2&#125;)-(\\d&#123;2&#125;))</span><br><span class="line">第一组 (?:\d&#123;4&#125;)，其实是被忽略的。当使用 matcher.group(4) 时，系统会报错。</span><br></pre></td></tr></table></figure>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">对于时间字符串：<span class="number">2017</span>-<span class="number">04</span>-<span class="number">25</span>，表达式如下:</span><br><span class="line">	(?:\\d&#123;<span class="number">4</span>&#125;)<span class="built_in">-</span>((\\d&#123;<span class="number">2</span>&#125;)<span class="built_in">-</span>(\\d&#123;<span class="number">2</span>&#125;))</span><br><span class="line">第一组 (?:\d&#123;<span class="number">4</span>&#125;)，其实是被忽略的。当使用 matcher<span class="selector-class">.group</span>(<span class="number">4</span>) 时，系统会报错。</span><br></pre></td></tr></table></figure>
 
 
 
@@ -376,7 +376,7 @@
 </tr>
 </tbody></table>
 <h2 id="9-反向引用"><a href="#9-反向引用" class="headerlink" title="9.反向引用"></a>9.反向引用</h2><p><strong>捕获会返回一个捕获组，这个分组保存在内存中，不仅可以在正则表达式外部通过程序进行引用，也可以在正则表达式内部进行引用，这种引用方式就是反向引用</strong>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">匹配两个连续的相同数字：&quot;(\\d)\\1&quot;</span><br><span class="line">匹配个位与千位相同，十位与百位相同的数：&quot;(\\d)(\\d)\\2\\1&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">匹配两个连续的相同数字：<span class="string">&quot;(<span class="subst">\\</span>d)<span class="subst">\\</span>1&quot;</span></span><br><span class="line">匹配个位与千位相同，十位与百位相同的数：<span class="string">&quot;(<span class="subst">\\</span>d)(<span class="subst">\\</span>d)<span class="subst">\\</span>2<span class="subst">\\</span>1&quot;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>内部反向引用使用<code>\\分组号</code>，外部使用<code>$分组号</code></li>
@@ -461,13 +461,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/24/2022-03-24-%E9%87%8F%E5%8C%96%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/" rel="prev" title="量化设计与分析基础">
-                  <i class="fa fa-chevron-left"></i> 量化设计与分析基础
+                <a href="/2022/03/24/linux%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E4%B8%8E%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/" rel="prev" title="linux常用操作与工具速查">
+                  <i class="fa fa-chevron-left"></i> linux常用操作与工具速查
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/" rel="next" title="数字电路 FIFO设计">
-                  数字电路 FIFO设计 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/03/24/2022-03-24-%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3%E6%80%BB%E7%BB%93/" rel="next" title="总线接口总结">
+                  总线接口总结 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
