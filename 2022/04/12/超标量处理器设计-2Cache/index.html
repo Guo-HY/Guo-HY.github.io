@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32%C3%9732-my.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16%C3%9716-my.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《超标量处理器设计》读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超标量处理器设计-Cache设计">
+<meta property="og:url" content="https://guo-hy.github.io/2022/04/12/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-2Cache/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="《超标量处理器设计》读书笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145402608.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145531549.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150115997.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150155072.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151157950.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151323946.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220415193244543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409153010281.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154002300.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154432404.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155453436.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155718607.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409162258859.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409164125716.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409165242626.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220411083717083.png">
+<meta property="article:published_time" content="2022-04-12T12:40:57.000Z">
+<meta property="article:modified_time" content="2022-04-15T11:32:55.588Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="Architecture">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145402608.png">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/04/12/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-2Cache/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/04/12/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-2Cache/","path":"2022/04/12/超标量处理器设计-2Cache/","title":"超标量处理器设计-Cache设计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>超标量处理器设计-Cache设计 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#cache%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">cache的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E7%9B%B8%E8%81%94Cache"><span class="nav-number">2.</span> <span class="nav-text">组相联Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%BF%E9%97%AE%E4%B8%8E%E4%B8%B2%E8%A1%8C%E8%AE%BF%E9%97%AE"><span class="nav-number">2.1.</span> <span class="nav-text">并行访问与串行访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF%E5%8C%96Cache"><span class="nav-number">2.2.</span> <span class="nav-text">流水线化Cache</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache%E7%9A%84%E5%86%99%E5%85%A5"><span class="nav-number">3.</span> <span class="nav-text">Cache的写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache%E6%9B%BF%E6%8D%A2%E7%AD%96%E7%95%A5"><span class="nav-number">4.</span> <span class="nav-text">Cache替换策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%AALRU%E7%AE%97%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">伪LRU算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%9B%BF%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">随机替换算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E9%AB%98Cache%E6%80%A7%E8%83%BD"><span class="nav-number">5.</span> <span class="nav-text">提高Cache性能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E7%BC%93%E5%AD%98"><span class="nav-number">5.1.</span> <span class="nav-text">写缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-number">5.2.</span> <span class="nav-text">流水线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E7%BB%93%E6%9E%84"><span class="nav-number">5.3.</span> <span class="nav-text">多级结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Victim-Cache"><span class="nav-number">5.4.</span> <span class="nav-text">Victim Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Filter-Cache"><span class="nav-number">5.4.1.</span> <span class="nav-text">Filter Cache</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%8F%96"><span class="nav-number">5.5.</span> <span class="nav-text">预取</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E9%A2%84%E5%8F%96"><span class="nav-number">5.5.1.</span> <span class="nav-text">软件预取</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%AB%AF%E5%8F%A3Cache"><span class="nav-number">6.</span> <span class="nav-text">多端口Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#True-Multi-port"><span class="nav-number">6.1.</span> <span class="nav-text">True Multi-port</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multiple-Cache-Copies"><span class="nav-number">6.2.</span> <span class="nav-text">Multiple Cache Copies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi-banking"><span class="nav-number">6.3.</span> <span class="nav-text">Multi-banking</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E5%8F%96%E6%8C%87%E4%BB%A4"><span class="nav-number">7.</span> <span class="nav-text">超标量处理器的取指令</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Guo-HY" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Guo-HY" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/04/12/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-2Cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          超标量处理器设计-Cache设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-12 20:40:57" itemprop="dateCreated datePublished" datetime="2022-04-12T20:40:57+08:00">2022-04-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-15 19:32:55" itemprop="dateModified" datetime="2022-04-15T19:32:55+08:00">2022-04-15</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">《超标量处理器设计》读书笔记</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="cache的结构"><a href="#cache的结构" class="headerlink" title="cache的结构"></a>cache的结构</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145402608.png" alt="image-20220409145402608"></p>
+<h3 id="组相联Cache"><a href="#组相联Cache" class="headerlink" title="组相联Cache"></a>组相联Cache</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145531549.png" alt="image-20220409145531549"></p>
+<h4 id="并行访问与串行访问"><a href="#并行访问与串行访问" class="headerlink" title="并行访问与串行访问"></a>并行访问与串行访问</h4><p>并行访问就是同时访问Tag SRAM与Data SRAM，串行访问就是先访问Tag SRAM部分，根据Tag的比较结果再去访问Data SRAM部分。</p>
+<h4 id="流水线化Cache"><a href="#流水线化Cache" class="headerlink" title="流水线化Cache"></a>流水线化Cache</h4><p>并行访问流水线：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150115997.png" alt="image-20220409150115997" style="zoom: 67%;" />
+
+<p>串行访问流水线：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150155072.png" alt="image-20220409150155072" style="zoom:67%;" />
+
+<p>并行访问会有比较低的时钟频率和较大功耗，但是访问Cache所需的时钟周期缩短了一个。串行访问时钟频率较高，功耗较低，但是访问Cache的时钟周期多了一个。对于乱序执行的超标量处理器，由于可以通过指令调度来掩盖串行访问Cache的多了一个时钟周期的影响，因此可以通过串行访问获得比较高的时钟频率，而顺序执行处理器则需要缩短访问Cache的周期数。</p>
+<h3 id="Cache的写入"><a href="#Cache的写入" class="headerlink" title="Cache的写入"></a>Cache的写入</h3><p>Write Through与Non-Write Allocate 方法配合工作流程：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151157950.png" alt="image-20220409151157950" style="zoom:67%;" />
+
+<p>Write back与Write Allocate配合工作流程：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151323946.png" alt="image-20220409151323946" style="zoom:67%;" />
+
+<h3 id="Cache替换策略"><a href="#Cache替换策略" class="headerlink" title="Cache替换策略"></a>Cache替换策略</h3><h4 id="伪LRU算法"><a href="#伪LRU算法" class="headerlink" title="伪LRU算法"></a>伪LRU算法</h4><p>基本思想是把way递归的分成两两一组。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220415193244543.png" alt="image-20220415193244543" style="zoom: 67%;" />
+
+<h4 id="随机替换算法"><a href="#随机替换算法" class="headerlink" title="随机替换算法"></a>随机替换算法</h4><p>不能获得最优化的结果，但是硬件复杂度较低，也不会损失过多的性能。随着Cache的增大，缺失率接近于LRU算法。一般采用时钟算法来实现近似的随机，一个计数器每时钟周期加1，计数器宽度与Cache路数相关。</p>
+<h3 id="提高Cache性能"><a href="#提高Cache性能" class="headerlink" title="提高Cache性能"></a>提高Cache性能</h3><h4 id="写缓存"><a href="#写缓存" class="headerlink" title="写缓存"></a>写缓存</h4><p>脏状态的Cache line会首先放到写缓存中，等到下级存储器有空闲的时候再将缓存中的数据写到下级存储器中。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409153010281.png" alt="image-20220409153010281"></p>
+<p>采用写缓存的本质原因是下级存储器一般只有一个读写端口，如果先将脏数据写回再读取需要的数据，则会导致D-Cache缺失处理的时间较长。另一方面，写缓存对write through类型的Cache而言从性能方面考虑其实是必须的。</p>
+<p>当D-Cache发生缺失时，需要先查看写缓存中有无需要的数据。需要在写缓存中加入地址比较的CAM电路。</p>
+<h4 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154002300.png" alt="image-20220409154002300"></p>
+<h4 id="多级结构"><a href="#多级结构" class="headerlink" title="多级结构"></a>多级结构</h4><p>多核的一级Cache一般采用write through方式，方便管理存储器间的一致性。</p>
+<p><strong>Inclusive与exlcusive</strong></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154432404.png" alt="image-20220409154432404"></p>
+<h4 id="Victim-Cache"><a href="#Victim-Cache" class="headerlink" title="Victim Cache"></a>Victim Cache</h4><p>Cache中被踢出的数据可能马上又要使用，如果一个Cache set装不下频繁用到的所有数据，就会导致频繁的Cache缺失。而如果因此而增大Cache相联度，又会浪费掉大量的空间，因为其它的cache set未必有这样的特征。VC就是要解决这样的问题。</p>
+<p>通常VC采用全相联方式，容量较小。 </p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155453436.png" alt="image-20220409155453436" style="zoom:67%;" />
+
+<p>一般情况下VC和Cache中的数据是互斥的，处理器内核可以同时读取它们。如果在VC中找到了想要的数据，VC中的数据就会被替换进Cache，同时Cache中对应的数据会替换进VC中。</p>
+<h5 id="Filter-Cache"><a href="#Filter-Cache" class="headerlink" title="Filter Cache"></a>Filter Cache</h5><p>主要作用是防止偶然使用的数据占据Cache。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155718607.png" alt="image-20220409155718607"></p>
+<h4 id="预取"><a href="#预取" class="headerlink" title="预取"></a>预取</h4><p><strong>硬件预取</strong></p>
+<p>访问Cache中的一个数据块发生缺失时，将该数据块后面的一个数据块也取出来放进Cache。这种预取可能会出错，导致浪费了总线带宽，并且占用了Cache中的空间，还可能挤占掉Cache中本来有用的数据，这被称为Cache污染。为了避免这种情况，可以将预取的指令单独放在一个缓存中，在后续执行时，如果Cache中发生了缺失但在buffer中找到了数据，则会把buffer中的数据放进Cache中。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409162258859.png" alt="image-20220409162258859"></p>
+<p>预取对I-Cache性能提升较大，对于D-Cache由于数据访问的不规则性则很难说。</p>
+<h5 id="软件预取"><a href="#软件预取" class="headerlink" title="软件预取"></a>软件预取</h5><p>需要指令集中设有预取指令。编译器控制程序进行预取。同时，Cache在执行预取指令时不能阻塞后续指令对Cache的读取，这要求Cache实现为非阻塞式的。</p>
+<h3 id="多端口Cache"><a href="#多端口Cache" class="headerlink" title="多端口Cache"></a>多端口Cache</h3><p>超标量处理器中为了在一个周期中执行多条load&#x2F;store指令，要求D-Cache实现为多端口结构。由于D-Cache容量大，如果采用多端口设计会对芯片的面积和速度带来很大的负面影响，因此需要采用一些方法解决这个问题。</p>
+<h4 id="True-Multi-port"><a href="#True-Multi-port" class="headerlink" title="True Multi-port"></a>True Multi-port</h4><p>除了SRAM，把所有逻辑复制几份。一般不会这么做。</p>
+<h4 id="Multiple-Cache-Copies"><a href="#Multiple-Cache-Copies" class="headerlink" title="Multiple Cache Copies"></a>Multiple Cache Copies</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409164125716.png" alt="image-20220409164125716"></p>
+<p>把SRAM也复制多份，需要保证SRAM间数据一致性，一般不会这么做。</p>
+<h4 id="Multi-banking"><a href="#Multi-banking" class="headerlink" title="Multi-banking"></a>Multi-banking</h4><p>将Cache分为很多小的bank，每个bank都只有一个端口，如果在一个周期中Cache的多个端口上的访问地址位于不同的bank中，则不会引起任何问题。只有当同一个周期中两个或多个访问地址位于同一个bank中时才会发生bank冲突。这中方法仍然需要多套访问逻辑，同时将Tag SRAM实现为多端口结构或者实例化多个，但是data SRAM只有一个。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409165242626.png" alt="image-20220409165242626"></p>
+<h3 id="超标量处理器的取指令"><a href="#超标量处理器的取指令" class="headerlink" title="超标量处理器的取指令"></a>超标量处理器的取指令</h3><p>一个N路的超标量处理器每周期应当可以从I-Cache中至少取出N条指令。这N条指令称为一个fetch group。</p>
+<p>最简单的实现方法是使data block的大小为N个字。但如果此时请求地址不是N字对齐的，则请求会落在两个Cache line中，此时只能取第一个Cache line中的值，导致取出的指令少于N条。</p>
+<p>可以使block大小为2N，每周期取出指令数多于N条，通过一个缓存将多余的指令缓存起来，使得后续的流水线可以得到充足的指令。</p>
+<p>一种减少Cache中SRAM数量的方法：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220411083717083.png" alt="image-20220411083717083"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Architecture/" rel="tag"># Architecture</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/10/C%E8%AF%AD%E8%A8%80%20%E9%A2%84%E5%A4%84%E7%90%86%E6%8C%87%E4%BB%A4/" rel="prev" title="C语言 预处理器指令">
+                  <i class="fa fa-chevron-left"></i> C语言 预处理器指令
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

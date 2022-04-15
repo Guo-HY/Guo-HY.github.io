@@ -58,71 +58,32 @@
       </tags>
   </entry>
   <entry>
-    <title>C语言 预处理器与高级特性</title>
-    <url>/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80-%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%8E%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</url>
-    <content><![CDATA[<h2 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h2><blockquote>
-<p>可用来定义常量或者宏函数</p>
-</blockquote>
-<p>预处理器发现程序中的宏后，会用宏等价的替换文本进行替换。如果替换的字符串中还包含宏，则继续替换这些宏。但是在双引号中不会发生宏替换。</p>
-<h4 id="在-define中使用参数"><a href="#在-define中使用参数" class="headerlink" title="在#define中使用参数"></a>在#define中使用参数</h4><figure class="highlight tp"><table><tr><td class="code"><pre><span class="line">#define MEAN(<span class="keyword">X</span>,<span class="keyword">Y</span>)  ((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)  </span><br><span class="line">这里MEAN是宏标识符，<span class="keyword">X</span>,<span class="keyword">Y</span>是宏参数，((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)是替换列表</span><br></pre></td></tr></table></figure>
-
-<h4 id="用宏参数创建字符串：-运算符"><a href="#用宏参数创建字符串：-运算符" class="headerlink" title="用宏参数创建字符串：#运算符"></a>用宏参数创建字符串：#运算符</h4><p>在类函数宏的替换体中，#作为一个预处理运算符，可以把记号转换为字符串。</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">PSQR</span>(X)  <span class="built_in">printf</span>(<span class="string">&quot; The square of &quot;</span> <span class="selector-id">#x</span> <span class="string">&quot; is %d&quot;</span>,((X)*(x)))</span><br><span class="line">int y = <span class="number">5</span></span><br><span class="line"><span class="function"><span class="title">PSQR</span><span class="params">(y)</span></span></span><br><span class="line">输出：the square of y is <span class="number">25</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="预处理器粘合剂：-运算符"><a href="#预处理器粘合剂：-运算符" class="headerlink" title="预处理器粘合剂：##运算符"></a>预处理器粘合剂：##运算符</h4><p>##运算符把两个记号组合成1个记号</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">XNAME</span>(n) x ## n</span><br><span class="line"><span class="built_in">XNAME</span>(<span class="number">4</span>)将展开为x4</span><br></pre></td></tr></table></figure>
-
-<h4 id="变参宏-…和-VA-ARGS"><a href="#变参宏-…和-VA-ARGS" class="headerlink" title="变参宏: …和__VA_ARGS__"></a>变参宏: …和__VA_ARGS__</h4><h2 id="文件包含：-include"><a href="#文件包含：-include" class="headerlink" title="文件包含：#include"></a>文件包含：#include</h2><p>把被包含文件的全部内容输入到#include所在的位置</p>
+    <title>数字电路 FIFO设计</title>
+    <url>/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/</url>
+    <content><![CDATA[<p>FIFO是<code>First In First Out</code>的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。</p>
+<p>比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，另一种是在发送方与接收方之间添加一个Buffer结构用来接收发送方发来的数据并缓存，接收方从Buffer中读走数据，此时在发送方与接收方眼中对方仅仅是一个Buffer结构。FIFO就是这样一种缓存数据的结构，并且常用在写快读慢的情况中。 </p>
+<h2 id="1、FIFO类型"><a href="#1、FIFO类型" class="headerlink" title="1、FIFO类型"></a>1、FIFO类型</h2><p>FIFO有同步FIFO与异步FIFO两种。</p>
 <ul>
-<li><p>文件名在尖括号中告诉预处理器在标准系统目录中查找该文件</p>
-</li>
-<li><p>文件名在双引号中表示先查找当前目录或文件名指定的目录，如果没有找到再查找标准系统目录</p>
-</li>
+<li>同步FIFO：FIFO的读逻辑与写逻辑处于同一个时钟域中，FIFO的各个部分接收的时钟信号都是同一个信号。</li>
+<li>异步FIFO：FIFO的读写时钟不是同一个时钟，读写时钟彼此相互独立，并且频率可能不一样。</li>
 </ul>
-<h2 id="undef"><a href="#undef" class="headerlink" title="#undef"></a>#undef</h2><p>#undef &lt;macro&gt;用来取消对macro的定义，如果之前没有定义过macro，则会直接忽略掉。如果之前定义过macro，则使用#undef取消对macro的定义后可以对macro赋一个新值</p>
-<p>注意：如果宏通过头文件引入，那么#define在文件中的位置取决于#include指令的位置</p>
-<h2 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h2><p>可以使用某些指令告诉编译器根据编译时的条件执行或忽略信息块或代码块</p>
-<h4 id="ifdef，-else与-endif"><a href="#ifdef，-else与-endif" class="headerlink" title="#ifdef， #else与#endif"></a>#ifdef， #else与#endif</h4><p>可以嵌套</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> MAVIS</span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hourse.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cow.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br><span class="line">	</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> JUST_CHECKING</span></span><br><span class="line">	<span class="built_in">printf</span>(...);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-同步FIFO结构"><a href="#2-同步FIFO结构" class="headerlink" title="2.同步FIFO结构"></a>2.同步FIFO结构</h2><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg" alt="224278617_1_202106160112166"></p>
+<h3 id="1-双端口RAM"><a href="#1-双端口RAM" class="headerlink" title="1.双端口RAM"></a>1.双端口RAM</h3><p>同步FIFO的主体是一个存储器，用来存储需要缓存的数据。存储器可以用block_ram或者寄存器实现。当存储器需要比较大的时候block_ram相对于寄存器而言读写时序会好一些，并且空间占用比寄存器小。但是寄存器可以在<strong>给地址的当拍</strong>传出地址对应的数据，而block_ram最快也要在<strong>给出地址的下一拍</strong>传出数据。但不管采用什么结构实现，FIFO的存储器必须是一个双端口RAM，即有一个读地址与写地址端口和对应的数据即控制端口，使得读写可以在同一拍中进行。</p>
+<h3 id="2-读写指针"><a href="#2-读写指针" class="headerlink" title="2.读写指针"></a>2.读写指针</h3><p>同步FIFO还有两个指针，读指针与写指针。这两个指针本质上是两个寄存器，直接与FIFO存储器的读地址端口与写地址端口相连，存储着FIFO的读地址与写地址（因此这两个寄存器的宽度是<code>log2(存储器深度)</code>）。读指针中存储的地址是下一拍将要读取的位置，写指针中存储的是下一拍将要写入的位置。每次读操作使读指针加1，每次写操作使写指针加1.</p>
+<h3 id="3-空满状态判断模块"><a href="#3-空满状态判断模块" class="headerlink" title="3.空满状态判断模块"></a>3.空满状态判断模块</h3><p>FIFO必须有两个标志：空标志与满标志指示FIFO的当前状态。如果在空标志有效时对FIFO进行读取会产生<code>underflow</code>，读出了一个无效的数据。满标志有效时对FIFO进行写入会产生<code>overflow</code>，导致FIFO中还没有被读走的数据被新来的数据覆盖。并且如果FIFO的读写指针没有保护机制，在FIFO空满时读写很有可能会导致FIFO的读写指针在下一拍指向了错误的位置，从而导致整个FIFO彻底乱套。这里总结了三种判断空满状态的方法（这里没有考虑读写指针保护，保证FIFO被正确使用的任务由读写双方完成）：</p>
+<h4 id="3-1-通过读写指针判断"><a href="#3-1-通过读写指针判断" class="headerlink" title="3.1 通过读写指针判断"></a>3.1 通过读写指针判断</h4><h5 id="3-1-1空标志"><a href="#3-1-1空标志" class="headerlink" title="3.1.1空标志"></a>3.1.1空标志</h5><p>假设在复位后读写指针的值都为0，即指向存储器的最低位地址。此时读写指针相等，FIFO为空。FIFO的空标志应当为1.之后进行一个写操作，写操作完成后写指针加1而读指针不变，FIFO不为空，空标志置0.如果此时再来一个读操作，则读完成后读指针加1与写指针相等，FIFO为空。</p>
+<p>在FIFO的读写过程中，写指针的上溢一定在读指针上溢之前（否则之前一定有underflow或者overflow），当读指针没有发生上溢的时候写指针不可能再次发生上溢（理由同上），而写指针上溢并且读指针没有上溢的时候FIFO一定不为空。而当读指针也发生上溢后，情况就和最开始相同了。</p>
+<p>分析了这么多，代码很简单：</p>
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span><span class="comment">//注意这里空标志是用寄存器实现的。</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作&amp;&amp;(写指针==读指针+<span class="number">1</span>))</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="ifndef"><a href="#ifndef" class="headerlink" title="#ifndef"></a>#ifndef</h4><ul>
-<li><p>与#ifdef类似，可以和#else，#endif配合使用，但是意义相反</p>
-</li>
-<li><p>常用来避免某个文件多次被包含</p>
-</li>
-</ul>
-<h4 id="if与-elif"><a href="#if与-elif" class="headerlink" title="#if与#elif"></a>#if与#elif</h4><ul>
-<li><p>#if后跟整型常量表达式，如果表达式非零，则表达式为真，可以在指令中使用C的关系运算符与逻辑运算符</p>
-</li>
-<li><p>可以用另一种方法测试名称是否已经被定义：用#if defined (macro) 代替 #ifdef macro</p>
-</li>
-</ul>
-<h4 id="error"><a href="#error" class="headerlink" title="#error"></a>#error</h4><p>#error指令让预处理器发出一条错误信息，包含指令中的文本，如果可能的话，编译应当中断。</p>
-<h2 id="内联函数-C99"><a href="#内联函数-C99" class="headerlink" title="内联函数(C99)"></a>内联函数(C99)</h2><blockquote>
-<p> 把函数变为内联函数，编译器可能会用内联代码替换函数调用，并（或）执行一些其它的优化，但是也可能不起作用。</p>
-</blockquote>
-<p>内联函数的主要作用是消除函数调用的开销。</p>
-<p>内联函数使用<code>inline</code>关键字声明，具有内部链接的函数可以成为内联函数，并且内联函数的定义与调用必须在一个文件中。</p>
-<p>如果多个文件都要使用同一个内联函数，则简单的做法是将内联函数的定义放在头文件中。</p>
-<h2 id="可变参数：stdarg-h"><a href="#可变参数：stdarg-h" class="headerlink" title="可变参数：stdarg.h"></a>可变参数：stdarg.h</h2><p>要使用需：</p>
-<ul>
-<li>提供一个使用省略号的函数原型，至少有一个形参，最右边的形参叫做<code>parmN</code>，代表省略号部分的参数数量。</li>
-<li>在函数定义中创建一个<code>va_list</code>类型的变量，暂且叫做ap，该类型是编译器内建类型，是一个指向参数的指针。</li>
-<li>用宏把该变量初始化为一个参数列表：使用&#96;&#96;va_start(va_list ap, lastarg)<code>宏(实际是内建函数)，把参数列表拷贝到</code>va_list&#96;类型变量中。(让ap指向函数的最后一个确定的参数（parmN）的下一个参数的地址。)</li>
-<li>用宏访问参数列表：使用<code>va_arg((va_list ap, 类型)</code>宏(实际是内建函数)。获取可变参数的当前参数，返回指定类型并将指针指向下一参数</li>
-<li>用宏完成清理工作：<code>va_end(va_list ap)</code></li>
-</ul>
-<p>实现：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">typedef</span> <span class="type">char</span> * va_list;</span><br><span class="line"> <span class="number">2</span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="keyword">define</span> __INTSIZEOF(n) \</span></span><br><span class="line"><span class="meta"> 4     ((sizeof(n) + sizeof(int) - 1) &amp; ~(sizeof(int) - 1) )</span></span><br><span class="line"> <span class="number">5</span></span><br><span class="line"> <span class="number">6</span> <span class="meta">#<span class="keyword">define</span> __ADDRESS(v) (&amp;(v))</span></span><br><span class="line"> <span class="number">7</span></span><br><span class="line"> <span class="number">8</span> <span class="meta">#<span class="keyword">define</span> va_start(ap, v) \</span></span><br><span class="line"><span class="meta"> 9     (ap = (va_list) __ADDRESS(v) + __INTSIZEOF(v))</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="number">11</span> <span class="meta">#<span class="keyword">define</span> va_arg(ap, t) \</span></span><br><span class="line"><span class="meta">12     (*(t*)((ap += __INTSIZEOF(t)) - __INTSIZEOF(t)))</span></span><br><span class="line"><span class="number">13</span></span><br><span class="line"><span class="number">14</span> <span class="meta">#<span class="keyword">define</span> va_end(ap) \</span></span><br><span class="line"><span class="meta">15     (ap = (va_list) 0)  </span></span><br></pre></td></tr></table></figure>
+<h5 id="3-1-2满标志"><a href="#3-1-2满标志" class="headerlink" title="3.1.2满标志"></a>3.1.2满标志</h5><p>FIFO满的判断与读类似，当FIFO发生读操作之后FIFO一定不是满的。如果当前是写操作并且读指针等于写指针加1时FIFO在写完成后一定是满的（设想没有读，一直在写，当全部写满后写指针会发生上溢变为0）</p>
+<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作&amp;&amp;读指针==写指针+<span class="number">1</span>)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
-
-
-<h2 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h2><p>内建函数是编译器内部实现的函数，可以直接使用，不用像标准库一样include进来。</p>
-<p>内建函数的命名通常以<code>__buildin</code>开头。</p>
-<p>主要用途包括处理变长参数列表，程序运行异常，编译优化，查看底层信息，以及C标准库的内建版本。</p>
+<h4 id="3-2-通过计数器判断"><a href="#3-2-通过计数器判断" class="headerlink" title="3.2 通过计数器判断"></a>3.2 通过计数器判断</h4><p>在FIFO内部加一个计数器指示当前FIFO里有多少有效数据。这种方法最简单，但是个人感觉时序会不太好（？）</p>
+<h4 id="3-3扩展读写指针"><a href="#3-3扩展读写指针" class="headerlink" title="3.3扩展读写指针"></a>3.3扩展读写指针</h4><p>这种方法最为精妙，时序和资源占用都是最优的。分别将读写指针扩展一位，将扩展得到的最高位设置为状态位，其余位作为地址位。当读写指针的地址位与状态位全部相同的时候，读写指针经历了相同次数的循环移动，即此时FIFO是空状态（实际上写指针最多比读指针多走一圈）。如果读写指针的地址位相同而状态位相反，则写指针比读指针多循环一次，FIFO处于满状态。</p>
 ]]></content>
       <tags>
-        <tag>C programming</tag>
+        <tag>digital design</tag>
       </tags>
   </entry>
   <entry>
@@ -358,6 +319,83 @@
 ]]></content>
       <tags>
         <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>量化设计与分析基础</title>
+    <url>/2022/03/24/2022-03-24-%E9%87%8F%E5%8C%96%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h2 id="并行度与并行体系结构的分类"><a href="#并行度与并行体系结构的分类" class="headerlink" title="并行度与并行体系结构的分类"></a>并行度与并行体系结构的分类</h2><ul>
+<li>应用程序中的并行：<ul>
+<li>数据级并行（DLP）</li>
+<li>任务级并行（TLP）</li>
+</ul>
+</li>
+<li>硬件中的并行：<ul>
+<li>指令级并行（）</li>
+<li>向量体系结构和GPU</li>
+<li>线程级并行</li>
+<li>请求级并行</li>
+</ul>
+</li>
+<li>计算机的分类<ul>
+<li>单指令流，单数据流（SISD）：如单处理器</li>
+<li>单指令流，多数据流（SIMD）：同一指令由多个使用不同数据流的处理器执行</li>
+<li>多指令流，单数据流（MISD）：无</li>
+<li>多指令流，多数据流（MIMD）：每个处理器都提取自己的指令，对自己的数据进行操作</li>
+</ul>
+</li>
+</ul>
+<h2 id="集成电路中的功率和能耗趋势"><a href="#集成电路中的功率和能耗趋势" class="headerlink" title="集成电路中的功率和能耗趋势"></a>集成电路中的功率和能耗趋势</h2><h4 id="性能，功率（功耗）与能耗的关注事项："><a href="#性能，功率（功耗）与能耗的关注事项：" class="headerlink" title="性能，功率（功耗）与能耗的关注事项："></a>性能，功率（功耗）与能耗的关注事项：</h4><ul>
+<li>1.一个处理器需要的最大功率：决定了电源系统。</li>
+<li>2.持续功耗是多少（热设计功耗TDP）：决定了冷却需求。</li>
+<li>3.能耗与能耗效率：<code>执行一项工作负载的能耗=平均功率*此项工作负载执行时间。</code>可以评估处理器在特定任务上的表现。</li>
+</ul>
+<h4 id="微处理器内部的能耗和功率"><a href="#微处理器内部的能耗和功率" class="headerlink" title="微处理器内部的能耗和功率"></a>微处理器内部的能耗和功率</h4><p>对CMOS芯片，传统的主要能耗源是开关晶体管，即<strong>动态能耗</strong>。每个晶体管所需的能耗与该晶体管驱动的容性负载与电压平方乘积成正比</p>
+<p>单个晶体管一次电平转换（0-1或1-0）的动态能耗：<br>$$<br>能耗_{动态} \propto 0.5 \times 容性负载 \times 电压^2<br>$$<br>单个晶体管需要的功率：<br>$$<br>功率_{动态} \propto 0.5 \times 容性负载 \times 电压^2 \times 开关频率<br>$$</p>
+<ul>
+<li>降低电压可以大幅降低动态功率和能耗。</li>
+<li>对于某一个指定的任务，降低时钟频率可以降低功率，但不会降低功耗</li>
+</ul>
+<p>一些提高能耗效率的方法：</p>
+<ul>
+<li>以逸待劳：关闭非活动模块的时钟</li>
+<li>动态电压-频率调整</li>
+<li>针对典型情景设计：如允许处理器超负荷短时间工作，当芯片检测到片上温度超过某一设定值的时候自动降低时钟频率或电压。</li>
+<li>超频</li>
+<li>控制静态功率：关闭非活动模块的电源。</li>
+</ul>
+<h2 id="性能的测量，报告与汇总"><a href="#性能的测量，报告与汇总" class="headerlink" title="性能的测量，报告与汇总"></a>性能的测量，报告与汇总</h2><h4 id="一些术语："><a href="#一些术语：" class="headerlink" title="一些术语："></a>一些术语：</h4><ul>
+<li><p>带宽（吞吐量）：在给定时间内完成的总工作量</p>
+</li>
+<li><p>延迟（响应时间）：一个事件从开始到完成所经历的时间，包括磁盘访问，输入输出活动，操作系统开销等时间</p>
+</li>
+<li><p>CPU时间：处理器执行计算的时间，不包括等待IO或运行其它程序的时间</p>
+</li>
+</ul>
+<p>报告性能结果的基本原则：可重现性，尽量包括重现所需的所有参数。</p>
+<h4 id="不同硬件间性能比较的基本思想"><a href="#不同硬件间性能比较的基本思想" class="headerlink" title="不同硬件间性能比较的基本思想"></a>不同硬件间性能比较的基本思想</h4><ul>
+<li>1.选择一种基准测试套件来测量性能，并用一个数值来代表套件评测出的硬件的性能。基准测试套件中包含多个侧重于不同类型任务的测试程序。</li>
+<li>2.任意选择一个基准计算机，将基准测试程序在基准计算机上的执行时间除以待评价计算机上的执行时间，得到一个与待评价计算机的性能成正比的比值。（相当于归一化）</li>
+<li>3.将所有测试程序通过2步得到的数值求<strong>几何平均值</strong>，作为待测量硬件在该基准测试套件上的性能度量。</li>
+</ul>
+<h4 id="Amdahl定律"><a href="#Amdahl定律" class="headerlink" title="Amdahl定律"></a>Amdahl定律</h4><p>$$<br>加速比&#x3D;整个任务未采用该升级时的执行时间&#x2F;整个任务采用该升级时的执行时间<br>$$</p>
+<p>加速比取决于两个因素：</p>
+<ul>
+<li>原计算机计算时间中可升级部分所占的比例，称之为<strong>升级比例</strong>。</li>
+<li>通过升级执行模式得到的改进，即在为整个程序使用这一执行模式时，任务的运行速度会提高多少倍，等于（升级的部分的）原模式执行时间除升级模式执行时间。称之为<strong>升级加速比</strong>。</li>
+</ul>
+<p>$$<br>新执行时间&#x3D;原执行时间 \times ((1-升级比例)+\frac{升级比例}{升级加速比})<br>$$</p>
+<h4 id="处理器性能公式"><a href="#处理器性能公式" class="headerlink" title="处理器性能公式"></a>处理器性能公式</h4><p>$$<br>CPU时间&#x3D;\frac{程序的CPU时钟周期数}{时间频率}<br>$$</p>
+<p>$$<br>每条指令时钟周期数CPI&#x3D;\frac{程序的CPU时钟周期数}{指令数}<br>$$</p>
+<p>影响处理器性能的三个因素：</p>
+<ul>
+<li>时钟周期时间</li>
+<li>CPI</li>
+<li>指令数</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Architecture</tag>
       </tags>
   </entry>
   <entry>
@@ -979,109 +1017,1314 @@
       </tags>
   </entry>
   <entry>
-    <title>数字电路 FIFO设计</title>
-    <url>/2022/03/24/2022-03-24-%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF-FIFO%E8%AE%BE%E8%AE%A1/</url>
-    <content><![CDATA[<p>FIFO是<code>First In First Out</code>的缩写，是一种存储器，常在数据传输过程中用做缓冲器，防止数据丢失。</p>
-<p>比如有一个数据发送方与一个数据接收方，数据接收方要将数据发送方发出的数据全部读走。但是接收方每两个时钟周期才能接收一个数据，而发送方每一个周期都会发送一个数据。此时如果将数据发送方与数据接收方的端口直接相连，数据一定会有丢失。这个时候有两种解决方案，一种是为发送方与接收方添加握手信号，另一种是在发送方与接收方之间添加一个Buffer结构用来接收发送方发来的数据并缓存，接收方从Buffer中读走数据，此时在发送方与接收方眼中对方仅仅是一个Buffer结构。FIFO就是这样一种缓存数据的结构，并且常用在写快读慢的情况中。 </p>
-<h2 id="1、FIFO类型"><a href="#1、FIFO类型" class="headerlink" title="1、FIFO类型"></a>1、FIFO类型</h2><p>FIFO有同步FIFO与异步FIFO两种。</p>
+    <title>C语言 预处理器指令</title>
+    <url>/2022/04/10/C%E8%AF%AD%E8%A8%80%20%E9%A2%84%E5%A4%84%E7%90%86%E6%8C%87%E4%BB%A4/</url>
+    <content><![CDATA[<h1 id="C语言-预处理器指令"><a href="#C语言-预处理器指令" class="headerlink" title="C语言 预处理器指令"></a>C语言 预处理器指令</h1><h2 id="define"><a href="#define" class="headerlink" title="#define"></a>#define</h2><blockquote>
+<p>可用来定义常量或者宏函数</p>
+</blockquote>
+<p>预处理器发现程序中的宏后，会用宏等价的替换文本进行替换。如果替换的字符串中还包含宏，则继续替换这些宏。但是在双引号中不会发生宏替换。</p>
+<h4 id="在-define中使用参数"><a href="#在-define中使用参数" class="headerlink" title="在#define中使用参数"></a>在#define中使用参数</h4><figure class="highlight tp"><table><tr><td class="code"><pre><span class="line">#define MEAN(<span class="keyword">X</span>,<span class="keyword">Y</span>)  ((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)  </span><br><span class="line">这里MEAN是宏标识符，<span class="keyword">X</span>,<span class="keyword">Y</span>是宏参数，((<span class="keyword">X</span>)+(<span class="keyword">Y</span>)/<span class="number">2</span>)是替换列表</span><br></pre></td></tr></table></figure>
+
+<h4 id="用宏参数创建字符串：-运算符"><a href="#用宏参数创建字符串：-运算符" class="headerlink" title="用宏参数创建字符串：#运算符"></a>用宏参数创建字符串：#运算符</h4><p>在类函数宏的替换体中，#作为一个预处理运算符，可以把记号转换为字符串。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">PSQR</span>(X)  <span class="built_in">printf</span>(<span class="string">&quot; The square of &quot;</span> <span class="selector-id">#x</span> <span class="string">&quot; is %d&quot;</span>,((X)*(x)))</span><br><span class="line">int y = <span class="number">5</span></span><br><span class="line"><span class="function"><span class="title">PSQR</span><span class="params">(y)</span></span></span><br><span class="line">输出：the square of y is <span class="number">25</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="预处理器粘合剂：-运算符"><a href="#预处理器粘合剂：-运算符" class="headerlink" title="预处理器粘合剂：##运算符"></a>预处理器粘合剂：##运算符</h4><p>##运算符把两个记号组合成1个记号</p>
+<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="built_in">XNAME</span>(n) x ## n</span><br><span class="line"><span class="built_in">XNAME</span>(<span class="number">4</span>)将展开为x4</span><br></pre></td></tr></table></figure>
+
+<h4 id="变参宏-…和-VA-ARGS"><a href="#变参宏-…和-VA-ARGS" class="headerlink" title="变参宏: …和__VA_ARGS__"></a>变参宏: …和__VA_ARGS__</h4><h2 id="文件包含：-include"><a href="#文件包含：-include" class="headerlink" title="文件包含：#include"></a>文件包含：#include</h2><p>把被包含文件的全部内容输入到#include所在的位置</p>
 <ul>
-<li>同步FIFO：FIFO的读逻辑与写逻辑处于同一个时钟域中，FIFO的各个部分接收的时钟信号都是同一个信号。</li>
-<li>异步FIFO：FIFO的读写时钟不是同一个时钟，读写时钟彼此相互独立，并且频率可能不一样。</li>
+<li><p>文件名在尖括号中告诉预处理器在标准系统目录中查找该文件</p>
+</li>
+<li><p>文件名在双引号中表示先查找当前目录或文件名指定的目录，如果没有找到再查找标准系统目录</p>
+</li>
 </ul>
-<h2 id="2-同步FIFO结构"><a href="#2-同步FIFO结构" class="headerlink" title="2.同步FIFO结构"></a>2.同步FIFO结构</h2><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/224278617_1_202106160112166.jpg" alt="224278617_1_202106160112166"></p>
-<h3 id="1-双端口RAM"><a href="#1-双端口RAM" class="headerlink" title="1.双端口RAM"></a>1.双端口RAM</h3><p>同步FIFO的主体是一个存储器，用来存储需要缓存的数据。存储器可以用block_ram或者寄存器实现。当存储器需要比较大的时候block_ram相对于寄存器而言读写时序会好一些，并且空间占用比寄存器小。但是寄存器可以在<strong>给地址的当拍</strong>传出地址对应的数据，而block_ram最快也要在<strong>给出地址的下一拍</strong>传出数据。但不管采用什么结构实现，FIFO的存储器必须是一个双端口RAM，即有一个读地址与写地址端口和对应的数据即控制端口，使得读写可以在同一拍中进行。</p>
-<h3 id="2-读写指针"><a href="#2-读写指针" class="headerlink" title="2.读写指针"></a>2.读写指针</h3><p>同步FIFO还有两个指针，读指针与写指针。这两个指针本质上是两个寄存器，直接与FIFO存储器的读地址端口与写地址端口相连，存储着FIFO的读地址与写地址（因此这两个寄存器的宽度是<code>log2(存储器深度)</code>）。读指针中存储的地址是下一拍将要读取的位置，写指针中存储的是下一拍将要写入的位置。每次读操作使读指针加1，每次写操作使写指针加1.</p>
-<h3 id="3-空满状态判断模块"><a href="#3-空满状态判断模块" class="headerlink" title="3.空满状态判断模块"></a>3.空满状态判断模块</h3><p>FIFO必须有两个标志：空标志与满标志指示FIFO的当前状态。如果在空标志有效时对FIFO进行读取会产生<code>underflow</code>，读出了一个无效的数据。满标志有效时对FIFO进行写入会产生<code>overflow</code>，导致FIFO中还没有被读走的数据被新来的数据覆盖。并且如果FIFO的读写指针没有保护机制，在FIFO空满时读写很有可能会导致FIFO的读写指针在下一拍指向了错误的位置，从而导致整个FIFO彻底乱套。这里总结了三种判断空满状态的方法（这里没有考虑读写指针保护，保证FIFO被正确使用的任务由读写双方完成）：</p>
-<h4 id="3-1-通过读写指针判断"><a href="#3-1-通过读写指针判断" class="headerlink" title="3.1 通过读写指针判断"></a>3.1 通过读写指针判断</h4><h5 id="3-1-1空标志"><a href="#3-1-1空标志" class="headerlink" title="3.1.1空标志"></a>3.1.1空标志</h5><p>假设在复位后读写指针的值都为0，即指向存储器的最低位地址。此时读写指针相等，FIFO为空。FIFO的空标志应当为1.之后进行一个写操作，写操作完成后写指针加1而读指针不变，FIFO不为空，空标志置0.如果此时再来一个读操作，则读完成后读指针加1与写指针相等，FIFO为空。</p>
-<p>在FIFO的读写过程中，写指针的上溢一定在读指针上溢之前（否则之前一定有underflow或者overflow），当读指针没有发生上溢的时候写指针不可能再次发生上溢（理由同上），而写指针上溢并且读指针没有上溢的时候FIFO一定不为空。而当读指针也发生上溢后，情况就和最开始相同了。</p>
-<p>分析了这么多，代码很简单：</p>
-<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span><span class="comment">//注意这里空标志是用寄存器实现的。</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作)</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作&amp;&amp;(写指针==读指针+<span class="number">1</span>))</span><br><span class="line">        fifo_empty &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="undef"><a href="#undef" class="headerlink" title="#undef"></a>#undef</h2><p>#undef &lt;macro&gt;用来取消对macro的定义，如果之前没有定义过macro，则会直接忽略掉。如果之前定义过macro，则使用#undef取消对macro的定义后可以对macro赋一个新值</p>
+<p>注意：如果宏通过头文件引入，那么#define在文件中的位置取决于#include指令的位置</p>
+<h2 id="条件编译"><a href="#条件编译" class="headerlink" title="条件编译"></a>条件编译</h2><p>可以使用某些指令告诉编译器根据编译时的条件执行或忽略信息块或代码块</p>
+<h4 id="ifdef，-else与-endif"><a href="#ifdef，-else与-endif" class="headerlink" title="#ifdef， #else与#endif"></a>#ifdef， #else与#endif</h4><p>可以嵌套</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> MAVIS</span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hourse.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cow.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br><span class="line">	</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> JUST_CHECKING</span></span><br><span class="line">	<span class="built_in">printf</span>(...);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>	</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="3-1-2满标志"><a href="#3-1-2满标志" class="headerlink" title="3.1.2满标志"></a>3.1.2满标志</h5><p>FIFO满的判断与读类似，当FIFO发生读操作之后FIFO一定不是满的。如果当前是写操作并且读指针等于写指针加1时FIFO在写完成后一定是满的（设想没有读，一直在写，当全部写满后写指针会发生上溢变为0）</p>
-<figure class="highlight verilog"><table><tr><td class="code"><pre><span class="line"><span class="keyword">always</span>@(<span class="keyword">posedge</span> clk)<span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span>(reset)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(读操作)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(写操作&amp;&amp;读指针==写指针+<span class="number">1</span>)</span><br><span class="line">        fifo_full &lt;= <span class="number">1&#x27;b1</span>;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="3-2-通过计数器判断"><a href="#3-2-通过计数器判断" class="headerlink" title="3.2 通过计数器判断"></a>3.2 通过计数器判断</h4><p>在FIFO内部加一个计数器指示当前FIFO里有多少有效数据。这种方法最简单，但是个人感觉时序会不太好（？）</p>
-<h4 id="3-3扩展读写指针"><a href="#3-3扩展读写指针" class="headerlink" title="3.3扩展读写指针"></a>3.3扩展读写指针</h4><p>这种方法最为精妙，时序和资源占用都是最优的。分别将读写指针扩展一位，将扩展得到的最高位设置为状态位，其余位作为地址位。当读写指针的地址位与状态位全部相同的时候，读写指针经历了相同次数的循环移动，即此时FIFO是空状态（实际上写指针最多比读指针多走一圈）。如果读写指针的地址位相同而状态位相反，则写指针比读指针多循环一次，FIFO处于满状态。</p>
+<h4 id="ifndef"><a href="#ifndef" class="headerlink" title="#ifndef"></a>#ifndef</h4><ul>
+<li><p>与#ifdef类似，可以和#else，#endif配合使用，但是意义相反</p>
+</li>
+<li><p>常用来避免某个文件多次被包含</p>
+</li>
+</ul>
+<h4 id="if与-elif"><a href="#if与-elif" class="headerlink" title="#if与#elif"></a>#if与#elif</h4><ul>
+<li><p>#if后跟整型常量表达式，如果表达式非零，则表达式为真，可以在指令中使用C的关系运算符与逻辑运算符</p>
+</li>
+<li><p>可以用另一种方法测试名称是否已经被定义：用#if defined (macro) 代替 #ifdef macro</p>
+</li>
+</ul>
+<h4 id="error"><a href="#error" class="headerlink" title="#error"></a>#error</h4><p>#error指令让预处理器发出一条错误信息，包含指令中的文本，如果可能的话，编译应当中断。</p>
 ]]></content>
       <tags>
-        <tag>digital design</tag>
+        <tag>C programming</tag>
       </tags>
   </entry>
   <entry>
-    <title>量化设计与分析基础</title>
-    <url>/2022/03/24/2022-03-24-%E9%87%8F%E5%8C%96%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%88%86%E6%9E%90%E5%9F%BA%E7%A1%80/</url>
-    <content><![CDATA[<h2 id="并行度与并行体系结构的分类"><a href="#并行度与并行体系结构的分类" class="headerlink" title="并行度与并行体系结构的分类"></a>并行度与并行体系结构的分类</h2><ul>
-<li>应用程序中的并行：<ul>
-<li>数据级并行（DLP）</li>
-<li>任务级并行（TLP）</li>
-</ul>
-</li>
-<li>硬件中的并行：<ul>
-<li>指令级并行（）</li>
-<li>向量体系结构和GPU</li>
-<li>线程级并行</li>
-<li>请求级并行</li>
-</ul>
-</li>
-<li>计算机的分类<ul>
-<li>单指令流，单数据流（SISD）：如单处理器</li>
-<li>单指令流，多数据流（SIMD）：同一指令由多个使用不同数据流的处理器执行</li>
-<li>多指令流，单数据流（MISD）：无</li>
-<li>多指令流，多数据流（MIMD）：每个处理器都提取自己的指令，对自己的数据进行操作</li>
-</ul>
-</li>
-</ul>
-<h2 id="集成电路中的功率和能耗趋势"><a href="#集成电路中的功率和能耗趋势" class="headerlink" title="集成电路中的功率和能耗趋势"></a>集成电路中的功率和能耗趋势</h2><h4 id="性能，功率（功耗）与能耗的关注事项："><a href="#性能，功率（功耗）与能耗的关注事项：" class="headerlink" title="性能，功率（功耗）与能耗的关注事项："></a>性能，功率（功耗）与能耗的关注事项：</h4><ul>
-<li>1.一个处理器需要的最大功率：决定了电源系统。</li>
-<li>2.持续功耗是多少（热设计功耗TDP）：决定了冷却需求。</li>
-<li>3.能耗与能耗效率：<code>执行一项工作负载的能耗=平均功率*此项工作负载执行时间。</code>可以评估处理器在特定任务上的表现。</li>
-</ul>
-<h4 id="微处理器内部的能耗和功率"><a href="#微处理器内部的能耗和功率" class="headerlink" title="微处理器内部的能耗和功率"></a>微处理器内部的能耗和功率</h4><p>对CMOS芯片，传统的主要能耗源是开关晶体管，即<strong>动态能耗</strong>。每个晶体管所需的能耗与该晶体管驱动的容性负载与电压平方乘积成正比</p>
-<p>单个晶体管一次电平转换（0-1或1-0）的动态能耗：<br>$$<br>能耗_{动态} \propto 0.5 \times 容性负载 \times 电压^2<br>$$<br>单个晶体管需要的功率：<br>$$<br>功率_{动态} \propto 0.5 \times 容性负载 \times 电压^2 \times 开关频率<br>$$</p>
+    <title>C语言 高级特性</title>
+    <url>/2022/04/10/C%E8%AF%AD%E8%A8%80%20%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</url>
+    <content><![CDATA[<h1 id="C语言-高级特性"><a href="#C语言-高级特性" class="headerlink" title="C语言 高级特性"></a>C语言 高级特性</h1><h2 id="内联函数-C99"><a href="#内联函数-C99" class="headerlink" title="内联函数(C99)"></a>内联函数(C99)</h2><blockquote>
+<p> 把函数变为内联函数，编译器可能会用内联代码替换函数调用，并（或）执行一些其它的优化，但是也可能不起作用。</p>
+</blockquote>
+<p>内联函数的主要作用是消除函数调用的开销。</p>
+<p>内联函数使用<code>inline</code>关键字声明，具有内部链接的函数可以成为内联函数，并且内联函数的定义与调用必须在一个文件中。</p>
+<p>如果多个文件都要使用同一个内联函数，则简单的做法是将内联函数的定义放在头文件中。</p>
+<h2 id="可变参数：stdarg-h"><a href="#可变参数：stdarg-h" class="headerlink" title="可变参数：stdarg.h"></a>可变参数：stdarg.h</h2><p>要使用需：</p>
 <ul>
-<li>降低电压可以大幅降低动态功率和能耗。</li>
-<li>对于某一个指定的任务，降低时钟频率可以降低功率，但不会降低功耗</li>
+<li>提供一个使用省略号的函数原型，至少有一个形参，最右边的形参叫做<code>parmN</code>，代表省略号部分的参数数量。</li>
+<li>在函数定义中创建一个<code>va_list</code>类型的变量，暂且叫做ap，该类型是编译器内建类型，是一个指向参数的指针。</li>
+<li>用宏把该变量初始化为一个参数列表：使用&#96;&#96;va_start(va_list ap, lastarg)<code>宏(实际是内建函数)，把参数列表拷贝到</code>va_list&#96;类型变量中。(让ap指向函数的最后一个确定的参数（parmN）的下一个参数的地址。)</li>
+<li>用宏访问参数列表：使用<code>va_arg((va_list ap, 类型)</code>宏(实际是内建函数)。获取可变参数的当前参数，返回指定类型并将指针指向下一参数</li>
+<li>用宏完成清理工作：<code>va_end(va_list ap)</code></li>
 </ul>
-<p>一些提高能耗效率的方法：</p>
+<p>实现：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">typedef</span> <span class="type">char</span> * va_list;</span><br><span class="line"> <span class="number">2</span></span><br><span class="line"> <span class="number">3</span> <span class="meta">#<span class="keyword">define</span> __INTSIZEOF(n) \</span></span><br><span class="line"><span class="meta"> 4     ((sizeof(n) + sizeof(int) - 1) &amp; ~(sizeof(int) - 1) )</span></span><br><span class="line"> <span class="number">5</span></span><br><span class="line"> <span class="number">6</span> <span class="meta">#<span class="keyword">define</span> __ADDRESS(v) (&amp;(v))</span></span><br><span class="line"> <span class="number">7</span></span><br><span class="line"> <span class="number">8</span> <span class="meta">#<span class="keyword">define</span> va_start(ap, v) \</span></span><br><span class="line"><span class="meta"> 9     (ap = (va_list) __ADDRESS(v) + __INTSIZEOF(v))</span></span><br><span class="line"><span class="number">10</span></span><br><span class="line"><span class="number">11</span> <span class="meta">#<span class="keyword">define</span> va_arg(ap, t) \</span></span><br><span class="line"><span class="meta">12     (*(t*)((ap += __INTSIZEOF(t)) - __INTSIZEOF(t)))</span></span><br><span class="line"><span class="number">13</span></span><br><span class="line"><span class="number">14</span> <span class="meta">#<span class="keyword">define</span> va_end(ap) \</span></span><br><span class="line"><span class="meta">15     (ap = (va_list) 0)  </span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h2><p>内建函数是编译器内部实现的函数，可以直接使用，不用像标准库一样include进来。</p>
+<p>内建函数的命名通常以<code>__buildin</code>开头。</p>
+<p>主要用途包括处理变长参数列表，程序运行异常，编译优化，查看底层信息，以及C标准库的内建版本。</p>
+<h2 id="伸缩型数组成员（C99）"><a href="#伸缩型数组成员（C99）" class="headerlink" title="伸缩型数组成员（C99）"></a>伸缩型数组成员（C99）</h2><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">flex</span>&#123;</span></span><br><span class="line">	<span class="type">int</span> count;</span><br><span class="line">	<span class="type">double</span> <span class="built_in">array</span>[] <span class="comment">//伸缩型数组成员 double array[0]也可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在结构体中声明一个伸缩型数组成员的规则：</strong></p>
 <ul>
-<li>以逸待劳：关闭非活动模块的时钟</li>
-<li>动态电压-频率调整</li>
-<li>针对典型情景设计：如允许处理器超负荷短时间工作，当芯片检测到片上温度超过某一设定值的时候自动降低时钟频率或电压。</li>
-<li>超频</li>
-<li>控制静态功率：关闭非活动模块的电源。</li>
+<li>伸缩型数组成员必须是结构的最后一个成员。</li>
+<li>结构中必须至少有一个成员。</li>
+<li>伸缩数组的声明中方括号是空的。</li>
 </ul>
-<h2 id="性能的测量，报告与汇总"><a href="#性能的测量，报告与汇总" class="headerlink" title="性能的测量，报告与汇总"></a>性能的测量，报告与汇总</h2><h4 id="一些术语："><a href="#一些术语：" class="headerlink" title="一些术语："></a>一些术语：</h4><ul>
-<li><p>带宽（吞吐量）：在给定时间内完成的总工作量</p>
-</li>
-<li><p>延迟（响应时间）：一个事件从开始到完成所经历的时间，包括磁盘访问，输入输出活动，操作系统开销等时间</p>
-</li>
-<li><p>CPU时间：处理器执行计算的时间，不包括等待IO或运行其它程序的时间</p>
-</li>
-</ul>
-<p>报告性能结果的基本原则：可重现性，尽量包括重现所需的所有参数。</p>
-<h4 id="不同硬件间性能比较的基本思想"><a href="#不同硬件间性能比较的基本思想" class="headerlink" title="不同硬件间性能比较的基本思想"></a>不同硬件间性能比较的基本思想</h4><ul>
-<li>1.选择一种基准测试套件来测量性能，并用一个数值来代表套件评测出的硬件的性能。基准测试套件中包含多个侧重于不同类型任务的测试程序。</li>
-<li>2.任意选择一个基准计算机，将基准测试程序在基准计算机上的执行时间除以待评价计算机上的执行时间，得到一个与待评价计算机的性能成正比的比值。（相当于归一化）</li>
-<li>3.将所有测试程序通过2步得到的数值求<strong>几何平均值</strong>，作为待测量硬件在该基准测试套件上的性能度量。</li>
-</ul>
-<h4 id="Amdahl定律"><a href="#Amdahl定律" class="headerlink" title="Amdahl定律"></a>Amdahl定律</h4><p>$$<br>加速比&#x3D;整个任务未采用该升级时的执行时间&#x2F;整个任务采用该升级时的执行时间<br>$$</p>
-<p>加速比取决于两个因素：</p>
+<p>最好不要用这种结构声明变量，而是声明指向这种结构的指针，然后用malloc分配空间，以存储这种数据结构的常规内容以及伸缩型数组成员所需的额外空间。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">flex</span> *<span class="title">pf</span>;</span></span><br><span class="line">pf = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> flex) + <span class="number">5</span>*<span class="keyword">sizeof</span>(<span class="type">double</span>));</span><br></pre></td></tr></table></figure>
+
+<p><strong>带伸缩型数组成员的结构的处理要求：</strong></p>
 <ul>
-<li>原计算机计算时间中可升级部分所占的比例，称之为<strong>升级比例</strong>。</li>
-<li>通过升级执行模式得到的改进，即在为整个程序使用这一执行模式时，任务的运行速度会提高多少倍，等于（升级的部分的）原模式执行时间除升级模式执行时间。称之为<strong>升级加速比</strong>。</li>
-</ul>
-<p>$$<br>新执行时间&#x3D;原执行时间 \times ((1-升级比例)+\frac{升级比例}{升级加速比})<br>$$</p>
-<h4 id="处理器性能公式"><a href="#处理器性能公式" class="headerlink" title="处理器性能公式"></a>处理器性能公式</h4><p>$$<br>CPU时间&#x3D;\frac{程序的CPU时钟周期数}{时间频率}<br>$$</p>
-<p>$$<br>每条指令时钟周期数CPI&#x3D;\frac{程序的CPU时钟周期数}{指令数}<br>$$</p>
-<p>影响处理器性能的三个因素：</p>
-<ul>
-<li>时钟周期时间</li>
-<li>CPI</li>
-<li>指令数</li>
+<li>不能对结构变量直接赋值或拷贝，拷贝请使用memcpy()</li>
+<li>不要把这种结构直接传递给函数</li>
+<li>不要把这种结构作为数组成员或者另一个结构的成员。</li>
 </ul>
 ]]></content>
       <tags>
-        <tag>architecture</tag>
+        <tag>C programming</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>BUAA_OO_2021第一单元总结</title>
+    <url>/2022/04/02/BUAA_2021_OO%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<blockquote>
+<p>本文首先概述了一些软件复杂度的度量方法，随后介绍了三次作业的构造思路，然后介绍了发现的一些bug以及测试方法，最后进行了总结。</p>
+</blockquote>
+<h2 id="软件复杂度度量方法"><a href="#软件复杂度度量方法" class="headerlink" title="软件复杂度度量方法"></a>软件复杂度度量方法</h2><h4 id="圈复杂度v-G"><a href="#圈复杂度v-G" class="headerlink" title="圈复杂度v(G):"></a>圈复杂度v(G):</h4><p>概念：用来衡量一个模块判定结构的复杂程度。</p>
+<p>计算方法：<strong>V (G) &#x3D; P + 1</strong>，P为判定节点数，如if，else，case，while等</p>
+<p>圈复杂度越大说明程序代码的判断逻辑复杂，可能质量低，且难于测试和维护。</p>
+<table>
+<thead>
+<tr>
+<th>圈复杂度</th>
+<th>代码状况</th>
+<th>可测试性</th>
+<th>维护成本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1-10</td>
+<td>清晰</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td>10-20</td>
+<td>复杂</td>
+<td>中</td>
+<td>中</td>
+</tr>
+<tr>
+<td>20-30</td>
+<td>非常复杂</td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr>
+<td>&gt;30</td>
+<td>不可读</td>
+<td>不可测</td>
+<td>非常高</td>
+</tr>
+</tbody></table>
+<h4 id="基本复杂度ev-G"><a href="#基本复杂度ev-G" class="headerlink" title="基本复杂度ev(G):"></a>基本复杂度ev(G):</h4><p>概念： 基本复杂度用来衡量程序<strong>非结构化程度</strong>。越高越难理解。</p>
+<p>计算方法：将模块控制流图中的结构化部分简化成节点，计算简化后控制流图的圈复杂度就是基本复杂度。</p>
+<h4 id="模块设计复杂度iv-G"><a href="#模块设计复杂度iv-G" class="headerlink" title="模块设计复杂度iv(G):"></a>模块设计复杂度iv(G):</h4><p>概念：模块设计复杂度用来衡量模块之间的<strong>调用关系</strong>，复杂度越高，模块之间耦合性越高，越难隔离，维护和复用。</p>
+<p>计算方法：从模块控制流图中移去那些不包含<strong>调用子模块的判定</strong>和<strong>循环结构</strong>后得到的圈复杂度。模块设计复杂度通常远小于圈复杂度。</p>
+<h4 id="认知复杂度CogC："><a href="#认知复杂度CogC：" class="headerlink" title="认知复杂度CogC："></a>认知复杂度CogC：</h4><p>这个复杂度比较高级，是为了解决圈复杂度具有的问题而出现的，比如两段代码圈复杂度相同，但是读起来有明显的阅读难度差异。认知复杂度基于三个规则：</p>
+<ul>
+<li>代码中用到一些语法糖，把多句话缩为一句：代码不会变得更复杂；</li>
+<li>出现”break”中止了线性的代码阅读理解，如出现循环、条件、try-catch、switch-case、一串的and or操作符、递归，以及jump to label：代码因此更复杂；</li>
+<li>多层嵌套结构：代码因此更复杂；</li>
+</ul>
+<h2 id="第一次作业分析"><a href="#第一次作业分析" class="headerlink" title="第一次作业分析"></a>第一次作业分析</h2><h3 id="作业要求概述"><a href="#作业要求概述" class="headerlink" title="作业要求概述"></a>作业要求概述</h3><p>读入一个包含加、减、乘、乘方以及括号（其中括号的深度<strong>至多为 1 层</strong>）的<strong>单变量</strong>表达式，输出<strong>恒等变形展开所有括号后</strong>的表达式。因子包括幂函数，常数，以及表达式因子。幂函数以及表达式因子可以有指数。</p>
+<h3 id="架构设计思路"><a href="#架构设计思路" class="headerlink" title="架构设计思路"></a>架构设计思路</h3><p>很自然的想到将代码分为三个部分：输入解析，拆括号，以及最终合并同类项进行化简，同时需要有一些类作为表达式在程序中的代表，比如代表表达式的Expr类，代表项的Term类。这些代表表达式的结构的类之间应当具有某种引用关系，这种引用关系可以完全反映表达式的结构。</p>
+<p>在输入解析部分，采用了递归下降法解析表达式。采用递归下降法而不是正则表达式法是因为正则表达式在处理复杂字符串时很可能由于考虑不周而出错。（事实上这次作业还是因为正则的问题被hack了😇)并且正则无法处理嵌套括号的情况，不利于程序扩展处理多层括号嵌套的表达式。因此，在输入解析部分，程序的流程基本是:读入字符串后首先去除空白字符并合并连续的加减号，然后采用递归下降法解析表达式，最终返回一个Expr引用。有一个处理的trick值得注意：由于合并正负号了，因此我规定只有因子（Expr，Int，Power）才需要考虑正负号的问题，Term不需要考虑这个问题。具体请看下文。</p>
+<p>在拆括号部分，我创建了两个处理类ExprExpand与TermExpand,分别处理表达式拆括号与项拆括号。这两个类处理的数据类型包括Expr，Term，以及Factor。表达式拆括号即将表达式带有的指数展开，最终还是一个表达式。项拆括号即将一个项中的含有括号的部分展开，最终成为了一个表达式。事实上拆括号只有这两种类型。这两个类在第一次作业实现后，第二次，第三次都未加修改的使用了。</p>
+<p>化简部分是本次作业实现的比较复杂的地方。这是因为化简部分与拆括号部分彻底解耦。化简部分为一个工具类Simplify。拆完括号后调用toString方法将拆完括号的表达式传递给化简部分，化简部分需要重新解析表达式并合并同类项。这里并没有复用递归下降部分的代码，主要原因为如果复用，则最终会返回一个由表达式对象组成的表达式<strong>结构</strong>，对这个<strong>结构</strong>进行合并同类项相比于简单的字符串处理更为复杂（还是需要一维的字符串解析）。在第二次作业中，该部分被彻底修改了。</p>
+<h3 id="UML类图"><a href="#UML类图" class="headerlink" title="UML类图"></a>UML类图</h3><p>从类图可以发现，整个程序分成了四个包，这四个包之间是顺序执行的。这样的划分使得程序结构非常清晰。这说明即使在面向对象的程序中，在某些层面使用面向过程的思想也可以使得程序更加具有可读性。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/homework1uml.drawio.png" alt="homework1uml.drawio"></p>
+<h3 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><p>前两个方法的复杂度较高。可以看到由于simplify的实现问题，其复杂度较高。next方法实际上复杂度并不高，只是由于有很多if条件语句，因此被包含了进来。</p>
+<table>
+<thead>
+<tr>
+<th>method</th>
+<th>CogC</th>
+<th>ev(G)</th>
+<th>iv(G)</th>
+<th>v(G)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Simplify.simplify()</td>
+<td>21.0</td>
+<td>1.0</td>
+<td>10.0</td>
+<td>11.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.next()</td>
+<td>18.0</td>
+<td>7.0</td>
+<td>12.0</td>
+<td>16.0</td>
+</tr>
+<tr>
+<td>Simplify.analyseTerm(String)</td>
+<td>12.0</td>
+<td>1.0</td>
+<td>8.0</td>
+<td>8.0</td>
+</tr>
+<tr>
+<td>Simplify.toString()</td>
+<td>8.0</td>
+<td>1.0</td>
+<td>6.0</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.expand()</td>
+<td>6.0</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseExpr(String)</td>
+<td>5.0</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseFactor()</td>
+<td>5.0</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.expand()</td>
+<td>4.0</td>
+<td>1.0</td>
+<td>4.0</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.mergeTerms(ArrayList, ArrayList)</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>expr.Term.testToString()</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>expr.Term.toString()</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>Simplify.analyseExpr()</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.getNumber()</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parsePower(String)</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Power.toString()</td>
+<td>2.0</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseTerm()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.mergeExpr(Expr, Expr)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.setExponent(Int)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.testToString()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.toString()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>MainClass.main(String[])</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Simplify.Simplify(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.Lexer(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.getCurToken()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.removeAddSub(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.removeSpace(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Parser.Parser(Lexer)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseInt(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.ExprExpand(Expr)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.getExpr()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.mergeTerm(Term, Term)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.TermExpand(Term)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.getTerm()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.Expr(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.addTerm(Term)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getExponent()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getTerms()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.setTerms(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.Int(String, String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.getInteger()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.simplify()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.toString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.Power(Int, String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.Term()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.addFactor(Factor)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.addFactors(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.getFactors()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.getFactorsNum()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.setFactors(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>101.0</td>
+<td>60.0</td>
+<td>114.0</td>
+<td>122.0</td>
+</tr>
+<tr>
+<td>Average</td>
+<td>1.9423076923076923</td>
+<td>1.1538461538461537</td>
+<td>2.1923076923076925</td>
+<td>2.3461538461538463</td>
+</tr>
+</tbody></table>
+<h2 id="第二次作业分析"><a href="#第二次作业分析" class="headerlink" title="第二次作业分析"></a>第二次作业分析</h2><h3 id="作业要求概述-1"><a href="#作业要求概述-1" class="headerlink" title="作业要求概述"></a>作业要求概述</h3><p>读入<strong>一系列自定义函数的定义</strong>以及一个包含简单幂函数、简单三角函数、简单自定义函数调用以及求和函数的<strong>表达式</strong>，输出<strong>恒等变形展开所有括号后</strong>的表达式。</p>
+<h3 id="架构设计思路-1"><a href="#架构设计思路-1" class="headerlink" title="架构设计思路"></a>架构设计思路</h3><p>本次作业中相对于第一次作业加入了自定义函数以及三角函数。虽然自定义函数以及三角函数没有递归调用关系，但是已经出现了潜在的括号嵌套，比如sin的括号外还有一层表达式的括号。因此为了支持这样的表达式解析（以及为了程序的可扩展性而支持嵌套括号或递归调用），表达式解析部分，即construct包内的逻辑是必须要修改的。</p>
+<p>但是值得注意的是，到底用不用修改拆括号部分的逻辑呢？如果我们在最终形成的表达式引用关系树中添加新的<strong>嵌套的</strong>类型，比如自定义函数对象中包含对表达式因子的引用，则拆括号部分是必须要修改的。如果我们仅把改动限定在解析部分，而给后面的逻辑暴露出与第一次作业一样的接口（即表达式树中<strong>从拆括号类的视角</strong>看不包含新加入的类型。当然可能有新的三角函数类，但是在拆括号类看来这个类就是一个Factor），则拆括号部分的逻辑则不用修改，因为拆括号部分的逻辑已经支持嵌套括号展开了。而这样做的话出bug的几率以及工作量也大幅降低了。因此我选择将改动仅限于表达式解析部分。当然，simplify包中的合并同类项逻辑也是需要重写的。</p>
+<p>对表达式解析部分的改动：</p>
+<p>新增解析输入自定义函数定义的类Func与FuncSet，以及存放三角函数的Trigo类，Trigo类实现Factor接口。</p>
+<p>新增parseSum()与parseFunction()函数，这两个函数均返回一个Expr类型的引用，从程序的其它部分看来行为与parseExpr()相同。</p>
+<p>新增parseTrigo()函数，在该函数中会视情况调用其它parse函数处理三角中包含的内容。最后返回一个Trigo类型引用。</p>
+<p>新增Sum类与Function类，这两个类当调用parseSum()与parseFunction()时被实例化，并返回给调用函数一个不含自定义函数以及sum的已经展开的字符串。调用函数再实例化Lexer与Parser解析此字符串，并返回一个Expr引用。（这里复用了很多代码，但也导致程序运行时使用了很多内存，使得无法处理长度超过课程组限定长度的字符串。）</p>
+<p>对simplify包的重写：</p>
+<p>新增Item与Poly类，Item用来存放一个完整的项<code>ax^bsin(...)^ccos(...)^d...</code>，Poly存放所有完整的项。注意到当拆完括号后，返回的表达式树<strong>一定</strong>形成了这样的结构，否则括号就没有完全展开：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E6%9C%AA%E5%91%BD%E5%90%8D%E7%BB%98%E5%9B%BE.drawio.png" alt="未命名绘图.drawio"></p>
+<p>因此在合并同类项时我复用了表达式树的这一结构，在Expr类及Term类中加入了合并同类项相关函数。虽然导致了一些耦合，但是在化简时不用再次解析字符串了。在有三角函数的情况下再次解析字符串的工作量是巨大的。</p>
+<h3 id="UML类图-1"><a href="#UML类图-1" class="headerlink" title="UML类图"></a>UML类图</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/homework3uml.drawio.png" alt="homework3uml.drawio"></p>
+<h3 id="复杂度分析-1"><a href="#复杂度分析-1" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><p>本次作业的函数数量较上次增加了很多，复杂度较高的方法一共有5个。simplify.Item.addFactor由于需要辨别Factor的具体类型，因此分支较多。simplify.Item.toString()由于需要以最简形式输出，因此有较为复杂的判断逻辑。construct.Parser.parseFactor()是因为加入了自定义函数，求和函数，以及三角函数类的判断，因此增加了分支。然而，除了simplify.Item.toString()较为复杂，其他几个圈复杂度较高的方法实际并不复杂，这从认知复杂度上可以看出来。</p>
+<table>
+<thead>
+<tr>
+<th>method</th>
+<th>CogC</th>
+<th>ev(G)</th>
+<th>iv(G)</th>
+<th>v(G)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>construct.Lexer.next()</td>
+<td>19.0</td>
+<td>7.0</td>
+<td>15.0</td>
+<td>20.0</td>
+</tr>
+<tr>
+<td>simplify.Item.addFactor(Factor)</td>
+<td>17.0</td>
+<td>6.0</td>
+<td>10.0</td>
+<td>12.0</td>
+</tr>
+<tr>
+<td>simplify.Item.toString()</td>
+<td>14.0</td>
+<td>1.0</td>
+<td>9.0</td>
+<td>9.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseFactor()</td>
+<td>11.0</td>
+<td>1.0</td>
+<td>12.0</td>
+<td>12.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.expand()</td>
+<td>11.0</td>
+<td>1.0</td>
+<td>7.0</td>
+<td>7.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.toString()</td>
+<td>10.0</td>
+<td>4.0</td>
+<td>9.0</td>
+<td>9.0</td>
+</tr>
+<tr>
+<td>simplify.Poly.toString()</td>
+<td>10.0</td>
+<td>1.0</td>
+<td>6.0</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>expr.Power.toString()</td>
+<td>9.0</td>
+<td>5.0</td>
+<td>4.0</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.simplify()</td>
+<td>8.0</td>
+<td>1.0</td>
+<td>4.0</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseExpr(String)</td>
+<td>6.0</td>
+<td>1.0</td>
+<td>6.0</td>
+<td>6.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.expand()</td>
+<td>6.0</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseSum(String)</td>
+<td>4.0</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>expr.Sum.toString()</td>
+<td>4.0</td>
+<td>2.0</td>
+<td>3.0</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td>expr.Term.testToString()</td>
+<td>4.0</td>
+<td>1.0</td>
+<td>4.0</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td>expr.Term.toString()</td>
+<td>4.0</td>
+<td>1.0</td>
+<td>4.0</td>
+<td>4.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.equals(Object)</td>
+<td>4.0</td>
+<td>3.0</td>
+<td>3.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>simplify.Item.equals(Object)</td>
+<td>4.0</td>
+<td>3.0</td>
+<td>3.0</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parsePower(String)</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseTrigo(String)</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.mergeTerms(ArrayList, ArrayList)</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>MainClass.main(String[])</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.getNumber()</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr>
+<td>expr.Int.getSign()</td>
+<td>2.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Term.reverseSign()</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.getTrigo()</td>
+<td>2.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>simplify.Poly.addItem(Item)</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.Func.analyse()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.Func.dragIn(ArrayList)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.FuncSet.getFunc(String)</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.peak(int)</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseFunction(String)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseTerm()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.mergeTerm(Term, Term)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.mergeExpr(Expr, Expr)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getPoly()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.setExponent(Int)</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.simplify()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.testToString()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Expr.toString()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Function.toString()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Term.getItem()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>expr.Term.simplify()</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>MainClass.exchangeExponent(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>MainClass.removeSpace(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Func.Func(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Func.initCharMap()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.FuncSet.FuncSet()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.FuncSet.addFunc(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.Lexer(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Lexer.getCurToken()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Parser.Parser(Lexer, FuncSet)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>construct.Parser.parseInt(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.ExprExpand(Expr)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.ExprExpand.getExpr()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.TermExpand(Term)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expand.TermExpand.getTerm()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.Expr(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.addTerm(Term)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getExponent()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getTerms()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.getTermsNum()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Expr.setTerms(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Function.Function(String, ArrayList, FuncSet)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Function.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Function.simplify()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Function.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.Int(String, String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.compareTo(Int)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.getInteger()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.mult(Int)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.simplify()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Int.toString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.Power(Int, String, String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.getExponent()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.simplify()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Power.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Sum.Sum(Int, Int, Factor)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Sum.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Sum.simplify()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Sum.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.Term()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.addFactor(Factor)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.addFactors(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.getFactors()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.getFactorsNum()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Term.setFactors(ArrayList)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.Trigo(String, String, Factor, Int)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.getContains()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.getExponent()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.getName()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.getSign()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.hashCode()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>expr.Trigo.testToString()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>simplify.Item.Item(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>simplify.Item.getCoefficient()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>simplify.Item.hashCode()</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>simplify.Poly.Poly(String)</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>182.0</td>
+<td>128.0</td>
+<td>217.0</td>
+<td>239.0</td>
+</tr>
+<tr>
+<td>Average</td>
+<td>1.801980198019802</td>
+<td>1.2673267326732673</td>
+<td>2.1485148514851486</td>
+<td>2.366336633663366</td>
+</tr>
+</tbody></table>
+<h2 id="第三次作业分析"><a href="#第三次作业分析" class="headerlink" title="第三次作业分析"></a>第三次作业分析</h2><h3 id="作业要求概述-2"><a href="#作业要求概述-2" class="headerlink" title="作业要求概述"></a>作业要求概述</h3><p>读入<strong>一系列自定义函数的定义</strong>以及一个包含幂函数、三角函数、自定义函数调用以及求和函数的<strong>表达式</strong>，输出<strong>恒等变形展开所有括号后</strong>的表达式。</p>
+<h3 id="架构设计思路-2"><a href="#架构设计思路-2" class="headerlink" title="架构设计思路"></a>架构设计思路</h3><p>第三次作业在第二次作业的基础上增加了自定义函数递归嵌套调用，以及三角函数的嵌套调用。但是只要按照形式化定义使用递归下降法解析，就不会有问题。本次作业的架构与实现与第二次作业基本一致。</p>
+<h3 id="UML图"><a href="#UML图" class="headerlink" title="UML图"></a>UML图</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/homework3uml.drawio.png" alt="homework3uml.drawio"></p>
+<h2 id="bug分析与测试方法"><a href="#bug分析与测试方法" class="headerlink" title="bug分析与测试方法"></a>bug分析与测试方法</h2><p>出现bug的方法与未出现bug的方法在代码行和圈复杂度上并没有明显差异。事实上出bug更多是因为对工具的运用不熟练(正则表达式)，或者对作业的某些要求没有理解清楚而导致的。</p>
+<h4 id="第一次作业bug"><a href="#第一次作业bug" class="headerlink" title="第一次作业bug"></a>第一次作业bug</h4><p>强测未发现bug，互测被hack了两次，发现是使用正则将所有<code>1*</code>替换掉了，而这样会导致<code>21*x</code>变为<code>2x</code>。</p>
+<p>互测未发现别人的bug。</p>
+<h4 id="第二次作业bug"><a href="#第二次作业bug" class="headerlink" title="第二次作业bug"></a>第二次作业bug</h4><p>强测互测均未测出bug，发现有的同学sum没有处理下界可能是负数的情况。</p>
+<h4 id="第三次作业bug"><a href="#第三次作业bug" class="headerlink" title="第三次作业bug"></a>第三次作业bug</h4><p>强测有一个数据点未通过，是因为由于没有考虑到三角函数中有可能包含的表达式因子的所有情况，导致缺少括号。</p>
+<h4 id="互测方法"><a href="#互测方法" class="headerlink" title="互测方法"></a>互测方法</h4><p>互测采用了大量数据覆盖性测试以及特殊数据针对性测试相结合的方式，全部使用自动化测试工具完成。特殊数据的生成主要是通过查看被测代码中使用正则表达式替换与提取的部分。</p>
+<h4 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h4><p>第一次作业比较简单，使用python完成了一个数据生成器以及自动化测试工具。第二三次作业数据生成比较复杂，仅完成了自动化测试工具，数据生成使用的是<strong>翁英杰</strong>同学的神仙代码。</p>
+<h2 id="心得体会"><a href="#心得体会" class="headerlink" title="心得体会"></a>心得体会</h2><ul>
+<li>如果要拿分，优化需要认真做：我的第二次第三次作业中仅对基本情况，比如sin(0),cos(0)进行了优化，导致性能分拉胯。</li>
+<li>需要考虑可扩展性：注重可扩展性，第一次作业的拆括号逻辑可以一直用到第三次作业。</li>
+<li>正则表达式很好用，字符串处理工具类很好用，IDEA很好用，迭代器很好用，容器很好用。</li>
+<li>对java内存布局及管理仍然概念模糊：最直接的一个障碍就是深拷贝浅拷贝的问题。虽然在做作业的过程中将引用类比C的指针，小心避开了拷贝的陷阱，但是仍然对java内存管理没有很清晰的概念。之后应当把这里搞明白。</li>
+<li>自动化测试很重要：在写完代码后，通过大量数据进行覆盖性测试发现问题，并用出问题的数据单步调试发现bug，相比较从头读代码而言效率较高。不过在下一单元中应该不能这么干了。</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>BUAA</tag>
       </tags>
   </entry>
   <entry>
@@ -1301,91 +2544,8 @@
       </tags>
   </entry>
   <entry>
-    <title>VSCode配置C语言编译调试环境</title>
-    <url>/2022/03/24/VSCode%E9%85%8D%E7%BD%AEC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/</url>
-    <content><![CDATA[<h2 id="step0-一个vscode-C项目的结构"><a href="#step0-一个vscode-C项目的结构" class="headerlink" title="step0 一个vscode C项目的结构"></a>step0 一个vscode C项目的结构</h2><p>一个vscode项目会有一个.vscode文件夹在项目根目录下。这个文件夹中包含了对于该项目的vscode配置文件。具体到C&#x2F;C++项目，创建后该文件夹中需要有两个文件（tasks.json，launch.json）才可以正常编译调试程序：</p>
-<ul>
-<li><code>tasks.json</code>:包含构建（编译）指令</li>
-<li><code>launch.json</code>:包含调试设置</li>
-</ul>
-<p>如果想有更加个性化的设置，这个文件必不可少:</p>
-<ul>
-<li><code>c_cpp_properties.json</code>：包含一些编译器设置与IntelliSense（用于自动代码补全，实时错误检查，代码改进建议）设置</li>
-</ul>
-<h2 id="step1-配置tasks-json"><a href="#step1-配置tasks-json" class="headerlink" title="step1 配置tasks.json"></a>step1 配置tasks.json</h2><p><strong>自动生成tasks.json文件的方法</strong>：在编辑器上方的终端选项中选择（应该是）最后一个：配置默认生成任务，然后在下拉菜单中选择构建所使用的编译器就可以了。</p>
-<p>我的tasks.json:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;file&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-o&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;options&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;problemMatcher&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$gcc&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;group&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;build&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;detail&quot;</span><span class="punctuation">:</span> <span class="string">&quot;compiler: C:/mingw64/bin/gcc.exe&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>type条目指定了该以何种方式解释下面的command。如果值是<code>shell</code>，则当作命令行指令解析（bash，cmd，powershell等）。一般设置为shell就可以了。（默认生成的值是<code>cppbuild</code>，不太明白什么意思。）</li>
-<li>command条目指定了编译器的绝对路径。</li>
-<li>args条目指定了传递给编译器的参数，该条目中参数的位置必须按照编译器希望的顺序摆放。这里引用的一些变量可以参看附录1.通过改变这些变量，可以编译多个文件，或者使用一些其它的编译方式。具体怎么编译就看你对gcc命令的了解程度了。</li>
-<li>label条目指定了你会在终端的tasks list中看到什么，可以随意设置。</li>
-<li>“isDefault”: 设置为true表示使用<code>Ctrl+Shift+B</code>可以执行构建任务。</li>
-</ul>
-<h4 id="执行构建工作"><a href="#执行构建工作" class="headerlink" title="执行构建工作"></a>执行构建工作</h4><p>使用Ctrl+Shift+B快捷键或者在编辑器上部的终端选项卡中选择运行生成任务。然后就有了.exe文件</p>
-<p>![屏幕截图 2022-03-23 211641](<a href="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE">https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/屏幕截图</a> 2022-03-23 211641.png)</p>
-<p>运行.exe文件：</p>
-<p>直接在终端中键入可执行文件名或者.&#x2F;可执行文件名。</p>
-<h2 id="step2-配置launch-json"><a href="#step2-配置launch-json" class="headerlink" title="step2 配置launch.json"></a>step2 配置launch.json</h2><p><strong>自动生成launch.json文件的方法</strong>：在编辑器上方的运行选项卡中选择<code>编辑配置...</code>选项，然后可以根据需要选择一个，之后就会生成launch.json文件。</p>
-<p>生成的launch.json:</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gcc.exe - Build and debug active file&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\mingw64\\bin\\gdb.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;setupCommands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Enable pretty-printing for gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-enable-pretty-printing&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>program</code> - 指定了要调试的可执行文件。</li>
-<li><code>args</code> - 传递给程序的参数，使用双引号将参数括起来，参数间用逗号分隔。如果有转义字符，需要用双斜杠转义。</li>
-<li><code>cwd</code> - 指定了要调试的程序的工作目录。</li>
-<li><code>stopAtEntry</code> - 是否在main函数入口处停止。</li>
-<li><code>MIMode</code>：调制程序，只允许gdb或lldb。</li>
-<li><code>externalConsole</code>：是否为调试对象使用独立的控制台。</li>
-<li><code>miDebuggerPath</code> 调试程序路径</li>
-<li><code>preLaunchTask</code> - 指定了在执行运行或调试任务前要执行的任务。<strong>注意这里的值要和tasks.json中的label的值相同。</strong></li>
-</ul>
-<h4 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h4><p>使用F5或者<strong>Run &gt; Start Debugging</strong>开始调试。</p>
-<p>在监视（WATCH）中点加号可以添加想要观察的变量。</p>
-<h2 id="step3-编辑c-cpp-properties-json"><a href="#step3-编辑c-cpp-properties-json" class="headerlink" title="step3 编辑c_cpp_properties.json"></a>step3 编辑c_cpp_properties.json</h2><p>这个配置文件是可以可视化配置的：使用 Ctrl+Shift+P快捷键打开命令面板，然后选择**C&#x2F;C++: Edit Configurations (UI)**就可以了。</p>
-<p>我的配置文件：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GCC&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;includePath&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;defines&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;_DEBUG&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;UNICODE&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;_UNICODE&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;windowsSdkVersion&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10.0.18362.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;compilerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gnu99&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cppStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;c++17&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;intelliSenseMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-gcc-x64&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">4</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>includePath：源文件随附的头文件目录，**表示递归搜索。如果在compilerPath中指定了编译器，就不用在这里设置系统include路径。</li>
-<li>compilerPath：编译器位置</li>
-</ul>
-<h2 id="附录-vscode配置文件中的变量"><a href="#附录-vscode配置文件中的变量" class="headerlink" title="附录 vscode配置文件中的变量"></a>附录 vscode配置文件中的变量</h2><p>在<code>launch.json</code>或<code>tasks.json</code>中，使用**${variableName}**这样的语法引用变量。</p>
-<h4 id="预定义变量（部分）"><a href="#预定义变量（部分）" class="headerlink" title="预定义变量（部分）"></a>预定义变量（部分）</h4><p>直接看例子吧。</p>
-<p>假设编辑器打开的文件的路径是：<code>/home/your-username/your-project/folder/file.ext</code></p>
-<p>项目的根目录是<code>/home/your-username/your-project</code></p>
-<ul>
-<li><p><strong>${workspaceFolder}</strong> -<code>/home/your-username/your-project</code></p>
-</li>
-<li><p><strong>${workspaceFolderBasename}</strong> - <code>your-project</code></p>
-</li>
-<li><p><strong>${file}</strong> - <code>/home/your-username/your-project/folder/file.ext</code></p>
-</li>
-<li><p><strong>${fileWorkspaceFolder}</strong> - <code>/home/your-username/your-project</code></p>
-</li>
-<li><p><strong>${relativeFile}</strong> - <code>folder/file.ext</code> 这个是当前编辑文件相对于项目根目录的路径</p>
-</li>
-<li><p><strong>${relativeFileDirname}</strong> - <code>folder</code></p>
-</li>
-<li><p><strong>${fileBasename}</strong> - <code>file.ext</code></p>
-</li>
-<li><p><strong>${fileBasenameNoExtension}</strong> - <code>file</code></p>
-</li>
-<li><p><strong>${fileDirname}</strong> - <code>/home/your-username/your-project/folder</code></p>
-</li>
-<li><p><strong>${fileExtname}</strong> - <code>.ext</code></p>
-</li>
-</ul>
-<p>主要参考自vscode官方文档：<a href="https://code.visualstudio.com/docs/cpp/config-mingw">https://code.visualstudio.com/docs/cpp/config-mingw</a></p>
-]]></content>
-      <tags>
-        <tag>tools</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>linux常用操作与工具速查</title>
-    <url>/2022/03/24/linux%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E4%B8%8E%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</url>
+    <title>Linux与常用工具操作</title>
+    <url>/2022/03/24/Linux%E4%B8%8E%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E6%93%8D%E4%BD%9C/</url>
     <content><![CDATA[<h1 id="bash基础操作"><a href="#bash基础操作" class="headerlink" title="bash基础操作"></a>bash基础操作</h1><figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">ls - list directory contents</span><br><span class="line">用法：ls [选项]....[文件]...</span><br><span class="line">常用选项：</span><br><span class="line"><span class="code">		-a		不隐藏任何以. 开始的项目</span></span><br><span class="line"><span class="code">		-l		每行只列出一个文件</span></span><br><span class="line"><span class="code">		--block-size=SIZE	配合-l使用，打印时按照SIZE缩放尺寸</span></span><br><span class="line"><span class="code">		--color[=WHEN]	以彩色文本显示输出结果，WHEN=always,never,auto</span></span><br><span class="line"><span class="code">		-h,--human-readable	以人类可以读懂的方式打印</span></span><br><span class="line"><span class="code">		-t		根据编辑时间排序，最新的在最前面</span></span><br><span class="line"><span class="code">		-u		根据访问时间排序，最新的在最前面</span></span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">pwd</span>	打印当前工作目录名</span><br></pre></td></tr></table></figure>
@@ -1529,7 +2689,9 @@
 
 <figure class="highlight excel"><table><tr><td class="code"><pre><span class="line">gxemul</span><br><span class="line">常用参数：</span><br><span class="line">	-E <span class="built_in">t</span> 	# 尝试模拟<span class="built_in">t</span>型机器</span><br><span class="line">	-C <span class="built_in">t</span>	# 尝试模拟<span class="built_in">t</span>类型的特定CPU</span><br><span class="line">	-M m    # emulate m MBs of physical RAM</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim</span><br><span class="line">	ctrl n <span class="comment"># 自动补全，tags文件需要在当前工作目录下</span></span><br><span class="line">	normal模式下：</span><br><span class="line">		x			<span class="comment"># 删除当前光标所在的一个字符</span></span><br><span class="line">		<span class="built_in">dd</span>  		<span class="comment"># 删除当前行，并把删除的行存到剪贴板里</span></span><br><span class="line">		yy  		<span class="comment"># 拷贝当前行</span></span><br><span class="line">		p   		<span class="comment"># 粘贴剪贴板</span></span><br><span class="line">		:<span class="built_in">help</span> &lt;<span class="built_in">command</span>&gt; </span><br><span class="line">		0			<span class="comment"># 到行头</span></span><br><span class="line">		$			<span class="comment"># 到行尾</span></span><br><span class="line">		/pattern	<span class="comment"># 搜索pattern字符串，按n键到下一个</span></span><br><span class="line">		u			<span class="comment"># undo</span></span><br><span class="line">		ctrl-r 		<span class="comment"># redo</span></span><br><span class="line">		:saveas		<span class="comment"># 另存为</span></span><br><span class="line">		:N			<span class="comment"># 到第N行</span></span><br><span class="line">		G			<span class="comment"># 到最后一行</span></span><br><span class="line">		gg			<span class="comment"># 到第一行</span></span><br><span class="line">		%			<span class="comment"># 匹配括号移动（需要把光标先移到括号上）</span></span><br><span class="line">		*和<span class="comment"># 	   # 匹配光标当前所在的单词，移动光标到下一个（或上一个）匹配单词（*是下一个，#是上一						个）</span></span><br><span class="line">		:<span class="built_in">split</span> → 创建分屏 (:vsplit创建垂直分屏)</span><br><span class="line">		&lt;C-w&gt;&lt;<span class="built_in">dir</span>&gt; : <span class="built_in">dir</span>就是方向，可以是 hjkl 或是 ←↓↑→ 中的一个，其用来切换分屏。</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim</span><br><span class="line">	ctrl n <span class="comment"># 自动补全，tags文件需要在当前工作目录下</span></span><br><span class="line">	normal模式下：</span><br><span class="line">		<span class="built_in">dd</span>  		<span class="comment"># 删除当前行，并把删除的行存到剪贴板里</span></span><br><span class="line">		yy  		<span class="comment"># 拷贝当前行</span></span><br><span class="line">		p   		<span class="comment"># 粘贴剪贴板</span></span><br><span class="line"></span><br><span class="line">		0			<span class="comment"># 到行头</span></span><br><span class="line">		$			<span class="comment"># 到行尾</span></span><br><span class="line">		/pattern	<span class="comment"># 搜索pattern字符串，按n键到下一个</span></span><br><span class="line">		u			<span class="comment"># 回退</span></span><br><span class="line">		ctrl-r 		<span class="comment"># 撤销回退</span></span><br><span class="line">		:saveas		<span class="comment"># 另存为</span></span><br><span class="line">		:N			<span class="comment"># 到第N行</span></span><br><span class="line">		G			<span class="comment"># 到最后一行</span></span><br><span class="line">		gg			<span class="comment"># 到第一行</span></span><br><span class="line">		%			<span class="comment"># 匹配括号移动（需要把光标先移到括号上）</span></span><br><span class="line">		*和<span class="comment"># 	   # 匹配光标当前所在的单词，移动光标到下一个（或上一个）匹配单词（*是下一个，#是上一						个）</span></span><br><span class="line">		:<span class="built_in">split</span> → 创建分屏 (:vsplit创建垂直分屏)</span><br><span class="line">		&lt;C-w&gt;&lt;<span class="built_in">dir</span>&gt; : <span class="built_in">dir</span>就是方向，可以是 hjkl 或是 ←↓↑→ 中的一个，其用来切换分屏。</span><br><span class="line">		&lt;C-]&gt; 		<span class="comment"># 跳转到函数定义处</span></span><br><span class="line">		&lt;C-o&gt;		<span class="comment"># 回到跳转前位置</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">ctags</span> -R *	<span class="comment"># 生成ctags文件</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -1708,13 +2870,1200 @@
 </ul>
 <h4 id="ifeq与ifneq"><a href="#ifeq与ifneq" class="headerlink" title="ifeq与ifneq"></a>ifeq与ifneq</h4><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">语法：</span><br><span class="line"><span class="keyword">ifeq</span> (ARG1, ARG2)</span><br><span class="line"><span class="keyword">ifeq</span> &#x27;ARG1&#x27; &#x27;ARG2&#x27;</span><br><span class="line"><span class="keyword">ifeq</span> <span class="string">&quot;ARG1&quot;</span> <span class="string">&quot;ARG2&quot;</span></span><br><span class="line"><span class="keyword">ifeq</span> <span class="string">&quot;ARG1&quot;</span> &#x27;ARG2&#x27;</span><br><span class="line"><span class="keyword">ifeq</span> &#x27;ARG1&#x27; <span class="string">&quot;ARG2&quot;</span></span><br><span class="line">例子：</span><br><span class="line"><span class="keyword">ifeq</span>(<span class="variable">$(CC)</span>,gcc)</span><br><span class="line">    <span class="variable">$(CC)</span> -o foo <span class="variable">$(objects)</span> <span class="variable">$(libs_for_gcc)</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="variable">$(CC)</span> -o foo <span class="variable">$(objects)</span> <span class="variable">$(noemal_libs)</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="自动化变量"><a href="#自动化变量" class="headerlink" title="自动化变量"></a>自动化变量</h4><figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="variable">$@</span> 表示规则中的目标文件集，在模式规则中，如果有多个目标，那么， <span class="variable">$@</span> 就是匹配于目标中模式定义的集合。</span><br><span class="line"><span class="variable">$&lt;</span> 依赖目标中的第一个目标名字。如果依赖目标是以模式（即 % ）定义的，那么 <span class="variable">$&lt;</span> 将是符合模式的一系列的文件集。注意，其是一个一个取出来的。</span><br></pre></td></tr></table></figure>
+<h4 id="自动化变量"><a href="#自动化变量" class="headerlink" title="自动化变量"></a>自动化变量</h4><figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="variable">$@</span> 表示规则中的目标文件集，在模式规则中，如果有多个目标，那么， <span class="variable">$@</span> 就是匹配于目标中模式定义的集合。</span><br><span class="line"><span class="variable">$&lt;</span> 依赖目标中的第一个目标名字。如果依赖目标是以模式（即 % ）定义的，那么 <span class="variable">$&lt;</span> 将是符合模式的一系列的文件集。注意，其是一个一个取出来的。</span><br><span class="line">注意<span class="variable">$@</span>表示所有目标的挨个值，<span class="variable">$&lt;</span>表示所有依赖目标</span><br></pre></td></tr></table></figure>
 
 <h4 id="make的参数"><a href="#make的参数" class="headerlink" title="make的参数"></a>make的参数</h4><figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">--directory</span>=&lt;dir&gt; 		<span class="comment"># 指定读取makefile的目录</span></span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <tags>
         <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VSCode配置C语言编译调试环境</title>
+    <url>/2022/03/24/VSCode%E9%85%8D%E7%BD%AEC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[<h2 id="step0-一个vscode-C项目的结构"><a href="#step0-一个vscode-C项目的结构" class="headerlink" title="step0 一个vscode C项目的结构"></a>step0 一个vscode C项目的结构</h2><p>一个vscode项目会有一个.vscode文件夹在项目根目录下。这个文件夹中包含了对于该项目的vscode配置文件。具体到C&#x2F;C++项目，创建后该文件夹中需要有两个文件（tasks.json，launch.json）才可以正常编译调试程序：</p>
+<ul>
+<li><code>tasks.json</code>:包含构建（编译）指令</li>
+<li><code>launch.json</code>:包含调试设置</li>
+</ul>
+<p>如果想有更加个性化的设置，这个文件必不可少:</p>
+<ul>
+<li><code>c_cpp_properties.json</code>：包含一些编译器设置与IntelliSense（用于自动代码补全，实时错误检查，代码改进建议）设置</li>
+</ul>
+<h2 id="step1-配置tasks-json"><a href="#step1-配置tasks-json" class="headerlink" title="step1 配置tasks.json"></a>step1 配置tasks.json</h2><p><strong>自动生成tasks.json文件的方法</strong>：在编辑器上方的终端选项中选择（应该是）最后一个：配置默认生成任务，然后在下拉菜单中选择构建所使用的编译器就可以了。</p>
+<p>我的tasks.json:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;shell&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;file&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-o&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;options&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;problemMatcher&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$gcc&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;group&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;build&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;detail&quot;</span><span class="punctuation">:</span> <span class="string">&quot;compiler: C:/mingw64/bin/gcc.exe&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>type条目指定了该以何种方式解释下面的command。如果值是<code>shell</code>，则当作命令行指令解析（bash，cmd，powershell等）。一般设置为shell就可以了。（默认生成的值是<code>cppbuild</code>，不太明白什么意思。）</li>
+<li>command条目指定了编译器的绝对路径。</li>
+<li>args条目指定了传递给编译器的参数，该条目中参数的位置必须按照编译器希望的顺序摆放。这里引用的一些变量可以参看附录1.通过改变这些变量，可以编译多个文件，或者使用一些其它的编译方式。具体怎么编译就看你对gcc命令的了解程度了。</li>
+<li>label条目指定了你会在终端的tasks list中看到什么，可以随意设置。</li>
+<li>“isDefault”: 设置为true表示使用<code>Ctrl+Shift+B</code>可以执行构建任务。</li>
+</ul>
+<h4 id="执行构建工作"><a href="#执行构建工作" class="headerlink" title="执行构建工作"></a>执行构建工作</h4><p>使用Ctrl+Shift+B快捷键或者在编辑器上部的终端选项卡中选择运行生成任务。然后就有了.exe文件</p>
+<p>![屏幕截图 2022-03-23 211641](<a href="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE">https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/屏幕截图</a> 2022-03-23 211641.png)</p>
+<p>运行.exe文件：</p>
+<p>直接在终端中键入可执行文件名或者.&#x2F;可执行文件名。</p>
+<h2 id="step2-配置launch-json"><a href="#step2-配置launch-json" class="headerlink" title="step2 配置launch.json"></a>step2 配置launch.json</h2><p><strong>自动生成launch.json文件的方法</strong>：在编辑器上方的运行选项卡中选择<code>编辑配置...</code>选项，然后可以根据需要选择一个，之后就会生成launch.json文件。</p>
+<p>生成的launch.json:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gcc.exe - Build and debug active file&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;\\$&#123;fileBasenameNoExtension&#125;.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:\\mingw64\\bin\\gdb.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;setupCommands&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Enable pretty-printing for gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-enable-pretty-printing&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;ignoreFailures&quot;</span><span class="punctuation">:</span> <span class="keyword">true</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C/C++: gcc.exe build active file and expect no errors&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>program</code> - 指定了要调试的可执行文件。</li>
+<li><code>args</code> - 传递给程序的参数，使用双引号将参数括起来，参数间用逗号分隔。如果有转义字符，需要用双斜杠转义。</li>
+<li><code>cwd</code> - 指定了要调试的程序的工作目录。</li>
+<li><code>stopAtEntry</code> - 是否在main函数入口处停止。</li>
+<li><code>MIMode</code>：调制程序，只允许gdb或lldb。</li>
+<li><code>externalConsole</code>：是否为调试对象使用独立的控制台。</li>
+<li><code>miDebuggerPath</code> 调试程序路径</li>
+<li><code>preLaunchTask</code> - 指定了在执行运行或调试任务前要执行的任务。<strong>注意这里的值要和tasks.json中的label的值相同。</strong></li>
+</ul>
+<h4 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h4><p>使用F5或者<strong>Run &gt; Start Debugging</strong>开始调试。</p>
+<p>在监视（WATCH）中点加号可以添加想要观察的变量。</p>
+<h2 id="step3-编辑c-cpp-properties-json"><a href="#step3-编辑c-cpp-properties-json" class="headerlink" title="step3 编辑c_cpp_properties.json"></a>step3 编辑c_cpp_properties.json</h2><p>这个配置文件是可以可视化配置的：使用 Ctrl+Shift+P快捷键打开命令面板，然后选择**C&#x2F;C++: Edit Configurations (UI)**就可以了。</p>
+<p>我的配置文件：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GCC&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;includePath&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;defines&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;_DEBUG&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;UNICODE&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;_UNICODE&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;windowsSdkVersion&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10.0.18362.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;compilerPath&quot;</span><span class="punctuation">:</span> <span class="string">&quot;C:/mingw64/bin/gcc.exe&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gnu99&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cppStandard&quot;</span><span class="punctuation">:</span> <span class="string">&quot;c++17&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;intelliSenseMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;windows-gcc-x64&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="number">4</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>includePath：源文件随附的头文件目录，**表示递归搜索。如果在compilerPath中指定了编译器，就不用在这里设置系统include路径。</li>
+<li>compilerPath：编译器位置</li>
+</ul>
+<h2 id="附录-vscode配置文件中的变量"><a href="#附录-vscode配置文件中的变量" class="headerlink" title="附录 vscode配置文件中的变量"></a>附录 vscode配置文件中的变量</h2><p>在<code>launch.json</code>或<code>tasks.json</code>中，使用**${variableName}**这样的语法引用变量。</p>
+<h4 id="预定义变量（部分）"><a href="#预定义变量（部分）" class="headerlink" title="预定义变量（部分）"></a>预定义变量（部分）</h4><p>直接看例子吧。</p>
+<p>假设编辑器打开的文件的路径是：<code>/home/your-username/your-project/folder/file.ext</code></p>
+<p>项目的根目录是<code>/home/your-username/your-project</code></p>
+<ul>
+<li><p><strong>${workspaceFolder}</strong> -<code>/home/your-username/your-project</code></p>
+</li>
+<li><p><strong>${workspaceFolderBasename}</strong> - <code>your-project</code></p>
+</li>
+<li><p><strong>${file}</strong> - <code>/home/your-username/your-project/folder/file.ext</code></p>
+</li>
+<li><p><strong>${fileWorkspaceFolder}</strong> - <code>/home/your-username/your-project</code></p>
+</li>
+<li><p><strong>${relativeFile}</strong> - <code>folder/file.ext</code> 这个是当前编辑文件相对于项目根目录的路径</p>
+</li>
+<li><p><strong>${relativeFileDirname}</strong> - <code>folder</code></p>
+</li>
+<li><p><strong>${fileBasename}</strong> - <code>file.ext</code></p>
+</li>
+<li><p><strong>${fileBasenameNoExtension}</strong> - <code>file</code></p>
+</li>
+<li><p><strong>${fileDirname}</strong> - <code>/home/your-username/your-project/folder</code></p>
+</li>
+<li><p><strong>${fileExtname}</strong> - <code>.ext</code></p>
+</li>
+</ul>
+<p>主要参考自vscode官方文档：<a href="https://code.visualstudio.com/docs/cpp/config-mingw">https://code.visualstudio.com/docs/cpp/config-mingw</a></p>
+]]></content>
+      <tags>
+        <tag>tools</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>可执行文件及基本概念</title>
+    <url>/2022/03/29/%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E5%8F%8A%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
+    <content><![CDATA[<blockquote>
+<p> 真正了不起的程序员对自己的程序的每一个字节都了如指掌</p>
+</blockquote>
+<h2 id="0-从源代码到可执行文件"><a href="#0-从源代码到可执行文件" class="headerlink" title="0 从源代码到可执行文件"></a>0 从源代码到可执行文件</h2><p>一个C语言helloworld程序从源代码到可执行文件的处理流程：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E7%94%9F%E6%88%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E8%BF%87%E7%A8%8B.drawio.png" alt="生成可执行文件过程.drawio"></p>
+<p>对c&#x2F;c++而言，从源代码到可执行文件要经过四个步骤：预编译-&gt;编译-&gt;汇编-&gt;链接。对GNU C，预编译程序是cc1，汇编器是as，链接器是ld。gcc是对这些程序的包装。</p>
+<h3 id="0-1-预编译"><a href="#0-1-预编译" class="headerlink" title="0.1 预编译"></a>0.1 预编译</h3><p>预编译过程主要处理源代码文件中以#开始的预编译指令。主要处理规则：</p>
+<ul>
+<li>处理#define，#include，条件预编译指令</li>
+<li>添加行号和文件名标识，以便编译时产生调试用符号信息及报错。</li>
+<li>保留所有#pragma编译器指令</li>
+</ul>
+<h3 id="0-2-编译"><a href="#0-2-编译" class="headerlink" title="0.2 编译"></a>0.2 编译</h3><p>产生汇编代码</p>
+<h3 id="0-3-汇编"><a href="#0-3-汇编" class="headerlink" title="0.3 汇编"></a>0.3 汇编</h3><p>将汇编代码转换为机器代码，此时输出的文件是目标文件(Object file)</p>
+<h3 id="0-4-链接"><a href="#0-4-链接" class="headerlink" title="0.4 链接"></a>0.4 链接</h3><p>进行空间与地址分配，符号决议（Symbol Resolution）与重定位，生成可执行文件。链接器的核心目标事实上只有一个：<strong>对目标文件中未决的地址引用进行修正，使它们在程序运行时可以指向正确的位置。</strong>当你不幸陷入链接的海量细节时，不妨从这个角度重新理清一下思路。</p>
+<h2 id="1-目标文件-Object-File"><a href="#1-目标文件-Object-File" class="headerlink" title="1 目标文件 Object File"></a>1 目标文件 <em>Object File</em></h2><h3 id="1-1-目标文件的格式"><a href="#1-1-目标文件的格式" class="headerlink" title="1.1 目标文件的格式"></a>1.1 目标文件的格式</h3><ul>
+<li><p>PC流行的可执行文件(Executable)主要是Windows下的PE与linux下的ELF。目标文件(object)与可执行文件格式类似，他们在Windows下统称为PE-COFF文件格式，在Linux下统称为ELF。</p>
+</li>
+<li><p>动态链接库(.dll(windows).so(linux))与静态链接库(.lib(windows).a(linux))也可以按照目标文件格式存储。</p>
+</li>
+</ul>
+<p>ELF文件表中中将系统中采用的ELF格式文件分为四种类型：</p>
+<table>
+<thead>
+<tr>
+<th>ELF文件类型</th>
+<th>说明</th>
+<th>实例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可重定位文件(Relocatable File)</td>
+<td>包含了代码和数据，可以被用来链接成可执行文件或共享目标文件，静态链接库可归为此类</td>
+<td>Linux下.o，Windows下.obj</td>
+</tr>
+<tr>
+<td>可执行文件(Executable File)</td>
+<td>包含了可以直接执行的程序，代表为ELF可执行文件，一般没有扩展名</td>
+<td>&#x2F;bin&#x2F;bash，windows中.exe</td>
+</tr>
+<tr>
+<td>共享目标文件(Shared Object File)</td>
+<td>包含代码和数据，可以在两种情况下使用：1.链接器使用此种文件跟其它的可重定位文件和共享目标文件链接，产生新的目标文件。2.动态链接器可以将几个共享目标文件与可执行文件结合，作为进程映像的一部分运行。</td>
+<td>Linux的.so,Windows下的DLL</td>
+</tr>
+<tr>
+<td>核心转储文件(Core Dump File)</td>
+<td>当进程意外终止时，系统可以将该进程的地址空间的内容及终止时的其它一些信息转储到核心转储文件。</td>
+<td>Linux下core dump</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-目标文件结构"><a href="#1-2-目标文件结构" class="headerlink" title="1.2 目标文件结构"></a>1.2 目标文件结构</h3><p><strong>简化版</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/ELF%E6%A0%BC%E5%BC%8F.drawio.png" alt="ELF格式.drawio"></p>
+<ul>
+<li><p>File Header:描述了文件属性，包括是否可执行，静态链接还是动态链接，如果是可执行的话的入口地址，目标硬件，目标操作系统…以及段表（Section table），描述各个section在文件中的偏移位置以及属性。</p>
+</li>
+<li><p>.text section:代码</p>
+</li>
+<li><p>.data section:保存<strong>已初始化</strong>的全局变量和局部静态变量。</p>
+</li>
+<li><p>.bss：记录未初始化的全局变量和局部静态变量，只是为他们预留位置，在文件中不占空间。</p>
+</li>
+</ul>
+<h4 id="将代码段与数据段分开的好处："><a href="#将代码段与数据段分开的好处：" class="headerlink" title="将代码段与数据段分开的好处："></a>将代码段与数据段分开的好处：</h4><ul>
+<li>重用代码段（当运行一个程序的多个副本时，在内存中可以只有代码的一份拷贝）</li>
+<li>指令cache与数据cache</li>
+<li>安全考虑下的读写权限</li>
+</ul>
+<h4 id="数据段-data与只读数据段-rodata"><a href="#数据段-data与只读数据段-rodata" class="headerlink" title="数据段.data与只读数据段.rodata"></a>数据段.data与只读数据段.rodata</h4><h4 id="bss段"><a href="#bss段" class="headerlink" title=".bss段"></a>.bss段</h4><p>类型为SHT_NOBITS。包含目标文件中未初始化的全局变量和局部静态变量，在目标文件中不占空间。</p>
+<h4 id="其它段"><a href="#其它段" class="headerlink" title="其它段"></a>其它段</h4><p>以下的这些段是预定义好的，内容是指令代码或控制信息，专门为操作系统使用。</p>
+<table>
+<thead>
+<tr>
+<th>常用段名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>.rodata1</td>
+<td>存放只读数据，如字符串常量，全局const变量，和.rodata段一样</td>
+</tr>
+<tr>
+<td>.comment</td>
+<td>存放编译器版本信息</td>
+</tr>
+<tr>
+<td>.debug</td>
+<td>调试信息</td>
+</tr>
+<tr>
+<td>.dynamic</td>
+<td>动态链接信息</td>
+</tr>
+<tr>
+<td>.dynstr</td>
+<td>含有用于动态链接的字符串</td>
+</tr>
+<tr>
+<td>.hash</td>
+<td>符号哈希表</td>
+</tr>
+<tr>
+<td>.line</td>
+<td>调试时的行号表，即源代码行号与编译后指令的对应表</td>
+</tr>
+<tr>
+<td>.note</td>
+<td>额外的编译器信息</td>
+</tr>
+<tr>
+<td>.strtab</td>
+<td>string table字符串表，用于存储ELF文件中用到的各种字符串</td>
+</tr>
+<tr>
+<td>.symtab</td>
+<td>symbol table符号表</td>
+</tr>
+<tr>
+<td>.shstrtab</td>
+<td>section string table段名表</td>
+</tr>
+<tr>
+<td>.plt   .got</td>
+<td>动态链接的跳转表和全局入口表</td>
+</tr>
+<tr>
+<td>.init   .fini</td>
+<td>进程初始化与终结代码段</td>
+</tr>
+</tbody></table>
+<ul>
+<li>注：以上段名均有点作为前缀，表示这些段名为系统保留。自定义段名不可以用点作为前缀，否则容易和系统冲突。一个ELF文件也可以有几个段名相同的段。</li>
+</ul>
+<h4 id="自定义段：GCC提供的扩展机制"><a href="#自定义段：GCC提供的扩展机制" class="headerlink" title="自定义段：GCC提供的扩展机制"></a>自定义段：GCC提供的扩展机制</h4><p>在全局变量或函数前加上</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">_attribute_((section(<span class="string">&quot;name&quot;</span>)))</span><br></pre></td></tr></table></figure>
+
+<p>可以将相应变量或函数放到”name”命名的段中</p>
+<h3 id="1-3-ELF文件结构"><a href="#1-3-ELF文件结构" class="headerlink" title="1.3 ELF文件结构"></a>1.3 ELF文件结构</h3><h4 id="ELF的32位数据类型："><a href="#ELF的32位数据类型：" class="headerlink" title="ELF的32位数据类型："></a>ELF的32位数据类型：</h4><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>类型</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Elf32_Addr</td>
+<td>u_int32_t</td>
+<td>无符号地址</td>
+</tr>
+<tr>
+<td>Elf32_Half</td>
+<td>u_int16_t</td>
+<td>无符号半整形</td>
+</tr>
+<tr>
+<td>Elf32_Off</td>
+<td>u_int32_t</td>
+<td>无符号文件偏移量</td>
+</tr>
+<tr>
+<td>Elf32_Sword</td>
+<td>int32_t</td>
+<td>有符号整型</td>
+</tr>
+<tr>
+<td>Elf32_Word</td>
+<td>u_int32_t</td>
+<td>无符号整型</td>
+</tr>
+<tr>
+<td>unsigned char</td>
+<td>unsigned char</td>
+<td>无符号短整型</td>
+</tr>
+</tbody></table>
+<h4 id="文件头"><a href="#文件头" class="headerlink" title="文件头"></a>文件头</h4><ul>
+<li>使用 readelf -h <filename>来查看文件头内容</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>readelf输出结果及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>e_ident</td>
+<td>该部分含有一些用于解码和解析文件的内容，不依赖于具体操作系统。</td>
+</tr>
+<tr>
+<td>e_type</td>
+<td>ELF文件类型</td>
+</tr>
+<tr>
+<td>e_machine</td>
+<td>ELF文件的cpu平台属性，相关常量以EM_开头</td>
+</tr>
+<tr>
+<td>e_version</td>
+<td>ELF版本号，一般为1</td>
+</tr>
+<tr>
+<td>e_entry</td>
+<td>入口地址，规定ELF程序的入口虚拟地址，操作系统加载完程序后从此地址开始执行，REL文件一般没有入口地址，则该值为0</td>
+</tr>
+<tr>
+<td>e_phoff</td>
+<td>Start of program headers，如果没有应设为0</td>
+</tr>
+<tr>
+<td>e_shoff</td>
+<td>段表在文件中的偏移，如果没有应设为0</td>
+</tr>
+<tr>
+<td>e_flags</td>
+<td>处理器特定标志位</td>
+</tr>
+<tr>
+<td>e_ehsize</td>
+<td>ELF文件头大小</td>
+</tr>
+<tr>
+<td>e_phentsize</td>
+<td>Size of program headers</td>
+</tr>
+<tr>
+<td>e_phnum</td>
+<td>Number of program headers</td>
+</tr>
+<tr>
+<td>e_shentsize</td>
+<td>Size of section headers: 段表描述符大小，一般等于sizeof(Elf32_Shdr)</td>
+</tr>
+<tr>
+<td>e_shnum</td>
+<td>Number of section headers:  段表描述符数量</td>
+</tr>
+<tr>
+<td>e_shstrndx</td>
+<td>Section header string table index:            <strong>段表字符串表</strong>所在的段在<strong>段表</strong>中的下标</td>
+</tr>
+</tbody></table>
+<p><strong>ELF标识(e_ident[]):</strong></p>
+<p>e_ident数组各个索引位置含义：</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>名字</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>EI_MAG0</td>
+<td>文件标识</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EI_MAG1</td>
+<td>文件标识</td>
+</tr>
+<tr>
+<td>2</td>
+<td>EI_MAG2</td>
+<td>文件标识</td>
+</tr>
+<tr>
+<td>3</td>
+<td>EI_MAG3</td>
+<td>文件标识</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EI_CLASS</td>
+<td>文件类型：非法或32位或64位</td>
+</tr>
+<tr>
+<td>5</td>
+<td>EI_DATA</td>
+<td>数据编码格式，LSB或MSB</td>
+</tr>
+<tr>
+<td>6</td>
+<td>EI_VERSION</td>
+<td>文件头版本</td>
+</tr>
+<tr>
+<td>7</td>
+<td>EI_PAD</td>
+<td>从此开始的尚未有用途</td>
+</tr>
+</tbody></table>
+<p><strong>ELF文件类型（e_type值）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ET_REL</td>
+<td>1</td>
+<td>可重定位文件，一般为.o文件</td>
+</tr>
+<tr>
+<td>ET_EXEC</td>
+<td>2</td>
+<td>可执行文件</td>
+</tr>
+<tr>
+<td>ET_DYN</td>
+<td>3</td>
+<td>共享目标文件，一般为.so文件</td>
+</tr>
+</tbody></table>
+<p>注：ET_LOPROC ~ ET_HIPROC (0xff00 ~ 0xffff)这一范围内的文件类型是为特定处理器而保留的，如果需要为某种处理器专门设定文件格式，可以从这一范围内选取一个做为标识。</p>
+<p>比较有意思的是在文件头最开始的魔数。几乎所有的可执行文件的开始几个字节都是魔数，在ELF中是16个字节，用来规定ELF的平台属性。比如字长是32还是64，字节序等。最开始的四个字节一定都是 <code>0x7F,0x45,0x4c,0x46</code>,第一个字节对应ASCII里的DEL控制符，后面三个是<code>ELF</code>的ASCII值。</p>
+<p>魔数的作用就是告诉操作系统怎么解读这个文件。之后的对文件头的内容的解析以及各种段的解析都依赖操作系统先读取魔数，再按照对应的方式解析。</p>
+<h4 id="段表（section-table）"><a href="#段表（section-table）" class="headerlink" title="段表（section table）"></a>段表（section table）</h4><ul>
+<li>使用readelf -S <filename> 查看段表结构</li>
+</ul>
+<p>段表描述了各个段的信息，段表是一个数组，数组元素是一个<code>Elf32_Shdr</code>类型结构体，数组长度等于段的个数，数组的第一个元素是无效的描述符，类型为<code>NULL</code>。每个结构体中存放了对应段的信息。编译器，链接器和装载器依靠段表来定位和访问各个段的属性。<code>Elf32_Shdr</code>又被称为<strong>段描述符</strong>(Section Descriptor)。</p>
+<p>某些表项的索引值被保留，比如0。这里我们先不管它们。</p>
+<p>目标文件中的每一个section一定有一个section header，每一个section占用空间是连续的，各个section间不能相互重叠。在目标文件中，section与section间可能有多余字节，这些字节不属于任何section。</p>
+<p><strong>段描述符（Elf32_Shdr）结构：</strong></p>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sh_name</td>
+<td>段名，准确来讲是段名字符串在字符串表.shstrtab中的偏移，只在编译和链接过程中有意义</td>
+</tr>
+<tr>
+<td>sh_type</td>
+<td>段类型</td>
+</tr>
+<tr>
+<td>sh_flags</td>
+<td>段的标志位</td>
+</tr>
+<tr>
+<td>sh_addr</td>
+<td>段的虚拟地址，如果该段可以被加载，则sh_addr为该段被加载后在进程空间中的虚拟地址，否则为0</td>
+</tr>
+<tr>
+<td>sh_offset</td>
+<td>段在文件中的偏移，如果该段在文件中才有意义</td>
+</tr>
+<tr>
+<td>sh_size</td>
+<td>段长度</td>
+</tr>
+<tr>
+<td>sh_link，sh_info</td>
+<td>段链接信息</td>
+</tr>
+<tr>
+<td>sh_addralign</td>
+<td>段地址对齐，如果为0或1则表示没有对齐要求，否额sh_addr必须满足：sh_addr % (2 ** sh_addralign)&#x3D;0</td>
+</tr>
+<tr>
+<td>sh_entsize</td>
+<td><strong>项</strong>的长度，有些段包含了一些固定大小的项。如果为0表示不包含固定大小的项</td>
+</tr>
+</tbody></table>
+<p><strong>段类型（sh_type）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SHT_NULL</td>
+<td>0</td>
+<td>无效段</td>
+</tr>
+<tr>
+<td>SHT_PROGBITS</td>
+<td>1</td>
+<td>程序段或代码段或数据段</td>
+</tr>
+<tr>
+<td>SHT_SYMTAB</td>
+<td>2</td>
+<td>表示该段的内容为符号表</td>
+</tr>
+<tr>
+<td>SHT_STRTAB</td>
+<td>3</td>
+<td>表示该段的内容为字符串表</td>
+</tr>
+<tr>
+<td>SHT_RELA</td>
+<td>4</td>
+<td>重定位表</td>
+</tr>
+<tr>
+<td>SHT_HASH</td>
+<td>5</td>
+<td>符号表的hash表</td>
+</tr>
+<tr>
+<td>SHT_DYNAMIC</td>
+<td>6</td>
+<td>动态链接信息</td>
+</tr>
+<tr>
+<td>SHT_NOTE</td>
+<td>7</td>
+<td>提示性信息</td>
+</tr>
+<tr>
+<td>SHT_NOBITS</td>
+<td>8</td>
+<td>表示该段在文件中没有内容（.bss）</td>
+</tr>
+<tr>
+<td>SHT_REL</td>
+<td>9</td>
+<td>该段包含了重定位信息</td>
+</tr>
+<tr>
+<td>SHT_SHLIB</td>
+<td>10</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>SHT_DNYSYM</td>
+<td>11</td>
+<td>动态链接的符号表</td>
+</tr>
+</tbody></table>
+<p><strong>段的标志位（sh_flag）:</strong></p>
+<p>表示段在进程虚拟地址空间中的属性。</p>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SHF_WRITE</td>
+<td>1</td>
+<td>表示该段在进程空间中可写</td>
+</tr>
+<tr>
+<td>SHF_ALLOC</td>
+<td>2</td>
+<td>表示该段在进程空间中需要分配空间</td>
+</tr>
+<tr>
+<td>SHF_EXECINSTR</td>
+<td>4</td>
+<td>表示该段在进程空间中可以被执行</td>
+</tr>
+</tbody></table>
+<p><strong>段的链接信息（sh_link，sh_info）：</strong></p>
+<p>如果段与链接相关，如重定位表和符号表，则该属性有用。</p>
+<table>
+<thead>
+<tr>
+<th>sh_type</th>
+<th>sh_link</th>
+<th>sh_info</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SHT_DYNAMSIC</td>
+<td>该段所使用的字符串表在段表中的下标</td>
+<td>0</td>
+</tr>
+<tr>
+<td>SHT_HASH</td>
+<td>该段所使用的符号表在段表中的下标</td>
+<td>0</td>
+</tr>
+<tr>
+<td>SHT_REL</td>
+<td>该段所使用的相应符号表在段表中的下标</td>
+<td>该重定位表所作用的段在段表中的下标</td>
+</tr>
+<tr>
+<td>SHT_RELA</td>
+<td>同上</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>SHT_SYMTAB</td>
+<td>OS相关</td>
+<td>OS相关</td>
+</tr>
+<tr>
+<td>SHT_DYNSYM</td>
+<td>同上</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>other</td>
+<td>SHN_UNDEF</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h4 id="重定位表"><a href="#重定位表" class="headerlink" title="重定位表"></a>重定位表</h4><p>链接器在处理目标文件时需要对文件中某些部位重定位，比如代码和数据段中引用绝对地址的位置。这些重定位信息记录在ELF文件的重定位表里面。</p>
+<p><strong>对于每个需要重定位的代码段或数据段，都会有一个对应的重定位表。（如.rel.text是.text段的重定位表）</strong></p>
+<p>一个重定位表同时也是一个段，段类型为<strong>SHT_REL</strong>。</p>
+<p>对32位Intel x86处理器，重定位表是一个Elf32_Rel结构的数组，每个数组元素对应一个重定位条目（relocation entry）</p>
+<p><strong>Elf32_Rel（a）:</strong></p>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r_offset</td>
+<td>重定位条目的偏移，对于可重定位文件，该值是重定位条目所要修正位置的第一个字节<strong>相对于段起始的偏移</strong>。对于可执行文件或共享对象文件，该值是重定位条目所要修正位置的第一个字节的虚拟地址。</td>
+</tr>
+<tr>
+<td>r_info</td>
+<td>重定位条目的类型和符号。低八位表示重定位条目类型，高24位表示重定位条目的符号在符号表中的下标。</td>
+</tr>
+<tr>
+<td>r_addend（仅rela具有）</td>
+<td>本成员指定了一个加数，这个加数用于计算需要重定位的域的值。</td>
+</tr>
+</tbody></table>
+<h4 id="字符串表"><a href="#字符串表" class="headerlink" title="字符串表"></a>字符串表</h4><p><strong>为什么要有字符串表：</strong>ELF中有很多字符串，比如段名，变量名。由于字符串长度不确定，用固定结构表示比较困难，因此将字符串集中存储在一张表内，使用字符串在表中的偏移来索引字符串。</p>
+<p>一般有两个表，都作为单独的段在ELF中存储，常见段名为.<strong>strtab</strong>或.<strong>shstrtab</strong>：</p>
+<ul>
+<li>字符串表.strtab：保存普通字符串</li>
+<li>段字符串表.shstrtab：保存段表中用到的字符串，比如段名</li>
+</ul>
+<p>只有分析ELF文件头，就可以得到段表和段表字符串表的位置，从而解析整个ELF文件。</p>
+<h3 id="1-4-链接的接口：符号"><a href="#1-4-链接的接口：符号" class="headerlink" title="1.4 链接的接口：符号"></a>1.4 链接的接口：符号</h3><p>在链接中，将函数和变量统称为符号（symbol），函数名或变量名就是符号名（symbol name）。</p>
+<p><strong>每一个目标文件都有一个相应的符号表，记录了目标文件用到的所有符号。</strong></p>
+<p>符号表中几类对链接比较重要的符号：</p>
+<ul>
+<li>定义在本目标文件的全局符号，可以被其他目标文件引用。</li>
+<li>在本目标文件中引用的全局符号，却没有定义在本目标文件，一般叫做<code>External Symbol</code>。</li>
+<li>段名，往往由编译器产生，值为该段的起始地址。</li>
+</ul>
+<h4 id="符号表"><a href="#符号表" class="headerlink" title="符号表"></a>符号表</h4><p>符号表往往是文件中的一个段，一般叫<code>&quot;.symtab&quot;</code>。符号表是一个<strong>Elf32_Sym</strong>结构的数组，每个Elf32_Sym结构对应一个符号。数组的第一个元素为无效的未定义符号。符号表包含的信息用于定位和重定位程序中的符号和引用。目标文件的其它部分通过一个符号在这个表中的索引值来使用该符号。</p>
+<p><strong>Elf32_Sym成员:</strong></p>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>st_name</td>
+<td>符号名，实际是该符号名字符串在字符串表中的下标</td>
+</tr>
+<tr>
+<td>st_value</td>
+<td>符号对应的值。值的含义与符号相关。</td>
+</tr>
+<tr>
+<td>st_size</td>
+<td>符号大小。对于包含数据的符号，这个值是数据类型的大小。</td>
+</tr>
+<tr>
+<td>st_info</td>
+<td>符号类型和绑定信息。</td>
+</tr>
+<tr>
+<td>st_other</td>
+<td>无用</td>
+</tr>
+<tr>
+<td>st_shndx</td>
+<td>符号所在的段，如果符号定义在本目标文件中，则该成员是<strong>符号所在的段在段表中的下标</strong></td>
+</tr>
+</tbody></table>
+<p><strong>符号值（st_value）：</strong></p>
+<ul>
+<li>在目标文件中，如果是符号的定义并且不是COMMON块类型，则st_value表示符号在段中的偏移。</li>
+<li>在目标文件中，若为COMMON块类型，则st_value表示该符号对齐属性</li>
+<li>在可执行文件中，st_value表示符号的虚拟地址。</li>
+</ul>
+<p><strong>符号类型和绑定信息（st_info）：</strong></p>
+<p>低4位表示符号类型（symbol type），高28位表示符号绑定信息（symbol binding）</p>
+<p><strong>符号绑定信息：</strong></p>
+<table>
+<thead>
+<tr>
+<th>宏名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>STB_LOCAL</td>
+<td>0</td>
+<td>局部符号，对于目标文件外部不可见</td>
+</tr>
+<tr>
+<td>STB_GLOBAL</td>
+<td>1</td>
+<td>全局符号，外部可见</td>
+</tr>
+<tr>
+<td>STB_WEAK</td>
+<td>2</td>
+<td>类似于全局符号，但是相对于 STB_GLOBAL，它们的优先级更低。</td>
+</tr>
+</tbody></table>
+<p><strong>符号类型：</strong></p>
+<table>
+<thead>
+<tr>
+<th>宏名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>STT_NOTYPE</td>
+<td>0</td>
+<td>未知类型</td>
+</tr>
+<tr>
+<td>STT_OBJECT</td>
+<td>1</td>
+<td>该符号为数据对象，如变量或数组</td>
+</tr>
+<tr>
+<td>STT_FUNC</td>
+<td>2</td>
+<td>符号为函数或其他可执行代码</td>
+</tr>
+<tr>
+<td>STT_SECTION</td>
+<td>3</td>
+<td>该符号表示一个段，必须为STB_LOCAL</td>
+</tr>
+<tr>
+<td>STT_FILE</td>
+<td>4</td>
+<td>该符号表示文件名，一般为目标文件对应源文件名，一定为STB_LOCAL</td>
+</tr>
+</tbody></table>
+<p><strong>符号所在段（st_shndx）特殊常量：</strong></p>
+<table>
+<thead>
+<tr>
+<th>宏名</th>
+<th>值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SHN_ABS</td>
+<td>0xFFF1</td>
+<td>表示该符号包含了一个绝对的值，比如文件名</td>
+</tr>
+<tr>
+<td>SHN_COMMON</td>
+<td>0xFFF2</td>
+<td>该符号为COMMON块类型，如未初始化的全局符号定义</td>
+</tr>
+<tr>
+<td>SHN_UNDEF</td>
+<td>0</td>
+<td>未定义。在本文件中用到，但是定义在其他目标文件。</td>
+</tr>
+</tbody></table>
+<h4 id="特殊符号"><a href="#特殊符号" class="headerlink" title="特殊符号"></a>特殊符号</h4><p>当使用ld链接器链接产生可执行文件时，它会定义很多的特殊符号。这些特殊符号在程序中虽然没有定义，但是可以使用。</p>
+<h4 id="弱符号与强符号"><a href="#弱符号与强符号" class="headerlink" title="弱符号与强符号"></a>弱符号与强符号</h4><p>强弱符号是针对符号的定义而非引用而言的。对C&#x2F;C++，编译器默认函数和初始化的全局变量为强符号，未初始化的全局变量为弱符号。</p>
+<p>可以通过GCC的__attribute__((weak))来定义任何一个强符号为弱符号。</p>
+<p>链接器按如下规则处理与选择被多次定义的全局符号：</p>
+<ul>
+<li>不允许强符号被多次定义（不同的目标文件中不能有同名的强符号）</li>
+<li>若一个符号在某个目标文件中是强符号，在其它文件中是弱符号，那么选择强符号。</li>
+<li>如果一个符号在所有目标文件中都是弱符号，那么选择其中空间占用最大的一个。</li>
+</ul>
+<h4 id="弱引用和强引用"><a href="#弱引用和强引用" class="headerlink" title="弱引用和强引用"></a>弱引用和强引用</h4><p>弱引用：在处理符号引用时，如果该符号无定义，链接器对该引用不报错，而是将其置为一个特殊的值，以便程序代码能够识别。主要用于库的链接过程。</p>
+<p>强引用：对未定义的引用报错。</p>
+<p>在GCC中，可以使用__attribute__((weakref))来声明对一个外部函数的引用为弱引用。</p>
+]]></content>
+      <tags>
+        <tag>Operating System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OS理论-存储管理</title>
+    <url>/2022/04/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h1 id="OS理论-存储管理"><a href="#OS理论-存储管理" class="headerlink" title="OS理论-存储管理"></a>OS理论-存储管理</h1><h2 id="3-1-没有内存抽象"><a href="#3-1-没有内存抽象" class="headerlink" title="3.1 没有内存抽象"></a>3.1 没有内存抽象</h2><p>此时软件看到的就是物理内存，软件直接访问物理内存。</p>
+<p>三种典型的内存管理方式：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220322214743833.png" alt="image-20220322214743833"></p>
+<h4 id="在没有内存抽象的情况下运行多道程序-IBM-360的解决方案"><a href="#在没有内存抽象的情况下运行多道程序-IBM-360的解决方案" class="headerlink" title="在没有内存抽象的情况下运行多道程序: IBM 360的解决方案"></a>在没有内存抽象的情况下运行多道程序: IBM 360的解决方案</h4><p>需要硬件支持。</p>
+<p>将内存划分为2KB大小的块，每一个块有一个4bit的权限位存储在CPU的特定寄存器中。每一个程序也有一个4bit的权限位。如果程序访问的内存区域的权限位与它自己的权限位不同，则会触发异常。</p>
+<p>解决程序中绝对地址引用的问题：在将程序载入内存时，给程序中的绝对地址引用加上当前程序在内存中的偏移。这种方法叫做**静态重定位(static relocation)**。</p>
+<h2 id="3-2-一个内存抽象：地址空间"><a href="#3-2-一个内存抽象：地址空间" class="headerlink" title="3.2 一个内存抽象：地址空间"></a>3.2 一个内存抽象：地址空间</h2><p>暴露物理地址给用户程序有严重的问题：如果没有特殊的硬件机制（如IBM360），用户程序可以随意修改操作系统。同时，多道程序并发执行也很困难</p>
+<h3 id="几种简单的内存抽象"><a href="#几种简单的内存抽象" class="headerlink" title="几种简单的内存抽象"></a>几种简单的内存抽象</h3><h4 id="base寄存器与limit寄存器"><a href="#base寄存器与limit寄存器" class="headerlink" title="base寄存器与limit寄存器"></a>base寄存器与limit寄存器</h4><p>这是一种简单的动态重定位策略。在CPU中需要有两个特殊的寄存器：base寄存器与limit寄存器。程序可以加载进物理内存中一段任意的连续地址空间。当执行这个程序时，base寄存器切换为该程序在内存中起始地址的值。limit寄存器切换为该程序在内存中的长度加上程序起始地址。当程序需要访问物理内存时，cpu将访问内存的地址自动加上base寄存器的值（相当于IBM 360中的偏移）。然后查看是否超过limit寄存器中的值。如果超过则触发异常。为了安全考虑，base与limit寄存器的值只能由操作系统修改。</p>
+<p>主要问题：加法慢。</p>
+<h4 id="swapping"><a href="#swapping" class="headerlink" title="swapping"></a>swapping</h4><p>swapping主要用来解决一个问题：内存不够用，很多时候不可能将所有要并发执行的程序全装进内存。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082053876.png" alt="image-20220323082053876"></p>
+<p>swapping是一种简单的想法，即如果一个程序已经跑了足够的时间，则将它换入磁盘。base与limit寄存器在这里仍可用作地址重定位。</p>
+<p>问题：将哪个程序换出内存，交换时机的确定，换回内存时位置的确定。</p>
+<h4 id="管理空闲内存"><a href="#管理空闲内存" class="headerlink" title="管理空闲内存"></a>管理空闲内存</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082509309.png" alt="image-20220323082509309"></p>
+<p><strong>使用位图(Bitmaps)管理内存</strong></p>
+<p>优点：占用空间小</p>
+<p>缺点：访问速度慢（可能需要非对齐访问）</p>
+<h5 id="使用双向链表管理内存"><a href="#使用双向链表管理内存" class="headerlink" title="使用双向链表管理内存"></a>使用双向链表管理内存</h5><p>一般按照地址顺序安排双向链表，单个表项有两种状态：P：Process或H：Hole。</p>
+<p>分配内存的几个算法：</p>
+<ul>
+<li>first fit：找到第一个大小足够的内存块</li>
+<li>next fit：循环链表。</li>
+<li>best fit：</li>
+<li>worst fit：</li>
+<li>fast fit：</li>
+</ul>
+<h2 id="3-3-虚拟内存"><a href="#3-3-虚拟内存" class="headerlink" title="3.3 虚拟内存"></a>3.3 虚拟内存</h2><p>虚拟空间与物理内存被划分成很多相同大小的部分，叫做页面。在物理内存中，页面叫做<code>page frame</code>。在硬件上需要增加一个叫做MMU（Memory Management Unit）来做虚拟地址到物理地址的转换。</p>
+<p>虚拟页面与物理页面的对应关系存储在页表中。</p>
+<p><strong>页表项结构：</strong></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323110349706.png" alt="image-20220323110349706"></p>
+<p>注意到保存页面的磁盘地址并不在页表中。页表只持有硬件需要做的地址转换的信息，其它的事情硬件并不关心。操作系统用来处理页错误的信息存在于操作系统的软件结构之中。</p>
+<h3 id="加速地址转换"><a href="#加速地址转换" class="headerlink" title="加速地址转换"></a>加速地址转换</h3><p>两个主要的问题：</p>
+<ul>
+<li>虚实地址转换要迅速</li>
+<li>如果虚拟地址很大，页表就会很大</li>
+</ul>
+<h4 id="TLB"><a href="#TLB" class="headerlink" title="TLB"></a>TLB</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323112250069.png" alt="image-20220323112250069"></p>
+<p>TLB的管理可以由硬件完成也可以由软件完成。在大多数RISC系统中是由软件完成。</p>
+<p>无论硬件还是软件，常见的处理TLB缺失的方法是去查找存在于内存中的页表。但对于软件处理方式可能存在一个问题，即页表所在的页的页表项不在TLB中。这会导致一个新的TLB缺失。减小这种情况出现的概率的方法包括软件在内存中维护一个TLB表项的cache，cache所在页的页表项常驻TLB。</p>
+<p><strong>不同类型的TLB缺失：</strong></p>
+<ul>
+<li><p>soft miss：页表项不在TLB，但在内存</p>
+</li>
+<li><p>hard miss：页表项不在TLB也不在内存</p>
+</li>
+<li><p>minor page fault：缺失的页可能在内存中，但不在当前进程的页表中。</p>
+</li>
+<li><p>major page fault：页需要从磁盘中取得。</p>
+</li>
+<li><p>segmentation fault：程序访问了不能访问的地址，这种情况下操作系统会直接杀死进程。</p>
+</li>
+</ul>
+<h3 id="为大内存设计页表"><a href="#为大内存设计页表" class="headerlink" title="为大内存设计页表"></a>为大内存设计页表</h3><h4 id="多级页表"><a href="#多级页表" class="headerlink" title="多级页表"></a>多级页表</h4><p>设计多级页表的主要目的是减小页表在内存中占用的空间。程序执行时不用在内存中存储所有的页表项。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323161007578.png" alt="image-20220323161007578"></p>
+<h4 id="倒排页表（Inverted-Page-Tables）"><a href="#倒排页表（Inverted-Page-Tables）" class="headerlink" title="倒排页表（Inverted Page Tables）"></a>倒排页表（Inverted Page Tables）</h4><p>页表中的每个页表项对应物理存储中的一个page frame，而不是对应虚拟存储中的一个虚拟页。这样极大节省了空间。页表项中的每一个条目跟踪当前哪个进程的哪个虚拟页映射到了这个物理页。</p>
+<p>然而这样做导致的问题是，虚实地址转换变得困难。每做一次虚实地址转换需要遍历整个页表。加速地址转换的方法包括使用TLB。当TLB缺失时，软件需要寻找页表中的页表项。一个加速这种查找的方法是对虚拟地址进行哈希映射。散列函数的输入是进程号和VPN，输出是倒排页表项在页表中的下标。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323163408790.png" alt="image-20220323163408790"></p>
+<h2 id="3-4-页面置换算法"><a href="#3-4-页面置换算法" class="headerlink" title="3.4 页面置换算法"></a>3.4 页面置换算法</h2><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331105822712.png" alt="image-20220331105822712" style="zoom:50%;" />
+
+<h3 id="3-4-1-最佳页面置换算法-OPT"><a href="#3-4-1-最佳页面置换算法-OPT" class="headerlink" title="3.4.1 最佳页面置换算法(OPT)"></a>3.4.1 最佳页面置换算法(OPT)</h3><p>在发生页错误的时候，内存中有一堆页面。这些页面中有一些可能很快就会被用到，有些可能很久之后才会被用到。在最佳页面置换算法中，每个页面都有一个标签，标记着这个页面从当前开始经过多少条指令后才会被首次访问（当然，这个标签随着指令的执行是在变化的）当发生页错误的时候，替换掉标签值最大的那个页面。这样就能尽量延后产生页错误的时间。</p>
+<p>这个算法唯一的问题是现实中无法实现，但是对于同一个程序和同一个输入，可以在第一遍运行程序的时候记录下页面信息，在第二次运行的时候根据记录下的页面置换信息实现该算法。这样我们就可以将这个算法当做baseline来评估其它页面置换算法的性能，并给出可以优化的最大空间。需要明确的是，页面置换信息是针对特定程序特定输入而言的。</p>
+<h3 id="3-4-2-最近未使用NRU（The-Not-Recently-Used）页面置换算法"><a href="#3-4-2-最近未使用NRU（The-Not-Recently-Used）页面置换算法" class="headerlink" title="3.4.2 最近未使用NRU（The Not Recently Used）页面置换算法"></a>3.4.2 最近未使用NRU（The Not Recently Used）页面置换算法</h3><p>为实现这个算法，每个页表项需要有两个标志位：R标志位，指示该页面是否被引用（读或写过）；M标志位，指示该页面是否被写过。R，M位的置位可以通过页错误来实现。操作系统定时（比如通过时钟中断）清除所有页面的R位。当需要置换页面时，操作系统将页面分为4类：</p>
+<ul>
+<li>class0：not referenced，not modified</li>
+<li>class1:not referenced, modified</li>
+<li>class2:referenced, not modified</li>
+<li>class3:referenced,modified</li>
+</ul>
+<p>并优先从标号小的类中随机选择一个页面替换。</p>
+<h3 id="3-4-3-FIFO页面置换算法"><a href="#3-4-3-FIFO页面置换算法" class="headerlink" title="3.4.3 FIFO页面置换算法"></a>3.4.3 FIFO页面置换算法</h3><p>操作系统保存着内存中页面的一张表，当需要置换页面时，将新加入的页面放到表尾，替换掉表头的页。并不是一个好的算法，实际中很少用。</p>
+<h3 id="3-4-4-第二次机会（The-Second-Chance）页面置换算法"><a href="#3-4-4-第二次机会（The-Second-Chance）页面置换算法" class="headerlink" title="3.4.4 第二次机会（The Second-Chance）页面置换算法"></a>3.4.4 第二次机会（The Second-Chance）页面置换算法</h3><p>为了解决FIFO算法中扔掉经常使用的页的问题，该算法中每个页面有一个R位标识当前时间片中该页是否被引用过。操作系统定期清除该位。操作系统中有一个链表结构保存内存中的页面信息，当需要替换页时，操作系统检查处于链表头（最旧）的页面，如果该页面R位为0，则直接替换，否则将该页插入到链表末尾，并将R位置零。易见该算法是terminable的。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326210635121.png" alt="image-20220326210635121"></p>
+<h3 id="3-4-5-The-Clock-Page-Replacement-Algorithm"><a href="#3-4-5-The-Clock-Page-Replacement-Algorithm" class="headerlink" title="3.4.5 The Clock Page Replacement Algorithm"></a>3.4.5 The Clock Page Replacement Algorithm</h3><p>这个算法是对上一个的优化，由于 Second-Chance 算法需要经常挪动页面信息，因此不是很高效。该算法中所有处于内存中的页面的信息链接为一个圈,有一个指针指向最旧的页面。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326211037001.png" alt="image-20220326211037001"></p>
+<h3 id="3-4-6-最近最少使用算法（LRU）"><a href="#3-4-6-最近最少使用算法（LRU）" class="headerlink" title="3.4.6 最近最少使用算法（LRU）"></a>3.4.6 最近最少使用算法（LRU）</h3><p>该算法基于这样一种观察：在前一段时间中被频繁使用的页面在之后也可能被频繁使用，并且之前不常使用的页面在之后也很可能不会被用到。当需要替换页面时，<strong>替换掉最长时间没有被引用过的页面。</strong></p>
+<p>一种LRU的简单硬件实现：每个页表项有一个counter域，同时有一个全局计数器，cpu每执行一条指令，计数器就加一。每次内存引用后，将计数器的值更新进被引用的页面的页表项中。但是，基本没有硬件实现这样的功能。</p>
+<h4 id="在软件层面模拟LRU-aging算法"><a href="#在软件层面模拟LRU-aging算法" class="headerlink" title="在软件层面模拟LRU aging算法"></a>在软件层面模拟LRU aging算法</h4><p>每个页表项有一个counter，当时钟中断来临时，先将counter右移一位。如果这个页在上一个时间片中被访问过（R位为1），则将counter的高位置1，否则置零。与LRU的区别在两个地方：首先，由于访问记录是以时间片为单位的，因此比较粗糙。其次，由于counter的位数限制，只能记录最近一段时间内的访问记录。</p>
+<h3 id="3-4-7-The-working-Set-Page-Replacement-Algorithm"><a href="#3-4-7-The-working-Set-Page-Replacement-Algorithm" class="headerlink" title="3.4.7 The working Set Page Replacement Algorithm"></a>3.4.7 The working Set Page Replacement Algorithm</h3><p>进程当前正在使用的一组页面叫做<strong>working set</strong>。如果进程的working set都在内存中，则进程不会产生页错误。如果内存装不下working set，进程执行中会产生很多页错误。这种执行没几条指令就产生页错误的情况叫做<strong>thrashing（抖动）</strong>。抖动体现在高并发时cpu利用率先上升后下降（频繁IO导致）。</p>
+<p>问题是：当进程开始执行时需要做什么。如果此时不加载任何页面，而只是依靠进程执行过程中产生页错误来装入页面，则进程的执行会比较慢。如果在进程执行开始前就将进程需要用到的大部分页面装入内存，则进程执行会比较快。操作系统试图追踪每个进程的<strong>working set</strong>，并在进程开始执行前将它的working set装入内存。这种方法叫做<strong>working set model</strong>或者<strong>prepaging</strong>。</p>
+<h4 id="如何量化working-set："><a href="#如何量化working-set：" class="headerlink" title="如何量化working set："></a><strong>如何量化working set：</strong></h4><blockquote>
+<p>the working set is the set of pages used in the k most recent memory references</p>
+</blockquote>
+<p>工作集可以用一个函数表示：<br>$$<br>w(k,t)<br>$$<br>该函数表示t时刻最近k次内存访问使用的页面。w(k,t)是t时刻工作集的大小。由于内存访问的局部性，该函数关于k的趋势如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331104210275.png" alt="image-20220331104210275" style="zoom:33%;" />
+
+<p>注意到k到一定程度后函数上升趋于平缓。</p>
+<p>实现中，进程的工作集时最近一段<strong>进程cpu时间</strong>中进程访问过的页面集合。 当发生页错误时，优先置换不在工作集中的页面。</p>
+<h2 id="3-5-分页系统的设计考虑"><a href="#3-5-分页系统的设计考虑" class="headerlink" title="3.5 分页系统的设计考虑"></a>3.5 分页系统的设计考虑</h2><h3 id="3-5-1-Global-vs-Local"><a href="#3-5-1-Global-vs-Local" class="headerlink" title="3.5.1 Global vs Local"></a>3.5.1 Global vs Local</h3><p>设计页面替换算法时需要考虑是将内存中的所有页面都一视同仁，还是针对每个进程分开考虑。比如对于LRU算法，当发生页错误时，全局算法将会替换掉内存中最久没用过的页，不一定是当前进程的，而局部算法只会考虑替换掉该进程的页面。一般而言全局算法效果好一些，特别是当进程占用的空间随时间变化较大的时候。如果此时采用局部算法，则每个进程都只能分配到固定的空间，有可能导致缺页频繁发生，甚至执行不下去了。当然最好的算法是将二者综合考虑，先根据程序的大小给进程分配一定的空间，然后随着运行动态调整。</p>
+<h3 id="3-5-3-页面大小"><a href="#3-5-3-页面大小" class="headerlink" title="3.5.3 页面大小"></a>3.5.3 页面大小</h3><p>有很多trade-off</p>
+<h3 id="3-5-4-分开的代码和数据地址空间"><a href="#3-5-4-分开的代码和数据地址空间" class="headerlink" title="3.5.4 分开的代码和数据地址空间"></a>3.5.4 分开的代码和数据地址空间</h3><h3 id="3-5-5-共享页面"><a href="#3-5-5-共享页面" class="headerlink" title="3.5.5 共享页面"></a>3.5.5 共享页面</h3><p>多个线程共享只读的包含代码的页面比较简单，共享可写的数据页面比较困难。一个问题是当把一个进程终止并清理掉它所有的页面时，其它与这个线程共享页面的线程在之后会产生很多页错误。结局办法是在OS中用特别的数据结构追踪共享页面。</p>
+<p>共享数据页面的方法在UNIX中叫做<strong>copy on write</strong>：当fork系统调用后，子进程和父进程共享所有代码和数据段，甚至它们各自的页表都是一模一样的。然而，fork后父进程和子进程的所有页面会设为只读的。如果有一个进程要写一个页面，则会产生页错误，OS此时为需要写的进程单独拷贝页面。</p>
+<h2 id="3-7-分段"><a href="#3-7-分段" class="headerlink" title="3.7 分段"></a>3.7 分段</h2><p>分段就是给一个进程提供很多独立的地址空间，每个段都是线性的地址空间，从0到某一个最大值。不同的段往往有不同的大小，并且随着执行，段的大小可能会改变。因为每个段之间的地址是独立的，因此互相不会影响到。当然，段的空间也有最大值，但是往往不会达到。为了支持分段，程序访存的地址需要分为两部分：段号与段内偏移。</p>
+<p>分段的好处除了可以让程序简化对动态变化的数据结构的处理外，还可以让链接过程变得简单。如果链接后某一个段中的程序需要修改，不用重新编译其它段。分段同时让进程间的数据共享变得容易。同时还可以给每个段指定读写属性，达到数据保护的目的。</p>
+<p>注：目前可以看出来分段对于地址空间的扩充的好处以及对于链接的好处，但是还感觉不到分段相对于分页而言对数据保护和共享的好处。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082310119.png" alt="image-20220329082310119" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082624275.png" alt="image-20220329082624275" style="zoom:50%;" />
+
+<h3 id="3-7-2-段页式：MULTICS"><a href="#3-7-2-段页式：MULTICS" class="headerlink" title="3.7.2 段页式：MULTICS"></a>3.7.2 段页式：MULTICS</h3><p>为了解决段很大以至于无法一次性装入物理内存的问题，需要对段分页。</p>
+<p>每个进程有一个段表，每一个段在段表中都有一个描述符。段表也会分页。段描述符包含段的一些信息，包括显示该段是否在主存中，如果段的任何一部分在主存中，就认为这个段在主存中，同时这个段的页表也在主存中。这样段描述符的一部分就指向该段的页表。段在下一级存储中的地址不在段表中，OS有专门的数据结构保存。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085028954.png" alt="image-20220329085028954" style="zoom:50%;" />
+
+<h4 id="访存步骤："><a href="#访存步骤：" class="headerlink" title="访存步骤："></a>访存步骤：</h4><p>1.用段号找到段描述符</p>
+<p>2.检查段是否在内存中及段的读写属性，如果在内存中并且有访问权限则定位页表，否则产生段错误。</p>
+<p>3.定位到页表后检查页是否在内存中，如果在内存中则拿出页起始地址，否则产生页错误。</p>
+<p>4.页内偏移与页基址拼起来形成物理地址访存。</p>
+<p>MULTICS使用了TLB加速访存。</p>
+<h5 id="MULTICS的虚拟地址切分"><a href="#MULTICS的虚拟地址切分" class="headerlink" title="MULTICS的虚拟地址切分"></a>MULTICS的虚拟地址切分</h5><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085554203.png" alt="image-20220329085554203" style="zoom:50%;" />
+
+<h3 id="3-7-3-段页式：Intel-x86（32位）"><a href="#3-7-3-段页式：Intel-x86（32位）" class="headerlink" title="3.7.3 段页式：Intel x86（32位）"></a>3.7.3 段页式：Intel x86（32位）</h3><p>下文x86均为Intel32位体系结构。在Intel64位体系结构中已经取消了分段机制。</p>
+<p>x86的地址转换包含两个过程，首先由逻辑地址转换为线性地址，再由线性地址转换为物理地址。这两步转换即x86段页式地址翻译的过程。经过一些设置，也可以实现纯粹的分段或者纯粹的分页，下面会讲到。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2.drawio.png" alt="x86地址转换.drawio"></p>
+<h4 id="3-7-3-1-从逻辑地址得到线性地址"><a href="#3-7-3-1-从逻辑地址得到线性地址" class="headerlink" title="3.7.3.1 从逻辑地址得到线性地址"></a>3.7.3.1 从逻辑地址得到线性地址</h4><p>这一步的核心是两张存储于内存中的表：GDT(Global Descriptor Table)与LDT(Local Descriptor Table)。每个进程有自己的LDT，但是整个系统只有一个共享的GDT。GDT与LDT中的每个表项都是一个段描述符（Segment Descriptor）。每个段都有一个段描述符，描述了这个段的一些属性，段描述符的结构下面会讲到。</p>
+<p>那么从逻辑地址得到线性地址的第一步就是找到我们需要的一个段描述符。这里需要用到两组寄存器，分别是一组段选择子（segment selector）与两个记录GDT与LDT的物理基址的寄存器。我们先来看段选择子。</p>
+<p>一个段选择子是一个16位的寄存器（有没有觉得段选择子是16位的有些奇怪？事实上段选择子是16位处理器的历史遗留，在16位处理器中它们有别的作用），段选择子一共有6个，其中两个比较重要，分别叫CS与DS。在进程执行过程中，CS与程序的代码段相关，DS与程序的数据段相关。具体而言，CS的高13位存储了<strong>代码段的段描述符</strong>在GDT或者LDT中的索引。DS的高13位存储了<strong>数据段的段描述符</strong>在GDT或者LDT中的索引。段选择子的结构如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407152600274.png" alt="image-20220407152600274" style="zoom:50%;" />
+
+<p>从逻辑地址得到线性地址的过程就是，处理器首先根据指令的类型，选择一个段选择子，然后根据段选择子的低2位查看是否符合权限。如果符合权限，则根据这个段选择子的第3位决定是在LDT中还是在GDT中查找段描述符。假设要查找的是LDT，那么就将段选择子的高13位，作为偏移与LDT的基址寄存器中的值相加得到段描述符的<strong>物理地址</strong>，并把这个段描述符取出来放在一个暂存寄存器中。至此就得到了段描述符。LDT的基址寄存器叫做LDTR，GDT的叫做GDTR。段描述符的结构如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407153142147.png" alt="image-20220407153142147" style="zoom:50%;" />
+
+<p>因为要向后兼容80286处理器，所以这个段描述符的结构看起来比较恶心。不过一个段描述符的域基本可以分成三类：base域，limit域，与权限和控制域。</p>
+<p>我们先来看base域，一个段描述符中一共有三个base域，这三个base域按照上图所示的值拼起来就形成了一个32位的段基地址。这个基地址与我们的逻辑地址相加就得到了线性地址。至于为什么要把base拆成三段来存，大概是考虑到向后兼容吧。</p>
+<p>但是如果仅仅就这样得到了线性地址，是会有安全性方面的问题的。我们知道在分段的系统中段的大小是可以随着进程的运行动态变化的，那么就需要一种机制来检查当前处理的逻辑地址是否在想要访问的这个段中，如果越界了就需要产生段错误。段描述符中的limit域就是用来做这件事的，limit域存储的值就是段大小。拿到段描述符后处理器会检查逻辑地址是否超过了limit的值，如果是则产生段错误。</p>
+<p>权限与控制域则包括对段访问权限的设置，段是否在内存中，以及与limit相关的一些域。这些对于理解段页式而言并不重要。</p>
+<h4 id="3-7-3-2-从线性地址得到物理地址"><a href="#3-7-3-2-从线性地址得到物理地址" class="headerlink" title="3.7.3.2 从线性地址得到物理地址"></a>3.7.3.2 从线性地址得到物理地址</h4><p>从线性地址得到物理地址的过程与纯分页系统从逻辑地址得到物理地址的过程没有区别。只不过在x86中使用了两级页表，页目录的基址（物理地址）存储在一个叫做CR3的特殊寄存器中。</p>
+<h4 id="3-7-3-3-如何获得纯粹的分段"><a href="#3-7-3-3-如何获得纯粹的分段" class="headerlink" title="3.7.3.3 如何获得纯粹的分段"></a>3.7.3.3 如何获得纯粹的分段</h4><p>一种很自然的想法是，如果把线性地址直接当作物理地址用来访存，而屏蔽从线性地址到物理地址的转换，就可以了。实际上在x86中就是这么做的。在系统控制寄存器中有一个域用来控制是否开启分页模式。</p>
+<h4 id="3-7-3-4-如何获得纯粹的分页"><a href="#3-7-3-4-如何获得纯粹的分页" class="headerlink" title="3.7.3.4 如何获得纯粹的分页"></a>3.7.3.4 如何获得纯粹的分页</h4><p>分段是不能关闭的，但是我们可以将所有的段选择子都设置为0，这样每次获得的段描述符都是GDT或GOT中的第一项。这一项在正常的段页式模式中是保留的，即在正常的段页式模式下访问第一个段描述符会产生异常。在GOT与GDT的第一个段描述符中，base是0，limit是最大值。这样一来线性地址与逻辑地址就一样了。然后就是分页要做的工作了。</p>
+]]></content>
+      <tags>
+        <tag>Operating System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>超标量处理器设计-概述</title>
+    <url>/2022/04/08/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-1%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<h3 id="为什么需要超标量"><a href="#为什么需要超标量" class="headerlink" title="为什么需要超标量"></a>为什么需要超标量</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/%E5%A4%84%E7%90%86%E5%99%A8%E5%85%AC%E5%BC%8F.png" alt="处理器公式"></p>
+<p>上面是一个简单的通过处理器执行时间衡量处理器性能的公式。在程序一定的情况下，如果想要较快的执行，需要比较大的IPC以及更快的运行频率。超标量处理器可以获得比较大的IPC。</p>
+<h3 id="指令间的相关性"><a href="#指令间的相关性" class="headerlink" title="指令间的相关性"></a>指令间的相关性</h3><ul>
+<li><p>先写后读（RAW）：一条指令的操作数如果来自之前指令的结果，那么这条指令必须等到之前的指令得到了结果，才可以继续执行，这种类型的相关性无法回避。</p>
+</li>
+<li><p>先读后写（WAR）：一条指令要将结果写道某个寄存器中，但是这个寄存器还在被其它指令读取，所以不能马上写入。这种类型的相关性可以避免。</p>
+</li>
+<li><p>先写后写（WAW）：如果两条指令都要将结果写到同一个寄存器中，那么后面的指令必须等到前面的指令写完之后，自己才能执行写操作。可以通过将后续的指令的结果写到其它寄存器中来避免这种相关性。</p>
+</li>
+<li><p>控制相关：只有分支指令计算完成后才知道从哪里取得后续的指令来执行。通过分支预测解决。</p>
+</li>
+</ul>
+<h3 id="超标量处理器的流水线"><a href="#超标量处理器的流水线" class="headerlink" title="超标量处理器的流水线"></a>超标量处理器的流水线</h3><p>如果一个处理器每周期可以取出多于一条的指令送到流水线中执行，并且使用硬件来对指令进行调度，那么这个处理器就是超标量处理器。</p>
+<p>超标量处理器有两种方式可以执行指令，顺序执行（in-order）和乱序执行（out-of-order）。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Fronted</th>
+<th>Issue</th>
+<th>Write back</th>
+<th>Commit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>顺序超标量</td>
+<td>in-order</td>
+<td>in-order</td>
+<td>in-order</td>
+<td>in-order</td>
+</tr>
+<tr>
+<td>乱序超标量</td>
+<td>in-order</td>
+<td>out-of-order</td>
+<td>out-of-order</td>
+<td>in-order</td>
+</tr>
+</tbody></table>
+<h4 id="顺序执行超标量处理器"><a href="#顺序执行超标量处理器" class="headerlink" title="顺序执行超标量处理器"></a>顺序执行超标量处理器</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409120504063.png" alt="image-20220409120504063"></p>
+<h4 id="乱序执行超标量处理器"><a href="#乱序执行超标量处理器" class="headerlink" title="乱序执行超标量处理器"></a>乱序执行超标量处理器</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409120712600.png" alt="image-20220409120712600"></p>
+]]></content>
+      <tags>
+        <tag>Architecture</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>详解页表自映射机制</title>
+    <url>/2022/03/24/%E8%AF%A6%E8%A7%A3%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<p>首先必须说明的是，页表自映射机制的终极意义是为了在CISC体系结构中可以使用虚拟地址访问页表。在RISC体系结构中无法体现页表自映射机制的作用，也没有必要实现页表自映射机制。页表自映射所谓的可以节省4KB空间的作用相对虚拟内存而言微乎其微。</p>
+<h3 id="在CISC体系结构中虚实地址转换是如何进行的"><a href="#在CISC体系结构中虚实地址转换是如何进行的" class="headerlink" title="在CISC体系结构中虚实地址转换是如何进行的"></a>在CISC体系结构中虚实地址转换是如何进行的</h3><p>这里用Intel IA-32体系结构为例讲解一下在CISC体系结构中虚实地址转换是如何进行的。实际上在Intel IA-32中这一步应该叫做<strong>线性地址</strong>到<strong>物理地址</strong>的转换，这一转换需要用到存储在内存中的两级页表。第一级页表有1024项，每一项大小为32位，其中高20位为一个二级页表的<strong>物理地址</strong>的高20位（因为页表的物理地址是页对齐的，所以只存储高20位就够了）。第二级页表最多可以有1024个，每一个二级页表的结构与一级页表一样，只不过每一个页表项的高20位存储的是对应物理页面的<strong>物理地址</strong>的高20位。还需要用到一个系统控制寄存器叫做CR3，里面存储的是第一级页表在内存中的<strong>物理基地址</strong>。</p>
+<p>MMU在产生线性地址后，会首先将线性地址的高10位作为偏移与CR3寄存器中的值相加，定位到第一级页表中的某一项的<strong>物理地址</strong>。然后从该物理地址中取出它对应的第二级页表的<strong>物理地址</strong>。再将这个值与线性地址的21至12位相加得到第二级页表中某一页表项的<strong>物理地址</strong>，再取出这个物理地址上的值，将高20位与线性地址的低12位拼起来得到线性地址对应的物理地址。</p>
+<p>一张图：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%88%86%E9%A1%B5.png" alt="x86分页"></p>
+<h3 id="为什么需要页表自映射"><a href="#为什么需要页表自映射" class="headerlink" title="为什么需要页表自映射"></a>为什么需要页表自映射</h3><p>上述的从线性地址到物理地址的转换都是由MMU中的电路自动完成的， 软件没有参与。这与RISC很不一样，在RISC中地址转换的每一步都需要软件执行操作。那么既然在CISC中访问页表的操作都是由硬件使用物理地址完成的，就产生了一个问题，即页表没有自己的<strong>虚拟地址</strong>，似乎不是什么大问题，因为自始至终都是硬件通过<strong>物理地址</strong>访问页表。无论是CR3寄存器还是一级页表中的值，它们都是物理地址。</p>
+<p>然而，我们有时候会想知道一级页表，二级页表的虚拟基地址是什么。这涉及到x86处理器的保护模式的概念，在保护模式下，程序只能通过<strong>线性地址</strong>（虚拟地址）来访存。如果页表没有虚拟地址，那么程序就无法查看页表的值。但很多时候在保护模式下我们想看看页表的值到底是啥。</p>
+<p>可以通过虚拟地址访问页表，是需要页表自映射的原因。</p>
+<h3 id="如何实现页表自映射"><a href="#如何实现页表自映射" class="headerlink" title="如何实现页表自映射"></a>如何实现页表自映射</h3><p>第一步，我们需要<strong>让一级页表的一个表项中存储的物理地址就是这个一级页表的物理基地址</strong>。这个表项在一级页表中的哪一个位置，并没有关系，但它会影响到页表在虚拟空间中的位置。现在我们暂且设它是第t项。</p>
+<p>这样设置之后，如果我们用0x(t)0…0这一虚拟地址访存，其中t是高10位的值，那么MMU会用CR3的值加上t的值，访问到一级页表的第t项，而这一项中存储的值，正是我们刚刚设置的一级页表的物理基地址，现在我们将这个值设为F。注意，在常规的访存流程中，F代表着一个二级页表的物理基地址。</p>
+<p>至此，一个完整的虚实地址转换过程刚刚进行了一半。MMU还会用虚拟地址的21至12位这10位作为二级页表项在二级页表中的偏移，与刚刚得到的F相加，得到一个二级页表项的物理地址。而我们给出的虚拟地址的21至12位均为0，F是一级页表的物理基地址，因此我们得到的所谓的“二级页表项的物理地址”，实际上是一级页表项中第一项的物理地址，而我们最终得到的这个物理地址上的值，就是一级页表项中第一项的值，即第一个二级页表的物理基地址。</p>
+<p>这样，我们就实现了，通过0x(t)0…0这一虚拟地址访问第一个二级页表。这里<strong>第一个</strong>的含义是该二级页表管理的是最低的4MB虚拟地址空间.如此一来，0x(t)0…0这一地址实际上<strong>就是第一个二级页表的虚拟基地址</strong>。</p>
+<p>以此类推，0x(t)(k)0…0就是第k个二级页表的虚拟基地址。其中k代表虚拟地址的第21至12位。那么0x(t)0…0到0x(t)ff..ff这一段4MB的空间实际上就是全部的二级页表在虚拟空间中的映射。至此，我们实现了通过虚拟地址访问页表，这就是页表自映射机制。</p>
+<p>经过上面的讨论，我们发现一级页表的物理基地址在一级页表中所处的位置，实际上是与整个4MB页表在虚拟内存中的位置对应的。改变一级页表的物理基地址在一级页表中所处的位置，4MB页表在虚拟内存中的位置也不一样。但无论怎样，4MB页表在虚拟内存中的<strong>起始位置</strong>一定是4MB对齐的。至于为什么会这样，可以再读一遍上述过程。</p>
+<p>假设一级页表的物理基地址在一级页表中第t项，那么我们只要让虚拟地址的高10位和21至12位都为t就得出了一级页表的虚拟基地址。而如果已知4MB页表的虚拟基地址，我们只需要把这个虚拟地址的高10位的值复制到21至12位，就得出了一级页表的虚拟基地址。至于为什么会这样，可以再读一遍上述过程。</p>
+<p>需要强调的是，这一系列过程都需要一个可以自动完成地址转换而不需要软件介入的MMU来完成。</p>
+<h3 id="为什么MIPS架构无法实现页表自映射"><a href="#为什么MIPS架构无法实现页表自映射" class="headerlink" title="为什么MIPS架构无法实现页表自映射"></a>为什么MIPS架构无法实现页表自映射</h3><p>MIPS架构无法实现页表自映射的本质原因是，MMU很拉跨，导致查询页表的过程需要软件参与，而软件可以通过页表将一个虚拟地址转换为一个物理地址，但没办法把一个物理地址转换为一个虚拟地址（kuseg段）。你当然可以将页表映射到kuseg里，并且页表的虚拟基地址与一级页表的物理基地址在一级页表中的位置也符合前文所述的关系，但是你能做的也仅仅是通过公式计算得出一级页表的虚拟基地址，而这不是页表自映射本来的意义。</p>
+]]></content>
+      <tags>
+        <tag>Operating System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>静态链接与可执行文件的装载</title>
+    <url>/2022/04/01/%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/</url>
+    <content><![CDATA[<h2 id="2-静态链接"><a href="#2-静态链接" class="headerlink" title="2 静态链接"></a>2 静态链接</h2><blockquote>
+<p>链接：把一些指令对其他符号地址的引用加以修正</p>
+</blockquote>
+<p>静态链接：所有的目标文件和动态链接库被静态的绑定在一起，所有的符号都被解析出来，所创建的可执行文件是完整的，运行时不依赖于任何外部的库。</p>
+<h5 id="两步链接方法："><a href="#两步链接方法：" class="headerlink" title="两步链接方法："></a>两步链接方法：</h5><p>1.空间与地址分配：获得输入文件各个段的长度，属性和位置，并将所有输入文件中的符号表合成为全局符号表。计算输出文件中各个段合并后的长度和位置，并建立映射关系。此时输入文件中各个段在执行时的虚拟地址已经确定。</p>
+<p>2.符号解析与重定位：进行符号解析与重定位，调整代码中未决的引用。是链接的核心过程。</p>
+<h3 id="2-1-空间与地址分配"><a href="#2-1-空间与地址分配" class="headerlink" title="2.1 空间与地址分配"></a>2.1 空间与地址分配</h3><p>这里的空间与地址分配实际有两个含义：1.各个输入目标文件中的各个段在输出文件中所处的位置。2.可执行文件装载进内存后各个段在虚拟地址中的位置。这里只关注于虚拟地址空间的分配。</p>
+<h5 id="相似段合并"><a href="#相似段合并" class="headerlink" title="相似段合并"></a>相似段合并</h5><p>链接器会将各个输入目标文件中属性相同的段在输出文件中放到一起，然后确定可执行文件中每个段的虚拟地址。至于为什么要把属性相同的段拼成一个段，在<strong>ELF文件的链接视图与执行视图</strong>一节有所解释。</p>
+<h5 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h5><p>空间分配完成后链接器计算各个符号的虚拟地址。由于各个符号在段内的相对位置是确定的，因此它们的虚拟地址也是确定的，得出虚拟地址只需要用段的地址加上段内偏移。</p>
+<h3 id="2-2-符号解析与重定位"><a href="#2-2-符号解析与重定位" class="headerlink" title="2.2 符号解析与重定位"></a>2.2 符号解析与重定位</h3><p>这一步所作的事情就是将代码中所有未决的绝对引用和相对引用确定下来。</p>
+<p><strong>Q</strong>：链接器怎么知道哪些指令要被调整，这些指令的哪些部分需要调整，怎么调整？</p>
+<p><strong>A</strong>：使用重定位表，重定位表见上文。当链接器需要对某个符号的引用进行重定位时，它就要确定这个符号的目标地址。这时候链接器就会去查找由所有输入目标文件的符号表组成的全局符号表，找到相应的符号后进行重定位。</p>
+<h3 id="2-3-静态库链接"><a href="#2-3-静态库链接" class="headerlink" title="2.3 静态库链接"></a>2.3 静态库链接</h3><p>一个静态库可以简单看作一系列目标文件的集合，即很多目标文件经过压缩打包后形成的一个文件。人们通常使用ar压缩程序将这些目标文件压缩到一起，并且对其进行编号和索引，以便于查找，这样就形成了一个.a文件。链接器完成静态库与我们自己的目标文件的链接工作。</p>
+<h3 id="2-4-链接脚本"><a href="#2-4-链接脚本" class="headerlink" title="2.4 链接脚本"></a>2.4 链接脚本</h3><p>由一系列语句组成，语句分为两种，赋值语句与命令语句。</p>
+<ul>
+<li>语句之间使用分号作为分隔符</li>
+<li>可以使用C语言类似的表达式和运算操作符</li>
+<li>使用&#x2F;**&#x2F;作为注释，脚本文件中使用到的包含分隔符的字符串要用双引号引起来</li>
+</ul>
+<p><strong>常用命令语句：</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令语句</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ENTRY(symbol)</td>
+<td>指定符号symbol的值作为入口地址，即进程执行的第一条用户空间的指令在进程地址空间的地址。被指定在Elf_32Ehdr的e_entry成员中。ld设置进程入口地址的优先级：<br />1.ld 命令行 -e 选项<br />2.链接脚本ENTRY()<br />3.如果定义了_start符号，使用_start符号值<br />4.如果存在.text段，使用.text段的起始地址<br />5.使用值0</td>
+</tr>
+<tr>
+<td>STARTUP(filename)</td>
+<td>将文件filename作为链接过程中的第一个输入文件</td>
+</tr>
+<tr>
+<td>SEARCH_DIR(path)</td>
+<td>将路径path加入到ld链接器的库查找目录，与-L path作用相同</td>
+</tr>
+<tr>
+<td>INPUT(file,file,…)</td>
+<td>将指定文件作为链接过程中的输入文件</td>
+</tr>
+<tr>
+<td>INCLUDE filename</td>
+<td>将指定文件包含进链接脚本</td>
+</tr>
+<tr>
+<td>PROVIDE(symbol)</td>
+<td>在链接脚本中定义某个符号，该符号可以在程序中被引用。</td>
+</tr>
+</tbody></table>
+<p><strong>SECTION语句：</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	. = <span class="number">0X1000</span>;	<span class="comment">/* .是特殊符号，用来做定位计数器，根据输入节的大小增长。当SECTIONS命令开始时为0. */</span></span><br><span class="line">	SECNAME ： &#123;contents&#125;	<span class="comment">/*SEENAME是输出段名。contents描述符合规则的输入段将合并进这个段中。如果使用/DISCARD/作为段								名，则将被丢弃。*/</span></span><br><span class="line">	contents中包含若干条件，每个条件用空格分隔。</span><br><span class="line">	条件写法： filename(sections) filename表示输入文件名，section表示输入段名，可以使用正则和通配符。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="3-可执行文件的装载与进程"><a href="#3-可执行文件的装载与进程" class="headerlink" title="3 可执行文件的装载与进程"></a>3 可执行文件的装载与进程</h2><p>linux虚拟内存视图：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4.drawio.png" alt="linux操作系统虚拟地址空间.drawio"></p>
+<h3 id="操作系统角度下的可执行文件装载"><a href="#操作系统角度下的可执行文件装载" class="headerlink" title="操作系统角度下的可执行文件装载"></a>操作系统角度下的可执行文件装载</h3><p>操作系统创建一个进程，然后装载相应的可执行文件并执行，需要做3件事情：</p>
+<ul>
+<li>创建一个独立的虚拟地址空间：即创建<strong>虚拟空间到物理内存</strong>的映射关系。</li>
+<li>读取可执行文件头，并建立<strong>虚拟空间与可执行文件</strong>的映射关系：当发生页错误时，操作系统需知道当前的缺页在可执行文件中的哪个位置。可执行文件与执行该可执行文件进程的虚拟空间的映射关系是保存在OS中的一个数据结构。Linux将<strong>进程虚拟空间中的一个段叫做虚拟内存区域（VMA）</strong>，VMA的粒度为页。</li>
+<li>将cpu的pc设置为可执行文件入口，切换到用户堆栈，cpu切换到用户态。</li>
+</ul>
+<blockquote>
+<p>由于可执行文件在装载时实际上是被映射的虚拟空间，所以可执行文件很多时候又被叫做映像文件(Image)</p>
+</blockquote>
+<h3 id="进程虚存空间分布"><a href="#进程虚存空间分布" class="headerlink" title="进程虚存空间分布"></a>进程虚存空间分布</h3><h4 id="ELF文件的链接视图与执行视图"><a href="#ELF文件的链接视图与执行视图" class="headerlink" title="ELF文件的链接视图与执行视图"></a>ELF文件的链接视图与执行视图</h4><p>问题：ELF文件在被映射时，是以系统的页长度作为单位的，每个段映射时的页长度都是系统页长度的整数倍，可能造成很多空间浪费。而操作系统实际关心的是装载有关的问题，比如一个段的读写及可执行属性。因此对于相同权限的段，可以将它们合并到一起进行映射。包含一个或多个属性类似的<code>Section</code>的集合在ELF可执行文件中叫做<code>Segment</code>，链接器在链接时会尽量将相同属性的段放在一起。系统按照<code>segment</code>而不是<code>section</code>来映射可执行文件。描述<code>Segment</code>的结构叫<code>program header</code>，描述了ELF文件该如何被操作系统映射到进程的虚拟空间。程序头表是程序头的结构体数组。</p>
+<p>程序头<code>Elf32_Phdr</code>结构：</p>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>p_type</td>
+<td>Segment类型，LOAD表示可装载</td>
+</tr>
+<tr>
+<td>p_offset</td>
+<td>Segment在文件中偏移</td>
+</tr>
+<tr>
+<td>p_vaddr</td>
+<td>Segment第一个字节在进程虚拟地址空间的起始位置</td>
+</tr>
+<tr>
+<td>p_paddr</td>
+<td>Segment物理装载地址，一般与p_vaddr一样</td>
+</tr>
+<tr>
+<td>p_filesz</td>
+<td>Segment在ELF文件中所占空间长度，可能为0</td>
+</tr>
+<tr>
+<td>p_memse</td>
+<td>Segment在进程虚拟地址空间中所占用的长度，可能为0</td>
+</tr>
+<tr>
+<td>p_flags</td>
+<td>Segment权限属性，如可读“R”，可写“W”，可执行“X”</td>
+</tr>
+<tr>
+<td>p_align</td>
+<td>Segment对齐属性，实际对齐字节等于2的<code>p_align</code>次。</td>
+</tr>
+</tbody></table>
+<p>如果<code>p_memse</code>大于<code>p_filesz</code>，则操作系统会将内存中多余的空间填0</p>
+<h4 id="VMA"><a href="#VMA" class="headerlink" title="VMA"></a>VMA</h4><p>操作系统通过给进程空间划分出很多VMA来管理进程的虚拟空间。基本原则是将相同权限属性的，有相同映像文件的映射为一个VMA，一个进程的VMA基本有如下几种：</p>
+<ul>
+<li>代码VMA，只读，可执行，有映像文件</li>
+<li>数据VMA，可读写，可执行，有映像文件</li>
+<li>堆VMA，可读写，可执行，无映像文件，匿名，可向上扩展</li>
+<li>栈VMA,可读写， 不可执行，无映像文件，匿名，可向下扩展</li>
+</ul>
+<p>一个例子：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/VMA.png" alt="VMA"></p>
+<h4 id="段地址对齐"><a href="#段地址对齐" class="headerlink" title="段地址对齐"></a>段地址对齐</h4><p>将可执行文件映射到虚拟空间时，最简单的一种方法就是将每个segment分开映射，对于长度不足一个页的部分则占一个页。然而这样做可能会有大量的内碎片。</p>
+<h5 id="UNIX基于x86段页式的解决办法"><a href="#UNIX基于x86段页式的解决办法" class="headerlink" title="UNIX基于x86段页式的解决办法"></a>UNIX基于x86段页式的解决办法</h5><p>将可执行文件从逻辑上划分为很多页，有些页中可能有很多个段。而由于段地址对齐的原因，各个段的起始地址并不一定是上一个段的结束地址。</p>
+]]></content>
+      <tags>
+        <tag>Operating System</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>超标量处理器设计-Cache设计</title>
+    <url>/2022/04/12/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-2Cache/</url>
+    <content><![CDATA[<h3 id="cache的结构"><a href="#cache的结构" class="headerlink" title="cache的结构"></a>cache的结构</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145402608.png" alt="image-20220409145402608"></p>
+<h3 id="组相联Cache"><a href="#组相联Cache" class="headerlink" title="组相联Cache"></a>组相联Cache</h3><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409145531549.png" alt="image-20220409145531549"></p>
+<h4 id="并行访问与串行访问"><a href="#并行访问与串行访问" class="headerlink" title="并行访问与串行访问"></a>并行访问与串行访问</h4><p>并行访问就是同时访问Tag SRAM与Data SRAM，串行访问就是先访问Tag SRAM部分，根据Tag的比较结果再去访问Data SRAM部分。</p>
+<h4 id="流水线化Cache"><a href="#流水线化Cache" class="headerlink" title="流水线化Cache"></a>流水线化Cache</h4><p>并行访问流水线：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150115997.png" alt="image-20220409150115997" style="zoom: 67%;" />
+
+<p>串行访问流水线：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409150155072.png" alt="image-20220409150155072" style="zoom:67%;" />
+
+<p>并行访问会有比较低的时钟频率和较大功耗，但是访问Cache所需的时钟周期缩短了一个。串行访问时钟频率较高，功耗较低，但是访问Cache的时钟周期多了一个。对于乱序执行的超标量处理器，由于可以通过指令调度来掩盖串行访问Cache的多了一个时钟周期的影响，因此可以通过串行访问获得比较高的时钟频率，而顺序执行处理器则需要缩短访问Cache的周期数。</p>
+<h3 id="Cache的写入"><a href="#Cache的写入" class="headerlink" title="Cache的写入"></a>Cache的写入</h3><p>Write Through与Non-Write Allocate 方法配合工作流程：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151157950.png" alt="image-20220409151157950" style="zoom:67%;" />
+
+<p>Write back与Write Allocate配合工作流程：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409151323946.png" alt="image-20220409151323946" style="zoom:67%;" />
+
+<h3 id="Cache替换策略"><a href="#Cache替换策略" class="headerlink" title="Cache替换策略"></a>Cache替换策略</h3><h4 id="伪LRU算法"><a href="#伪LRU算法" class="headerlink" title="伪LRU算法"></a>伪LRU算法</h4><p>基本思想是把way递归的分成两两一组。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220415193244543.png" alt="image-20220415193244543" style="zoom: 67%;" />
+
+<h4 id="随机替换算法"><a href="#随机替换算法" class="headerlink" title="随机替换算法"></a>随机替换算法</h4><p>不能获得最优化的结果，但是硬件复杂度较低，也不会损失过多的性能。随着Cache的增大，缺失率接近于LRU算法。一般采用时钟算法来实现近似的随机，一个计数器每时钟周期加1，计数器宽度与Cache路数相关。</p>
+<h3 id="提高Cache性能"><a href="#提高Cache性能" class="headerlink" title="提高Cache性能"></a>提高Cache性能</h3><h4 id="写缓存"><a href="#写缓存" class="headerlink" title="写缓存"></a>写缓存</h4><p>脏状态的Cache line会首先放到写缓存中，等到下级存储器有空闲的时候再将缓存中的数据写到下级存储器中。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409153010281.png" alt="image-20220409153010281"></p>
+<p>采用写缓存的本质原因是下级存储器一般只有一个读写端口，如果先将脏数据写回再读取需要的数据，则会导致D-Cache缺失处理的时间较长。另一方面，写缓存对write through类型的Cache而言从性能方面考虑其实是必须的。</p>
+<p>当D-Cache发生缺失时，需要先查看写缓存中有无需要的数据。需要在写缓存中加入地址比较的CAM电路。</p>
+<h4 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154002300.png" alt="image-20220409154002300"></p>
+<h4 id="多级结构"><a href="#多级结构" class="headerlink" title="多级结构"></a>多级结构</h4><p>多核的一级Cache一般采用write through方式，方便管理存储器间的一致性。</p>
+<p><strong>Inclusive与exlcusive</strong></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409154432404.png" alt="image-20220409154432404"></p>
+<h4 id="Victim-Cache"><a href="#Victim-Cache" class="headerlink" title="Victim Cache"></a>Victim Cache</h4><p>Cache中被踢出的数据可能马上又要使用，如果一个Cache set装不下频繁用到的所有数据，就会导致频繁的Cache缺失。而如果因此而增大Cache相联度，又会浪费掉大量的空间，因为其它的cache set未必有这样的特征。VC就是要解决这样的问题。</p>
+<p>通常VC采用全相联方式，容量较小。 </p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155453436.png" alt="image-20220409155453436" style="zoom:67%;" />
+
+<p>一般情况下VC和Cache中的数据是互斥的，处理器内核可以同时读取它们。如果在VC中找到了想要的数据，VC中的数据就会被替换进Cache，同时Cache中对应的数据会替换进VC中。</p>
+<h5 id="Filter-Cache"><a href="#Filter-Cache" class="headerlink" title="Filter Cache"></a>Filter Cache</h5><p>主要作用是防止偶然使用的数据占据Cache。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409155718607.png" alt="image-20220409155718607"></p>
+<h4 id="预取"><a href="#预取" class="headerlink" title="预取"></a>预取</h4><p><strong>硬件预取</strong></p>
+<p>访问Cache中的一个数据块发生缺失时，将该数据块后面的一个数据块也取出来放进Cache。这种预取可能会出错，导致浪费了总线带宽，并且占用了Cache中的空间，还可能挤占掉Cache中本来有用的数据，这被称为Cache污染。为了避免这种情况，可以将预取的指令单独放在一个缓存中，在后续执行时，如果Cache中发生了缺失但在buffer中找到了数据，则会把buffer中的数据放进Cache中。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409162258859.png" alt="image-20220409162258859"></p>
+<p>预取对I-Cache性能提升较大，对于D-Cache由于数据访问的不规则性则很难说。</p>
+<h5 id="软件预取"><a href="#软件预取" class="headerlink" title="软件预取"></a>软件预取</h5><p>需要指令集中设有预取指令。编译器控制程序进行预取。同时，Cache在执行预取指令时不能阻塞后续指令对Cache的读取，这要求Cache实现为非阻塞式的。</p>
+<h3 id="多端口Cache"><a href="#多端口Cache" class="headerlink" title="多端口Cache"></a>多端口Cache</h3><p>超标量处理器中为了在一个周期中执行多条load&#x2F;store指令，要求D-Cache实现为多端口结构。由于D-Cache容量大，如果采用多端口设计会对芯片的面积和速度带来很大的负面影响，因此需要采用一些方法解决这个问题。</p>
+<h4 id="True-Multi-port"><a href="#True-Multi-port" class="headerlink" title="True Multi-port"></a>True Multi-port</h4><p>除了SRAM，把所有逻辑复制几份。一般不会这么做。</p>
+<h4 id="Multiple-Cache-Copies"><a href="#Multiple-Cache-Copies" class="headerlink" title="Multiple Cache Copies"></a>Multiple Cache Copies</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409164125716.png" alt="image-20220409164125716"></p>
+<p>把SRAM也复制多份，需要保证SRAM间数据一致性，一般不会这么做。</p>
+<h4 id="Multi-banking"><a href="#Multi-banking" class="headerlink" title="Multi-banking"></a>Multi-banking</h4><p>将Cache分为很多小的bank，每个bank都只有一个端口，如果在一个周期中Cache的多个端口上的访问地址位于不同的bank中，则不会引起任何问题。只有当同一个周期中两个或多个访问地址位于同一个bank中时才会发生bank冲突。这中方法仍然需要多套访问逻辑，同时将Tag SRAM实现为多端口结构或者实例化多个，但是data SRAM只有一个。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220409165242626.png" alt="image-20220409165242626"></p>
+<h3 id="超标量处理器的取指令"><a href="#超标量处理器的取指令" class="headerlink" title="超标量处理器的取指令"></a>超标量处理器的取指令</h3><p>一个N路的超标量处理器每周期应当可以从I-Cache中至少取出N条指令。这N条指令称为一个fetch group。</p>
+<p>最简单的实现方法是使data block的大小为N个字。但如果此时请求地址不是N字对齐的，则请求会落在两个Cache line中，此时只能取第一个Cache line中的值，导致取出的指令少于N条。</p>
+<p>可以使block大小为2N，每周期取出指令数多于N条，通过一个缓存将多余的指令缓存起来，使得后续的流水线可以得到充足的指令。</p>
+<p>一种减少Cache中SRAM数量的方法：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220411083717083.png" alt="image-20220411083717083"></p>
+]]></content>
+      <tags>
+        <tag>Architecture</tag>
       </tags>
   </entry>
 </search>

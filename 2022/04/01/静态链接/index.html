@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32%C3%9732-my.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16%C3%9716-my.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="《链接，装载与库》读书笔记part2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静态链接与可执行文件的装载">
+<meta property="og:url" content="https://guo-hy.github.io/2022/04/01/%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="《链接，装载与库》读书笔记part2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4.drawio.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/VMA.png">
+<meta property="article:published_time" content="2022-04-01T12:40:57.000Z">
+<meta property="article:modified_time" content="2022-04-15T11:23:01.638Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="Operating System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4.drawio.png">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/04/01/%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/04/01/%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/","path":"2022/04/01/静态链接/","title":"静态链接与可执行文件的装载"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>静态链接与可执行文件的装载 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">2 静态链接</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%A4%E6%AD%A5%E9%93%BE%E6%8E%A5%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">两步链接方法：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%A9%BA%E9%97%B4%E4%B8%8E%E5%9C%B0%E5%9D%80%E5%88%86%E9%85%8D"><span class="nav-number">1.1.</span> <span class="nav-text">2.1 空间与地址分配</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9B%B8%E4%BC%BC%E6%AE%B5%E5%90%88%E5%B9%B6"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">相似段合并</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E7%9A%84%E7%A1%AE%E5%AE%9A"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">符号地址的确定</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%AC%A6%E5%8F%B7%E8%A7%A3%E6%9E%90%E4%B8%8E%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.2.</span> <span class="nav-text">2.2 符号解析与重定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E9%9D%99%E6%80%81%E5%BA%93%E9%93%BE%E6%8E%A5"><span class="nav-number">1.3.</span> <span class="nav-text">2.3 静态库链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E9%93%BE%E6%8E%A5%E8%84%9A%E6%9C%AC"><span class="nav-number">1.4.</span> <span class="nav-text">2.4 链接脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E7%9A%84%E8%A3%85%E8%BD%BD%E4%B8%8E%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">3 可执行文件的装载与进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%A7%92%E5%BA%A6%E4%B8%8B%E7%9A%84%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E8%A3%85%E8%BD%BD"><span class="nav-number">2.1.</span> <span class="nav-text">操作系统角度下的可执行文件装载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%99%9A%E5%AD%98%E7%A9%BA%E9%97%B4%E5%88%86%E5%B8%83"><span class="nav-number">2.2.</span> <span class="nav-text">进程虚存空间分布</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ELF%E6%96%87%E4%BB%B6%E7%9A%84%E9%93%BE%E6%8E%A5%E8%A7%86%E5%9B%BE%E4%B8%8E%E6%89%A7%E8%A1%8C%E8%A7%86%E5%9B%BE"><span class="nav-number">2.2.1.</span> <span class="nav-text">ELF文件的链接视图与执行视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VMA"><span class="nav-number">2.2.2.</span> <span class="nav-text">VMA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AE%B5%E5%9C%B0%E5%9D%80%E5%AF%B9%E9%BD%90"><span class="nav-number">2.2.3.</span> <span class="nav-text">段地址对齐</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#UNIX%E5%9F%BA%E4%BA%8Ex86%E6%AE%B5%E9%A1%B5%E5%BC%8F%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">UNIX基于x86段页式的解决办法</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Guo-HY" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Guo-HY" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/04/01/%E9%9D%99%E6%80%81%E9%93%BE%E6%8E%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          静态链接与可执行文件的装载
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-01 20:40:57" itemprop="dateCreated datePublished" datetime="2022-04-01T20:40:57+08:00">2022-04-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-15 19:23:01" itemprop="dateModified" datetime="2022-04-15T19:23:01+08:00">2022-04-15</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">《链接，装载与库》读书笔记part2</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="2-静态链接"><a href="#2-静态链接" class="headerlink" title="2 静态链接"></a>2 静态链接</h2><blockquote>
+<p>链接：把一些指令对其他符号地址的引用加以修正</p>
+</blockquote>
+<p>静态链接：所有的目标文件和动态链接库被静态的绑定在一起，所有的符号都被解析出来，所创建的可执行文件是完整的，运行时不依赖于任何外部的库。</p>
+<h5 id="两步链接方法："><a href="#两步链接方法：" class="headerlink" title="两步链接方法："></a>两步链接方法：</h5><p>1.空间与地址分配：获得输入文件各个段的长度，属性和位置，并将所有输入文件中的符号表合成为全局符号表。计算输出文件中各个段合并后的长度和位置，并建立映射关系。此时输入文件中各个段在执行时的虚拟地址已经确定。</p>
+<p>2.符号解析与重定位：进行符号解析与重定位，调整代码中未决的引用。是链接的核心过程。</p>
+<h3 id="2-1-空间与地址分配"><a href="#2-1-空间与地址分配" class="headerlink" title="2.1 空间与地址分配"></a>2.1 空间与地址分配</h3><p>这里的空间与地址分配实际有两个含义：1.各个输入目标文件中的各个段在输出文件中所处的位置。2.可执行文件装载进内存后各个段在虚拟地址中的位置。这里只关注于虚拟地址空间的分配。</p>
+<h5 id="相似段合并"><a href="#相似段合并" class="headerlink" title="相似段合并"></a>相似段合并</h5><p>链接器会将各个输入目标文件中属性相同的段在输出文件中放到一起，然后确定可执行文件中每个段的虚拟地址。至于为什么要把属性相同的段拼成一个段，在<strong>ELF文件的链接视图与执行视图</strong>一节有所解释。</p>
+<h5 id="符号地址的确定"><a href="#符号地址的确定" class="headerlink" title="符号地址的确定"></a>符号地址的确定</h5><p>空间分配完成后链接器计算各个符号的虚拟地址。由于各个符号在段内的相对位置是确定的，因此它们的虚拟地址也是确定的，得出虚拟地址只需要用段的地址加上段内偏移。</p>
+<h3 id="2-2-符号解析与重定位"><a href="#2-2-符号解析与重定位" class="headerlink" title="2.2 符号解析与重定位"></a>2.2 符号解析与重定位</h3><p>这一步所作的事情就是将代码中所有未决的绝对引用和相对引用确定下来。</p>
+<p><strong>Q</strong>：链接器怎么知道哪些指令要被调整，这些指令的哪些部分需要调整，怎么调整？</p>
+<p><strong>A</strong>：使用重定位表，重定位表见上文。当链接器需要对某个符号的引用进行重定位时，它就要确定这个符号的目标地址。这时候链接器就会去查找由所有输入目标文件的符号表组成的全局符号表，找到相应的符号后进行重定位。</p>
+<h3 id="2-3-静态库链接"><a href="#2-3-静态库链接" class="headerlink" title="2.3 静态库链接"></a>2.3 静态库链接</h3><p>一个静态库可以简单看作一系列目标文件的集合，即很多目标文件经过压缩打包后形成的一个文件。人们通常使用ar压缩程序将这些目标文件压缩到一起，并且对其进行编号和索引，以便于查找，这样就形成了一个.a文件。链接器完成静态库与我们自己的目标文件的链接工作。</p>
+<h3 id="2-4-链接脚本"><a href="#2-4-链接脚本" class="headerlink" title="2.4 链接脚本"></a>2.4 链接脚本</h3><p>由一系列语句组成，语句分为两种，赋值语句与命令语句。</p>
+<ul>
+<li>语句之间使用分号作为分隔符</li>
+<li>可以使用C语言类似的表达式和运算操作符</li>
+<li>使用&#x2F;**&#x2F;作为注释，脚本文件中使用到的包含分隔符的字符串要用双引号引起来</li>
+</ul>
+<p><strong>常用命令语句：</strong></p>
+<table>
+<thead>
+<tr>
+<th>命令语句</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ENTRY(symbol)</td>
+<td>指定符号symbol的值作为入口地址，即进程执行的第一条用户空间的指令在进程地址空间的地址。被指定在Elf_32Ehdr的e_entry成员中。ld设置进程入口地址的优先级：<br />1.ld 命令行 -e 选项<br />2.链接脚本ENTRY()<br />3.如果定义了_start符号，使用_start符号值<br />4.如果存在.text段，使用.text段的起始地址<br />5.使用值0</td>
+</tr>
+<tr>
+<td>STARTUP(filename)</td>
+<td>将文件filename作为链接过程中的第一个输入文件</td>
+</tr>
+<tr>
+<td>SEARCH_DIR(path)</td>
+<td>将路径path加入到ld链接器的库查找目录，与-L path作用相同</td>
+</tr>
+<tr>
+<td>INPUT(file,file,…)</td>
+<td>将指定文件作为链接过程中的输入文件</td>
+</tr>
+<tr>
+<td>INCLUDE filename</td>
+<td>将指定文件包含进链接脚本</td>
+</tr>
+<tr>
+<td>PROVIDE(symbol)</td>
+<td>在链接脚本中定义某个符号，该符号可以在程序中被引用。</td>
+</tr>
+</tbody></table>
+<p><strong>SECTION语句：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">	. = <span class="number">0X1000</span>;	<span class="comment">/* .是特殊符号，用来做定位计数器，根据输入节的大小增长。当SECTIONS命令开始时为0. */</span></span><br><span class="line">	SECNAME ： &#123;contents&#125;	<span class="comment">/*SEENAME是输出段名。contents描述符合规则的输入段将合并进这个段中。如果使用/DISCARD/作为段								名，则将被丢弃。*/</span></span><br><span class="line">	contents中包含若干条件，每个条件用空格分隔。</span><br><span class="line">	条件写法： filename(sections) filename表示输入文件名，section表示输入段名，可以使用正则和通配符。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="3-可执行文件的装载与进程"><a href="#3-可执行文件的装载与进程" class="headerlink" title="3 可执行文件的装载与进程"></a>3 可执行文件的装载与进程</h2><p>linux虚拟内存视图：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4.drawio.png" alt="linux操作系统虚拟地址空间.drawio"></p>
+<h3 id="操作系统角度下的可执行文件装载"><a href="#操作系统角度下的可执行文件装载" class="headerlink" title="操作系统角度下的可执行文件装载"></a>操作系统角度下的可执行文件装载</h3><p>操作系统创建一个进程，然后装载相应的可执行文件并执行，需要做3件事情：</p>
+<ul>
+<li>创建一个独立的虚拟地址空间：即创建<strong>虚拟空间到物理内存</strong>的映射关系。</li>
+<li>读取可执行文件头，并建立<strong>虚拟空间与可执行文件</strong>的映射关系：当发生页错误时，操作系统需知道当前的缺页在可执行文件中的哪个位置。可执行文件与执行该可执行文件进程的虚拟空间的映射关系是保存在OS中的一个数据结构。Linux将<strong>进程虚拟空间中的一个段叫做虚拟内存区域（VMA）</strong>，VMA的粒度为页。</li>
+<li>将cpu的pc设置为可执行文件入口，切换到用户堆栈，cpu切换到用户态。</li>
+</ul>
+<blockquote>
+<p>由于可执行文件在装载时实际上是被映射的虚拟空间，所以可执行文件很多时候又被叫做映像文件(Image)</p>
+</blockquote>
+<h3 id="进程虚存空间分布"><a href="#进程虚存空间分布" class="headerlink" title="进程虚存空间分布"></a>进程虚存空间分布</h3><h4 id="ELF文件的链接视图与执行视图"><a href="#ELF文件的链接视图与执行视图" class="headerlink" title="ELF文件的链接视图与执行视图"></a>ELF文件的链接视图与执行视图</h4><p>问题：ELF文件在被映射时，是以系统的页长度作为单位的，每个段映射时的页长度都是系统页长度的整数倍，可能造成很多空间浪费。而操作系统实际关心的是装载有关的问题，比如一个段的读写及可执行属性。因此对于相同权限的段，可以将它们合并到一起进行映射。包含一个或多个属性类似的<code>Section</code>的集合在ELF可执行文件中叫做<code>Segment</code>，链接器在链接时会尽量将相同属性的段放在一起。系统按照<code>segment</code>而不是<code>section</code>来映射可执行文件。描述<code>Segment</code>的结构叫<code>program header</code>，描述了ELF文件该如何被操作系统映射到进程的虚拟空间。程序头表是程序头的结构体数组。</p>
+<p>程序头<code>Elf32_Phdr</code>结构：</p>
+<table>
+<thead>
+<tr>
+<th>成员</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>p_type</td>
+<td>Segment类型，LOAD表示可装载</td>
+</tr>
+<tr>
+<td>p_offset</td>
+<td>Segment在文件中偏移</td>
+</tr>
+<tr>
+<td>p_vaddr</td>
+<td>Segment第一个字节在进程虚拟地址空间的起始位置</td>
+</tr>
+<tr>
+<td>p_paddr</td>
+<td>Segment物理装载地址，一般与p_vaddr一样</td>
+</tr>
+<tr>
+<td>p_filesz</td>
+<td>Segment在ELF文件中所占空间长度，可能为0</td>
+</tr>
+<tr>
+<td>p_memse</td>
+<td>Segment在进程虚拟地址空间中所占用的长度，可能为0</td>
+</tr>
+<tr>
+<td>p_flags</td>
+<td>Segment权限属性，如可读“R”，可写“W”，可执行“X”</td>
+</tr>
+<tr>
+<td>p_align</td>
+<td>Segment对齐属性，实际对齐字节等于2的<code>p_align</code>次。</td>
+</tr>
+</tbody></table>
+<p>如果<code>p_memse</code>大于<code>p_filesz</code>，则操作系统会将内存中多余的空间填0</p>
+<h4 id="VMA"><a href="#VMA" class="headerlink" title="VMA"></a>VMA</h4><p>操作系统通过给进程空间划分出很多VMA来管理进程的虚拟空间。基本原则是将相同权限属性的，有相同映像文件的映射为一个VMA，一个进程的VMA基本有如下几种：</p>
+<ul>
+<li>代码VMA，只读，可执行，有映像文件</li>
+<li>数据VMA，可读写，可执行，有映像文件</li>
+<li>堆VMA，可读写，可执行，无映像文件，匿名，可向上扩展</li>
+<li>栈VMA,可读写， 不可执行，无映像文件，匿名，可向下扩展</li>
+</ul>
+<p>一个例子：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/VMA.png" alt="VMA"></p>
+<h4 id="段地址对齐"><a href="#段地址对齐" class="headerlink" title="段地址对齐"></a>段地址对齐</h4><p>将可执行文件映射到虚拟空间时，最简单的一种方法就是将每个segment分开映射，对于长度不足一个页的部分则占一个页。然而这样做可能会有大量的内碎片。</p>
+<h5 id="UNIX基于x86段页式的解决办法"><a href="#UNIX基于x86段页式的解决办法" class="headerlink" title="UNIX基于x86段页式的解决办法"></a>UNIX基于x86段页式的解决办法</h5><p>将可执行文件从逻辑上划分为很多页，有些页中可能有很多个段。而由于段地址对齐的原因，各个段的起始地址并不一定是上一个段的结束地址。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Operating-System/" rel="tag"># Operating System</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/29/%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E5%8F%8A%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" rel="prev" title="可执行文件及基本概念">
+                  <i class="fa fa-chevron-left"></i> 可执行文件及基本概念
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/02/BUAA_2021_OO%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" rel="next" title="BUAA_OO_2021第一单元总结">
+                  BUAA_OO_2021第一单元总结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32%C3%9732-my.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16%C3%9716-my.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Modern Operating System读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OS理论-存储管理">
+<meta property="og:url" content="https://guo-hy.github.io/2022/04/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="Modern Operating System读书笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220322214743833.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082053876.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082509309.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323110349706.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323112250069.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323161007578.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323163408790.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331105822712.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326210635121.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326211037001.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331104210275.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082310119.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082624275.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085028954.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085554203.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2.drawio.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407152600274.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407153142147.png">
+<meta property="article:published_time" content="2022-04-05T12:40:57.000Z">
+<meta property="article:modified_time" content="2022-04-15T11:14:46.215Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="Operating System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220322214743833.png">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/04/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/04/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86/","path":"2022/04/05/操作系统-存储管理/","title":"OS理论-存储管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OS理论-存储管理 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OS%E7%90%86%E8%AE%BA-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">OS理论-存储管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E6%B2%A1%E6%9C%89%E5%86%85%E5%AD%98%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">3.1 没有内存抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E6%B2%A1%E6%9C%89%E5%86%85%E5%AD%98%E6%8A%BD%E8%B1%A1%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%90%E8%A1%8C%E5%A4%9A%E9%81%93%E7%A8%8B%E5%BA%8F-IBM-360%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">在没有内存抽象的情况下运行多道程序: IBM 360的解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E4%B8%80%E4%B8%AA%E5%86%85%E5%AD%98%E6%8A%BD%E8%B1%A1%EF%BC%9A%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="nav-number">1.2.</span> <span class="nav-text">3.2 一个内存抽象：地址空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E7%A7%8D%E7%AE%80%E5%8D%95%E7%9A%84%E5%86%85%E5%AD%98%E6%8A%BD%E8%B1%A1"><span class="nav-number">1.2.1.</span> <span class="nav-text">几种简单的内存抽象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#base%E5%AF%84%E5%AD%98%E5%99%A8%E4%B8%8Elimit%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">base寄存器与limit寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swapping"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">swapping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E7%A9%BA%E9%97%B2%E5%86%85%E5%AD%98"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">管理空闲内存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8%E7%AE%A1%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">1.2.1.3.1.</span> <span class="nav-text">使用双向链表管理内存</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">1.3.</span> <span class="nav-text">3.3 虚拟内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.1.</span> <span class="nav-text">加速地址转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TLB"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">TLB</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E5%A4%A7%E5%86%85%E5%AD%98%E8%AE%BE%E8%AE%A1%E9%A1%B5%E8%A1%A8"><span class="nav-number">1.3.2.</span> <span class="nav-text">为大内存设计页表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">多级页表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%80%92%E6%8E%92%E9%A1%B5%E8%A1%A8%EF%BC%88Inverted-Page-Tables%EF%BC%89"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">倒排页表（Inverted Page Tables）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.</span> <span class="nav-text">3.4 页面置换算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-1-%E6%9C%80%E4%BD%B3%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95-OPT"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.4.1 最佳页面置换算法(OPT)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-2-%E6%9C%80%E8%BF%91%E6%9C%AA%E4%BD%BF%E7%94%A8NRU%EF%BC%88The-Not-Recently-Used%EF%BC%89%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.4.2 最近未使用NRU（The Not Recently Used）页面置换算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-3-FIFO%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.4.3 FIFO页面置换算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-4-%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%9C%BA%E4%BC%9A%EF%BC%88The-Second-Chance%EF%BC%89%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.4.</span> <span class="nav-text">3.4.4 第二次机会（The Second-Chance）页面置换算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-5-The-Clock-Page-Replacement-Algorithm"><span class="nav-number">1.4.5.</span> <span class="nav-text">3.4.5 The Clock Page Replacement Algorithm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-6-%E6%9C%80%E8%BF%91%E6%9C%80%E5%B0%91%E4%BD%BF%E7%94%A8%E7%AE%97%E6%B3%95%EF%BC%88LRU%EF%BC%89"><span class="nav-number">1.4.6.</span> <span class="nav-text">3.4.6 最近最少使用算法（LRU）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E8%BD%AF%E4%BB%B6%E5%B1%82%E9%9D%A2%E6%A8%A1%E6%8B%9FLRU-aging%E7%AE%97%E6%B3%95"><span class="nav-number">1.4.6.1.</span> <span class="nav-text">在软件层面模拟LRU aging算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-7-The-working-Set-Page-Replacement-Algorithm"><span class="nav-number">1.4.7.</span> <span class="nav-text">3.4.7 The working Set Page Replacement Algorithm</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%87%8F%E5%8C%96working-set%EF%BC%9A"><span class="nav-number">1.4.7.1.</span> <span class="nav-text">如何量化working set：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-%E5%88%86%E9%A1%B5%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E8%80%83%E8%99%91"><span class="nav-number">1.5.</span> <span class="nav-text">3.5 分页系统的设计考虑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-1-Global-vs-Local"><span class="nav-number">1.5.1.</span> <span class="nav-text">3.5.1 Global vs Local</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-3-%E9%A1%B5%E9%9D%A2%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">3.5.3 页面大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-4-%E5%88%86%E5%BC%80%E7%9A%84%E4%BB%A3%E7%A0%81%E5%92%8C%E6%95%B0%E6%8D%AE%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="nav-number">1.5.3.</span> <span class="nav-text">3.5.4 分开的代码和数据地址空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-5-%E5%85%B1%E4%BA%AB%E9%A1%B5%E9%9D%A2"><span class="nav-number">1.5.4.</span> <span class="nav-text">3.5.5 共享页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-%E5%88%86%E6%AE%B5"><span class="nav-number">1.6.</span> <span class="nav-text">3.7 分段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-2-%E6%AE%B5%E9%A1%B5%E5%BC%8F%EF%BC%9AMULTICS"><span class="nav-number">1.6.1.</span> <span class="nav-text">3.7.2 段页式：MULTICS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BF%E5%AD%98%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">访存步骤：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MULTICS%E7%9A%84%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E5%88%87%E5%88%86"><span class="nav-number">1.6.1.1.1.</span> <span class="nav-text">MULTICS的虚拟地址切分</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-3-%E6%AE%B5%E9%A1%B5%E5%BC%8F%EF%BC%9AIntel-x86%EF%BC%8832%E4%BD%8D%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">3.7.3 段页式：Intel x86（32位）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-3-1-%E4%BB%8E%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80%E5%BE%97%E5%88%B0%E7%BA%BF%E6%80%A7%E5%9C%B0%E5%9D%80"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">3.7.3.1 从逻辑地址得到线性地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-3-2-%E4%BB%8E%E7%BA%BF%E6%80%A7%E5%9C%B0%E5%9D%80%E5%BE%97%E5%88%B0%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-number">1.6.2.2.</span> <span class="nav-text">3.7.3.2 从线性地址得到物理地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-3-3-%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97%E7%BA%AF%E7%B2%B9%E7%9A%84%E5%88%86%E6%AE%B5"><span class="nav-number">1.6.2.3.</span> <span class="nav-text">3.7.3.3 如何获得纯粹的分段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-3-4-%E5%A6%82%E4%BD%95%E8%8E%B7%E5%BE%97%E7%BA%AF%E7%B2%B9%E7%9A%84%E5%88%86%E9%A1%B5"><span class="nav-number">1.6.2.4.</span> <span class="nav-text">3.7.3.4 如何获得纯粹的分页</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Guo-HY" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Guo-HY" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/04/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OS理论-存储管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-05 20:40:57" itemprop="dateCreated datePublished" datetime="2022-04-05T20:40:57+08:00">2022-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-15 19:14:46" itemprop="dateModified" datetime="2022-04-15T19:14:46+08:00">2022-04-15</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">Modern Operating System读书笔记</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="OS理论-存储管理"><a href="#OS理论-存储管理" class="headerlink" title="OS理论-存储管理"></a>OS理论-存储管理</h1><h2 id="3-1-没有内存抽象"><a href="#3-1-没有内存抽象" class="headerlink" title="3.1 没有内存抽象"></a>3.1 没有内存抽象</h2><p>此时软件看到的就是物理内存，软件直接访问物理内存。</p>
+<p>三种典型的内存管理方式：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220322214743833.png" alt="image-20220322214743833"></p>
+<h4 id="在没有内存抽象的情况下运行多道程序-IBM-360的解决方案"><a href="#在没有内存抽象的情况下运行多道程序-IBM-360的解决方案" class="headerlink" title="在没有内存抽象的情况下运行多道程序: IBM 360的解决方案"></a>在没有内存抽象的情况下运行多道程序: IBM 360的解决方案</h4><p>需要硬件支持。</p>
+<p>将内存划分为2KB大小的块，每一个块有一个4bit的权限位存储在CPU的特定寄存器中。每一个程序也有一个4bit的权限位。如果程序访问的内存区域的权限位与它自己的权限位不同，则会触发异常。</p>
+<p>解决程序中绝对地址引用的问题：在将程序载入内存时，给程序中的绝对地址引用加上当前程序在内存中的偏移。这种方法叫做**静态重定位(static relocation)**。</p>
+<h2 id="3-2-一个内存抽象：地址空间"><a href="#3-2-一个内存抽象：地址空间" class="headerlink" title="3.2 一个内存抽象：地址空间"></a>3.2 一个内存抽象：地址空间</h2><p>暴露物理地址给用户程序有严重的问题：如果没有特殊的硬件机制（如IBM360），用户程序可以随意修改操作系统。同时，多道程序并发执行也很困难</p>
+<h3 id="几种简单的内存抽象"><a href="#几种简单的内存抽象" class="headerlink" title="几种简单的内存抽象"></a>几种简单的内存抽象</h3><h4 id="base寄存器与limit寄存器"><a href="#base寄存器与limit寄存器" class="headerlink" title="base寄存器与limit寄存器"></a>base寄存器与limit寄存器</h4><p>这是一种简单的动态重定位策略。在CPU中需要有两个特殊的寄存器：base寄存器与limit寄存器。程序可以加载进物理内存中一段任意的连续地址空间。当执行这个程序时，base寄存器切换为该程序在内存中起始地址的值。limit寄存器切换为该程序在内存中的长度加上程序起始地址。当程序需要访问物理内存时，cpu将访问内存的地址自动加上base寄存器的值（相当于IBM 360中的偏移）。然后查看是否超过limit寄存器中的值。如果超过则触发异常。为了安全考虑，base与limit寄存器的值只能由操作系统修改。</p>
+<p>主要问题：加法慢。</p>
+<h4 id="swapping"><a href="#swapping" class="headerlink" title="swapping"></a>swapping</h4><p>swapping主要用来解决一个问题：内存不够用，很多时候不可能将所有要并发执行的程序全装进内存。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082053876.png" alt="image-20220323082053876"></p>
+<p>swapping是一种简单的想法，即如果一个程序已经跑了足够的时间，则将它换入磁盘。base与limit寄存器在这里仍可用作地址重定位。</p>
+<p>问题：将哪个程序换出内存，交换时机的确定，换回内存时位置的确定。</p>
+<h4 id="管理空闲内存"><a href="#管理空闲内存" class="headerlink" title="管理空闲内存"></a>管理空闲内存</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323082509309.png" alt="image-20220323082509309"></p>
+<p><strong>使用位图(Bitmaps)管理内存</strong></p>
+<p>优点：占用空间小</p>
+<p>缺点：访问速度慢（可能需要非对齐访问）</p>
+<h5 id="使用双向链表管理内存"><a href="#使用双向链表管理内存" class="headerlink" title="使用双向链表管理内存"></a>使用双向链表管理内存</h5><p>一般按照地址顺序安排双向链表，单个表项有两种状态：P：Process或H：Hole。</p>
+<p>分配内存的几个算法：</p>
+<ul>
+<li>first fit：找到第一个大小足够的内存块</li>
+<li>next fit：循环链表。</li>
+<li>best fit：</li>
+<li>worst fit：</li>
+<li>fast fit：</li>
+</ul>
+<h2 id="3-3-虚拟内存"><a href="#3-3-虚拟内存" class="headerlink" title="3.3 虚拟内存"></a>3.3 虚拟内存</h2><p>虚拟空间与物理内存被划分成很多相同大小的部分，叫做页面。在物理内存中，页面叫做<code>page frame</code>。在硬件上需要增加一个叫做MMU（Memory Management Unit）来做虚拟地址到物理地址的转换。</p>
+<p>虚拟页面与物理页面的对应关系存储在页表中。</p>
+<p><strong>页表项结构：</strong></p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323110349706.png" alt="image-20220323110349706"></p>
+<p>注意到保存页面的磁盘地址并不在页表中。页表只持有硬件需要做的地址转换的信息，其它的事情硬件并不关心。操作系统用来处理页错误的信息存在于操作系统的软件结构之中。</p>
+<h3 id="加速地址转换"><a href="#加速地址转换" class="headerlink" title="加速地址转换"></a>加速地址转换</h3><p>两个主要的问题：</p>
+<ul>
+<li>虚实地址转换要迅速</li>
+<li>如果虚拟地址很大，页表就会很大</li>
+</ul>
+<h4 id="TLB"><a href="#TLB" class="headerlink" title="TLB"></a>TLB</h4><p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323112250069.png" alt="image-20220323112250069"></p>
+<p>TLB的管理可以由硬件完成也可以由软件完成。在大多数RISC系统中是由软件完成。</p>
+<p>无论硬件还是软件，常见的处理TLB缺失的方法是去查找存在于内存中的页表。但对于软件处理方式可能存在一个问题，即页表所在的页的页表项不在TLB中。这会导致一个新的TLB缺失。减小这种情况出现的概率的方法包括软件在内存中维护一个TLB表项的cache，cache所在页的页表项常驻TLB。</p>
+<p><strong>不同类型的TLB缺失：</strong></p>
+<ul>
+<li><p>soft miss：页表项不在TLB，但在内存</p>
+</li>
+<li><p>hard miss：页表项不在TLB也不在内存</p>
+</li>
+<li><p>minor page fault：缺失的页可能在内存中，但不在当前进程的页表中。</p>
+</li>
+<li><p>major page fault：页需要从磁盘中取得。</p>
+</li>
+<li><p>segmentation fault：程序访问了不能访问的地址，这种情况下操作系统会直接杀死进程。</p>
+</li>
+</ul>
+<h3 id="为大内存设计页表"><a href="#为大内存设计页表" class="headerlink" title="为大内存设计页表"></a>为大内存设计页表</h3><h4 id="多级页表"><a href="#多级页表" class="headerlink" title="多级页表"></a>多级页表</h4><p>设计多级页表的主要目的是减小页表在内存中占用的空间。程序执行时不用在内存中存储所有的页表项。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323161007578.png" alt="image-20220323161007578"></p>
+<h4 id="倒排页表（Inverted-Page-Tables）"><a href="#倒排页表（Inverted-Page-Tables）" class="headerlink" title="倒排页表（Inverted Page Tables）"></a>倒排页表（Inverted Page Tables）</h4><p>页表中的每个页表项对应物理存储中的一个page frame，而不是对应虚拟存储中的一个虚拟页。这样极大节省了空间。页表项中的每一个条目跟踪当前哪个进程的哪个虚拟页映射到了这个物理页。</p>
+<p>然而这样做导致的问题是，虚实地址转换变得困难。每做一次虚实地址转换需要遍历整个页表。加速地址转换的方法包括使用TLB。当TLB缺失时，软件需要寻找页表中的页表项。一个加速这种查找的方法是对虚拟地址进行哈希映射。散列函数的输入是进程号和VPN，输出是倒排页表项在页表中的下标。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220323163408790.png" alt="image-20220323163408790"></p>
+<h2 id="3-4-页面置换算法"><a href="#3-4-页面置换算法" class="headerlink" title="3.4 页面置换算法"></a>3.4 页面置换算法</h2><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331105822712.png" alt="image-20220331105822712" style="zoom:50%;" />
+
+<h3 id="3-4-1-最佳页面置换算法-OPT"><a href="#3-4-1-最佳页面置换算法-OPT" class="headerlink" title="3.4.1 最佳页面置换算法(OPT)"></a>3.4.1 最佳页面置换算法(OPT)</h3><p>在发生页错误的时候，内存中有一堆页面。这些页面中有一些可能很快就会被用到，有些可能很久之后才会被用到。在最佳页面置换算法中，每个页面都有一个标签，标记着这个页面从当前开始经过多少条指令后才会被首次访问（当然，这个标签随着指令的执行是在变化的）当发生页错误的时候，替换掉标签值最大的那个页面。这样就能尽量延后产生页错误的时间。</p>
+<p>这个算法唯一的问题是现实中无法实现，但是对于同一个程序和同一个输入，可以在第一遍运行程序的时候记录下页面信息，在第二次运行的时候根据记录下的页面置换信息实现该算法。这样我们就可以将这个算法当做baseline来评估其它页面置换算法的性能，并给出可以优化的最大空间。需要明确的是，页面置换信息是针对特定程序特定输入而言的。</p>
+<h3 id="3-4-2-最近未使用NRU（The-Not-Recently-Used）页面置换算法"><a href="#3-4-2-最近未使用NRU（The-Not-Recently-Used）页面置换算法" class="headerlink" title="3.4.2 最近未使用NRU（The Not Recently Used）页面置换算法"></a>3.4.2 最近未使用NRU（The Not Recently Used）页面置换算法</h3><p>为实现这个算法，每个页表项需要有两个标志位：R标志位，指示该页面是否被引用（读或写过）；M标志位，指示该页面是否被写过。R，M位的置位可以通过页错误来实现。操作系统定时（比如通过时钟中断）清除所有页面的R位。当需要置换页面时，操作系统将页面分为4类：</p>
+<ul>
+<li>class0：not referenced，not modified</li>
+<li>class1:not referenced, modified</li>
+<li>class2:referenced, not modified</li>
+<li>class3:referenced,modified</li>
+</ul>
+<p>并优先从标号小的类中随机选择一个页面替换。</p>
+<h3 id="3-4-3-FIFO页面置换算法"><a href="#3-4-3-FIFO页面置换算法" class="headerlink" title="3.4.3 FIFO页面置换算法"></a>3.4.3 FIFO页面置换算法</h3><p>操作系统保存着内存中页面的一张表，当需要置换页面时，将新加入的页面放到表尾，替换掉表头的页。并不是一个好的算法，实际中很少用。</p>
+<h3 id="3-4-4-第二次机会（The-Second-Chance）页面置换算法"><a href="#3-4-4-第二次机会（The-Second-Chance）页面置换算法" class="headerlink" title="3.4.4 第二次机会（The Second-Chance）页面置换算法"></a>3.4.4 第二次机会（The Second-Chance）页面置换算法</h3><p>为了解决FIFO算法中扔掉经常使用的页的问题，该算法中每个页面有一个R位标识当前时间片中该页是否被引用过。操作系统定期清除该位。操作系统中有一个链表结构保存内存中的页面信息，当需要替换页时，操作系统检查处于链表头（最旧）的页面，如果该页面R位为0，则直接替换，否则将该页插入到链表末尾，并将R位置零。易见该算法是terminable的。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326210635121.png" alt="image-20220326210635121"></p>
+<h3 id="3-4-5-The-Clock-Page-Replacement-Algorithm"><a href="#3-4-5-The-Clock-Page-Replacement-Algorithm" class="headerlink" title="3.4.5 The Clock Page Replacement Algorithm"></a>3.4.5 The Clock Page Replacement Algorithm</h3><p>这个算法是对上一个的优化，由于 Second-Chance 算法需要经常挪动页面信息，因此不是很高效。该算法中所有处于内存中的页面的信息链接为一个圈,有一个指针指向最旧的页面。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220326211037001.png" alt="image-20220326211037001"></p>
+<h3 id="3-4-6-最近最少使用算法（LRU）"><a href="#3-4-6-最近最少使用算法（LRU）" class="headerlink" title="3.4.6 最近最少使用算法（LRU）"></a>3.4.6 最近最少使用算法（LRU）</h3><p>该算法基于这样一种观察：在前一段时间中被频繁使用的页面在之后也可能被频繁使用，并且之前不常使用的页面在之后也很可能不会被用到。当需要替换页面时，<strong>替换掉最长时间没有被引用过的页面。</strong></p>
+<p>一种LRU的简单硬件实现：每个页表项有一个counter域，同时有一个全局计数器，cpu每执行一条指令，计数器就加一。每次内存引用后，将计数器的值更新进被引用的页面的页表项中。但是，基本没有硬件实现这样的功能。</p>
+<h4 id="在软件层面模拟LRU-aging算法"><a href="#在软件层面模拟LRU-aging算法" class="headerlink" title="在软件层面模拟LRU aging算法"></a>在软件层面模拟LRU aging算法</h4><p>每个页表项有一个counter，当时钟中断来临时，先将counter右移一位。如果这个页在上一个时间片中被访问过（R位为1），则将counter的高位置1，否则置零。与LRU的区别在两个地方：首先，由于访问记录是以时间片为单位的，因此比较粗糙。其次，由于counter的位数限制，只能记录最近一段时间内的访问记录。</p>
+<h3 id="3-4-7-The-working-Set-Page-Replacement-Algorithm"><a href="#3-4-7-The-working-Set-Page-Replacement-Algorithm" class="headerlink" title="3.4.7 The working Set Page Replacement Algorithm"></a>3.4.7 The working Set Page Replacement Algorithm</h3><p>进程当前正在使用的一组页面叫做<strong>working set</strong>。如果进程的working set都在内存中，则进程不会产生页错误。如果内存装不下working set，进程执行中会产生很多页错误。这种执行没几条指令就产生页错误的情况叫做<strong>thrashing（抖动）</strong>。抖动体现在高并发时cpu利用率先上升后下降（频繁IO导致）。</p>
+<p>问题是：当进程开始执行时需要做什么。如果此时不加载任何页面，而只是依靠进程执行过程中产生页错误来装入页面，则进程的执行会比较慢。如果在进程执行开始前就将进程需要用到的大部分页面装入内存，则进程执行会比较快。操作系统试图追踪每个进程的<strong>working set</strong>，并在进程开始执行前将它的working set装入内存。这种方法叫做<strong>working set model</strong>或者<strong>prepaging</strong>。</p>
+<h4 id="如何量化working-set："><a href="#如何量化working-set：" class="headerlink" title="如何量化working set："></a><strong>如何量化working set：</strong></h4><blockquote>
+<p>the working set is the set of pages used in the k most recent memory references</p>
+</blockquote>
+<p>工作集可以用一个函数表示：<br>$$<br>w(k,t)<br>$$<br>该函数表示t时刻最近k次内存访问使用的页面。w(k,t)是t时刻工作集的大小。由于内存访问的局部性，该函数关于k的趋势如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220331104210275.png" alt="image-20220331104210275" style="zoom:33%;" />
+
+<p>注意到k到一定程度后函数上升趋于平缓。</p>
+<p>实现中，进程的工作集时最近一段<strong>进程cpu时间</strong>中进程访问过的页面集合。 当发生页错误时，优先置换不在工作集中的页面。</p>
+<h2 id="3-5-分页系统的设计考虑"><a href="#3-5-分页系统的设计考虑" class="headerlink" title="3.5 分页系统的设计考虑"></a>3.5 分页系统的设计考虑</h2><h3 id="3-5-1-Global-vs-Local"><a href="#3-5-1-Global-vs-Local" class="headerlink" title="3.5.1 Global vs Local"></a>3.5.1 Global vs Local</h3><p>设计页面替换算法时需要考虑是将内存中的所有页面都一视同仁，还是针对每个进程分开考虑。比如对于LRU算法，当发生页错误时，全局算法将会替换掉内存中最久没用过的页，不一定是当前进程的，而局部算法只会考虑替换掉该进程的页面。一般而言全局算法效果好一些，特别是当进程占用的空间随时间变化较大的时候。如果此时采用局部算法，则每个进程都只能分配到固定的空间，有可能导致缺页频繁发生，甚至执行不下去了。当然最好的算法是将二者综合考虑，先根据程序的大小给进程分配一定的空间，然后随着运行动态调整。</p>
+<h3 id="3-5-3-页面大小"><a href="#3-5-3-页面大小" class="headerlink" title="3.5.3 页面大小"></a>3.5.3 页面大小</h3><p>有很多trade-off</p>
+<h3 id="3-5-4-分开的代码和数据地址空间"><a href="#3-5-4-分开的代码和数据地址空间" class="headerlink" title="3.5.4 分开的代码和数据地址空间"></a>3.5.4 分开的代码和数据地址空间</h3><h3 id="3-5-5-共享页面"><a href="#3-5-5-共享页面" class="headerlink" title="3.5.5 共享页面"></a>3.5.5 共享页面</h3><p>多个线程共享只读的包含代码的页面比较简单，共享可写的数据页面比较困难。一个问题是当把一个进程终止并清理掉它所有的页面时，其它与这个线程共享页面的线程在之后会产生很多页错误。结局办法是在OS中用特别的数据结构追踪共享页面。</p>
+<p>共享数据页面的方法在UNIX中叫做<strong>copy on write</strong>：当fork系统调用后，子进程和父进程共享所有代码和数据段，甚至它们各自的页表都是一模一样的。然而，fork后父进程和子进程的所有页面会设为只读的。如果有一个进程要写一个页面，则会产生页错误，OS此时为需要写的进程单独拷贝页面。</p>
+<h2 id="3-7-分段"><a href="#3-7-分段" class="headerlink" title="3.7 分段"></a>3.7 分段</h2><p>分段就是给一个进程提供很多独立的地址空间，每个段都是线性的地址空间，从0到某一个最大值。不同的段往往有不同的大小，并且随着执行，段的大小可能会改变。因为每个段之间的地址是独立的，因此互相不会影响到。当然，段的空间也有最大值，但是往往不会达到。为了支持分段，程序访存的地址需要分为两部分：段号与段内偏移。</p>
+<p>分段的好处除了可以让程序简化对动态变化的数据结构的处理外，还可以让链接过程变得简单。如果链接后某一个段中的程序需要修改，不用重新编译其它段。分段同时让进程间的数据共享变得容易。同时还可以给每个段指定读写属性，达到数据保护的目的。</p>
+<p>注：目前可以看出来分段对于地址空间的扩充的好处以及对于链接的好处，但是还感觉不到分段相对于分页而言对数据保护和共享的好处。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082310119.png" alt="image-20220329082310119" style="zoom:50%;" />
+
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329082624275.png" alt="image-20220329082624275" style="zoom:50%;" />
+
+<h3 id="3-7-2-段页式：MULTICS"><a href="#3-7-2-段页式：MULTICS" class="headerlink" title="3.7.2 段页式：MULTICS"></a>3.7.2 段页式：MULTICS</h3><p>为了解决段很大以至于无法一次性装入物理内存的问题，需要对段分页。</p>
+<p>每个进程有一个段表，每一个段在段表中都有一个描述符。段表也会分页。段描述符包含段的一些信息，包括显示该段是否在主存中，如果段的任何一部分在主存中，就认为这个段在主存中，同时这个段的页表也在主存中。这样段描述符的一部分就指向该段的页表。段在下一级存储中的地址不在段表中，OS有专门的数据结构保存。</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085028954.png" alt="image-20220329085028954" style="zoom:50%;" />
+
+<h4 id="访存步骤："><a href="#访存步骤：" class="headerlink" title="访存步骤："></a>访存步骤：</h4><p>1.用段号找到段描述符</p>
+<p>2.检查段是否在内存中及段的读写属性，如果在内存中并且有访问权限则定位页表，否则产生段错误。</p>
+<p>3.定位到页表后检查页是否在内存中，如果在内存中则拿出页起始地址，否则产生页错误。</p>
+<p>4.页内偏移与页基址拼起来形成物理地址访存。</p>
+<p>MULTICS使用了TLB加速访存。</p>
+<h5 id="MULTICS的虚拟地址切分"><a href="#MULTICS的虚拟地址切分" class="headerlink" title="MULTICS的虚拟地址切分"></a>MULTICS的虚拟地址切分</h5><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220329085554203.png" alt="image-20220329085554203" style="zoom:50%;" />
+
+<h3 id="3-7-3-段页式：Intel-x86（32位）"><a href="#3-7-3-段页式：Intel-x86（32位）" class="headerlink" title="3.7.3 段页式：Intel x86（32位）"></a>3.7.3 段页式：Intel x86（32位）</h3><p>下文x86均为Intel32位体系结构。在Intel64位体系结构中已经取消了分段机制。</p>
+<p>x86的地址转换包含两个过程，首先由逻辑地址转换为线性地址，再由线性地址转换为物理地址。这两步转换即x86段页式地址翻译的过程。经过一些设置，也可以实现纯粹的分段或者纯粹的分页，下面会讲到。</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2.drawio.png" alt="x86地址转换.drawio"></p>
+<h4 id="3-7-3-1-从逻辑地址得到线性地址"><a href="#3-7-3-1-从逻辑地址得到线性地址" class="headerlink" title="3.7.3.1 从逻辑地址得到线性地址"></a>3.7.3.1 从逻辑地址得到线性地址</h4><p>这一步的核心是两张存储于内存中的表：GDT(Global Descriptor Table)与LDT(Local Descriptor Table)。每个进程有自己的LDT，但是整个系统只有一个共享的GDT。GDT与LDT中的每个表项都是一个段描述符（Segment Descriptor）。每个段都有一个段描述符，描述了这个段的一些属性，段描述符的结构下面会讲到。</p>
+<p>那么从逻辑地址得到线性地址的第一步就是找到我们需要的一个段描述符。这里需要用到两组寄存器，分别是一组段选择子（segment selector）与两个记录GDT与LDT的物理基址的寄存器。我们先来看段选择子。</p>
+<p>一个段选择子是一个16位的寄存器（有没有觉得段选择子是16位的有些奇怪？事实上段选择子是16位处理器的历史遗留，在16位处理器中它们有别的作用），段选择子一共有6个，其中两个比较重要，分别叫CS与DS。在进程执行过程中，CS与程序的代码段相关，DS与程序的数据段相关。具体而言，CS的高13位存储了<strong>代码段的段描述符</strong>在GDT或者LDT中的索引。DS的高13位存储了<strong>数据段的段描述符</strong>在GDT或者LDT中的索引。段选择子的结构如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407152600274.png" alt="image-20220407152600274" style="zoom:50%;" />
+
+<p>从逻辑地址得到线性地址的过程就是，处理器首先根据指令的类型，选择一个段选择子，然后根据段选择子的低2位查看是否符合权限。如果符合权限，则根据这个段选择子的第3位决定是在LDT中还是在GDT中查找段描述符。假设要查找的是LDT，那么就将段选择子的高13位，作为偏移与LDT的基址寄存器中的值相加得到段描述符的<strong>物理地址</strong>，并把这个段描述符取出来放在一个暂存寄存器中。至此就得到了段描述符。LDT的基址寄存器叫做LDTR，GDT的叫做GDTR。段描述符的结构如下：</p>
+<img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/image-20220407153142147.png" alt="image-20220407153142147" style="zoom:50%;" />
+
+<p>因为要向后兼容80286处理器，所以这个段描述符的结构看起来比较恶心。不过一个段描述符的域基本可以分成三类：base域，limit域，与权限和控制域。</p>
+<p>我们先来看base域，一个段描述符中一共有三个base域，这三个base域按照上图所示的值拼起来就形成了一个32位的段基地址。这个基地址与我们的逻辑地址相加就得到了线性地址。至于为什么要把base拆成三段来存，大概是考虑到向后兼容吧。</p>
+<p>但是如果仅仅就这样得到了线性地址，是会有安全性方面的问题的。我们知道在分段的系统中段的大小是可以随着进程的运行动态变化的，那么就需要一种机制来检查当前处理的逻辑地址是否在想要访问的这个段中，如果越界了就需要产生段错误。段描述符中的limit域就是用来做这件事的，limit域存储的值就是段大小。拿到段描述符后处理器会检查逻辑地址是否超过了limit的值，如果是则产生段错误。</p>
+<p>权限与控制域则包括对段访问权限的设置，段是否在内存中，以及与limit相关的一些域。这些对于理解段页式而言并不重要。</p>
+<h4 id="3-7-3-2-从线性地址得到物理地址"><a href="#3-7-3-2-从线性地址得到物理地址" class="headerlink" title="3.7.3.2 从线性地址得到物理地址"></a>3.7.3.2 从线性地址得到物理地址</h4><p>从线性地址得到物理地址的过程与纯分页系统从逻辑地址得到物理地址的过程没有区别。只不过在x86中使用了两级页表，页目录的基址（物理地址）存储在一个叫做CR3的特殊寄存器中。</p>
+<h4 id="3-7-3-3-如何获得纯粹的分段"><a href="#3-7-3-3-如何获得纯粹的分段" class="headerlink" title="3.7.3.3 如何获得纯粹的分段"></a>3.7.3.3 如何获得纯粹的分段</h4><p>一种很自然的想法是，如果把线性地址直接当作物理地址用来访存，而屏蔽从线性地址到物理地址的转换，就可以了。实际上在x86中就是这么做的。在系统控制寄存器中有一个域用来控制是否开启分页模式。</p>
+<h4 id="3-7-3-4-如何获得纯粹的分页"><a href="#3-7-3-4-如何获得纯粹的分页" class="headerlink" title="3.7.3.4 如何获得纯粹的分页"></a>3.7.3.4 如何获得纯粹的分页</h4><p>分段是不能关闭的，但是我们可以将所有的段选择子都设置为0，这样每次获得的段描述符都是GDT或GOT中的第一项。这一项在正常的段页式模式中是保留的，即在正常的段页式模式下访问第一个段描述符会产生异常。在GOT与GDT的第一个段描述符中，base是0，limit是最大值。这样一来线性地址与逻辑地址就一样了。然后就是分页要做的工作了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Operating-System/" rel="tag"># Operating System</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/02/BUAA_2021_OO%E7%AC%AC%E4%B8%80%E5%8D%95%E5%85%83%E6%80%BB%E7%BB%93/" rel="prev" title="BUAA_OO_2021第一单元总结">
+                  <i class="fa fa-chevron-left"></i> BUAA_OO_2021第一单元总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/08/%E8%B6%85%E6%A0%87%E9%87%8F%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BE%E8%AE%A1-1%E6%A6%82%E8%BF%B0/" rel="next" title="超标量处理器设计-概述">
+                  超标量处理器设计-概述 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

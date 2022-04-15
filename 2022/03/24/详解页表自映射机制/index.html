@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32%C3%9732-my.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16%C3%9716-my.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guo-hy.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.10.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Operating System学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="详解页表自映射机制">
+<meta property="og:url" content="https://guo-hy.github.io/2022/03/24/%E8%AF%A6%E8%A7%A3%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="ghy_blog">
+<meta property="og:description" content="Operating System学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%88%86%E9%A1%B5.png">
+<meta property="article:published_time" content="2022-03-24T12:40:57.000Z">
+<meta property="article:modified_time" content="2022-04-15T11:06:38.290Z">
+<meta property="article:author" content="ghy">
+<meta property="article:tag" content="Operating System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%88%86%E9%A1%B5.png">
+
+
+<link rel="canonical" href="https://guo-hy.github.io/2022/03/24/%E8%AF%A6%E8%A7%A3%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://guo-hy.github.io/2022/03/24/%E8%AF%A6%E8%A7%A3%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/","path":"2022/03/24/详解页表自映射机制/","title":"详解页表自映射机制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>详解页表自映射机制 | ghy_blog</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ghy_blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8CISC%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%AD%E8%99%9A%E5%AE%9E%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%E6%98%AF%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E7%9A%84"><span class="nav-number">1.</span> <span class="nav-text">在CISC体系结构中虚实地址转换是如何进行的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84"><span class="nav-number">2.</span> <span class="nav-text">为什么需要页表自映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84"><span class="nav-number">3.</span> <span class="nav-text">如何实现页表自映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88MIPS%E6%9E%B6%E6%9E%84%E6%97%A0%E6%B3%95%E5%AE%9E%E7%8E%B0%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84"><span class="nav-number">4.</span> <span class="nav-text">为什么MIPS架构无法实现页表自映射</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ghy</p>
+  <div class="site-description" itemprop="description">personal blog about computer technology</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Guo-HY" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Guo-HY" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guo-hy.github.io/2022/03/24/%E8%AF%A6%E8%A7%A3%E9%A1%B5%E8%A1%A8%E8%87%AA%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ghy">
+      <meta itemprop="description" content="personal blog about computer technology">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ghy_blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          详解页表自映射机制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-24 20:40:57" itemprop="dateCreated datePublished" datetime="2022-03-24T20:40:57+08:00">2022-03-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-04-15 19:06:38" itemprop="dateModified" datetime="2022-04-15T19:06:38+08:00">2022-04-15</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">Operating System学习笔记</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>首先必须说明的是，页表自映射机制的终极意义是为了在CISC体系结构中可以使用虚拟地址访问页表。在RISC体系结构中无法体现页表自映射机制的作用，也没有必要实现页表自映射机制。页表自映射所谓的可以节省4KB空间的作用相对虚拟内存而言微乎其微。</p>
+<h3 id="在CISC体系结构中虚实地址转换是如何进行的"><a href="#在CISC体系结构中虚实地址转换是如何进行的" class="headerlink" title="在CISC体系结构中虚实地址转换是如何进行的"></a>在CISC体系结构中虚实地址转换是如何进行的</h3><p>这里用Intel IA-32体系结构为例讲解一下在CISC体系结构中虚实地址转换是如何进行的。实际上在Intel IA-32中这一步应该叫做<strong>线性地址</strong>到<strong>物理地址</strong>的转换，这一转换需要用到存储在内存中的两级页表。第一级页表有1024项，每一项大小为32位，其中高20位为一个二级页表的<strong>物理地址</strong>的高20位（因为页表的物理地址是页对齐的，所以只存储高20位就够了）。第二级页表最多可以有1024个，每一个二级页表的结构与一级页表一样，只不过每一个页表项的高20位存储的是对应物理页面的<strong>物理地址</strong>的高20位。还需要用到一个系统控制寄存器叫做CR3，里面存储的是第一级页表在内存中的<strong>物理基地址</strong>。</p>
+<p>MMU在产生线性地址后，会首先将线性地址的高10位作为偏移与CR3寄存器中的值相加，定位到第一级页表中的某一项的<strong>物理地址</strong>。然后从该物理地址中取出它对应的第二级页表的<strong>物理地址</strong>。再将这个值与线性地址的21至12位相加得到第二级页表中某一页表项的<strong>物理地址</strong>，再取出这个物理地址上的值，将高20位与线性地址的低12位拼起来得到线性地址对应的物理地址。</p>
+<p>一张图：</p>
+<p><img src="https://raw.githubusercontent.com/Guo-HY/picture_git/master/img/x86%E5%88%86%E9%A1%B5.png" alt="x86分页"></p>
+<h3 id="为什么需要页表自映射"><a href="#为什么需要页表自映射" class="headerlink" title="为什么需要页表自映射"></a>为什么需要页表自映射</h3><p>上述的从线性地址到物理地址的转换都是由MMU中的电路自动完成的， 软件没有参与。这与RISC很不一样，在RISC中地址转换的每一步都需要软件执行操作。那么既然在CISC中访问页表的操作都是由硬件使用物理地址完成的，就产生了一个问题，即页表没有自己的<strong>虚拟地址</strong>，似乎不是什么大问题，因为自始至终都是硬件通过<strong>物理地址</strong>访问页表。无论是CR3寄存器还是一级页表中的值，它们都是物理地址。</p>
+<p>然而，我们有时候会想知道一级页表，二级页表的虚拟基地址是什么。这涉及到x86处理器的保护模式的概念，在保护模式下，程序只能通过<strong>线性地址</strong>（虚拟地址）来访存。如果页表没有虚拟地址，那么程序就无法查看页表的值。但很多时候在保护模式下我们想看看页表的值到底是啥。</p>
+<p>可以通过虚拟地址访问页表，是需要页表自映射的原因。</p>
+<h3 id="如何实现页表自映射"><a href="#如何实现页表自映射" class="headerlink" title="如何实现页表自映射"></a>如何实现页表自映射</h3><p>第一步，我们需要<strong>让一级页表的一个表项中存储的物理地址就是这个一级页表的物理基地址</strong>。这个表项在一级页表中的哪一个位置，并没有关系，但它会影响到页表在虚拟空间中的位置。现在我们暂且设它是第t项。</p>
+<p>这样设置之后，如果我们用0x(t)0…0这一虚拟地址访存，其中t是高10位的值，那么MMU会用CR3的值加上t的值，访问到一级页表的第t项，而这一项中存储的值，正是我们刚刚设置的一级页表的物理基地址，现在我们将这个值设为F。注意，在常规的访存流程中，F代表着一个二级页表的物理基地址。</p>
+<p>至此，一个完整的虚实地址转换过程刚刚进行了一半。MMU还会用虚拟地址的21至12位这10位作为二级页表项在二级页表中的偏移，与刚刚得到的F相加，得到一个二级页表项的物理地址。而我们给出的虚拟地址的21至12位均为0，F是一级页表的物理基地址，因此我们得到的所谓的“二级页表项的物理地址”，实际上是一级页表项中第一项的物理地址，而我们最终得到的这个物理地址上的值，就是一级页表项中第一项的值，即第一个二级页表的物理基地址。</p>
+<p>这样，我们就实现了，通过0x(t)0…0这一虚拟地址访问第一个二级页表。这里<strong>第一个</strong>的含义是该二级页表管理的是最低的4MB虚拟地址空间.如此一来，0x(t)0…0这一地址实际上<strong>就是第一个二级页表的虚拟基地址</strong>。</p>
+<p>以此类推，0x(t)(k)0…0就是第k个二级页表的虚拟基地址。其中k代表虚拟地址的第21至12位。那么0x(t)0…0到0x(t)ff..ff这一段4MB的空间实际上就是全部的二级页表在虚拟空间中的映射。至此，我们实现了通过虚拟地址访问页表，这就是页表自映射机制。</p>
+<p>经过上面的讨论，我们发现一级页表的物理基地址在一级页表中所处的位置，实际上是与整个4MB页表在虚拟内存中的位置对应的。改变一级页表的物理基地址在一级页表中所处的位置，4MB页表在虚拟内存中的位置也不一样。但无论怎样，4MB页表在虚拟内存中的<strong>起始位置</strong>一定是4MB对齐的。至于为什么会这样，可以再读一遍上述过程。</p>
+<p>假设一级页表的物理基地址在一级页表中第t项，那么我们只要让虚拟地址的高10位和21至12位都为t就得出了一级页表的虚拟基地址。而如果已知4MB页表的虚拟基地址，我们只需要把这个虚拟地址的高10位的值复制到21至12位，就得出了一级页表的虚拟基地址。至于为什么会这样，可以再读一遍上述过程。</p>
+<p>需要强调的是，这一系列过程都需要一个可以自动完成地址转换而不需要软件介入的MMU来完成。</p>
+<h3 id="为什么MIPS架构无法实现页表自映射"><a href="#为什么MIPS架构无法实现页表自映射" class="headerlink" title="为什么MIPS架构无法实现页表自映射"></a>为什么MIPS架构无法实现页表自映射</h3><p>MIPS架构无法实现页表自映射的本质原因是，MMU很拉跨，导致查询页表的过程需要软件参与，而软件可以通过页表将一个虚拟地址转换为一个物理地址，但没办法把一个物理地址转换为一个虚拟地址（kuseg段）。你当然可以将页表映射到kuseg里，并且页表的虚拟基地址与一级页表的物理基地址在一级页表中的位置也符合前文所述的关系，但是你能做的也仅仅是通过公式计算得出一级页表的虚拟基地址，而这不是页表自映射本来的意义。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Operating-System/" rel="tag"># Operating System</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/24/2022-03-24-C%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AD%98%E5%82%A8%E7%B1%BB%E5%88%AB-%E9%93%BE%E6%8E%A5-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="C语言：存储类别 链接 内存管理">
+                  <i class="fa fa-chevron-left"></i> C语言：存储类别 链接 内存管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/24/VSCode%E9%85%8D%E7%BD%AEC%E8%AF%AD%E8%A8%80%E7%BC%96%E8%AF%91%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83/" rel="next" title="VSCode配置C语言编译调试环境">
+                  VSCode配置C语言编译调试环境 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ghy</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
